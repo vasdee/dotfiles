@@ -1,0 +1,8 @@
+[http]
+	sslVerify = false
+
+[user]
+	email = robert.miller1@bhpbilliton.com
+	name = rob miller
+[core]
+	editor = vim
