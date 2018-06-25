@@ -5,7 +5,7 @@
 # $1 == The Device name, e.g eth0/enp0s25, tun0
 # $2 == The Connection state, e.g up/down, vpn-up
 
-set LOG /var/log/NetworkManager_dispatcher.d.log
+set LOG /tmp/NetworkManager_dispatcher.d.log
 
 set USER vasdee
 set UID 1000

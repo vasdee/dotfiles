@@ -16,6 +16,7 @@
   '(better-defaults
     elpy
     flycheck
+    web-mode
     material-theme))
 
 (mapc #'(lambda (package)
@@ -28,7 +29,7 @@
 
 (setq inhibit-startup-message t) ;; hide the startup message
 (load-theme 'material t) ;; load material theme
-(global-linum-mode t) ;; enable line numbers globally
+(global-display-line-numbers-mode)
 (elpy-enable)
 
 ;; python configuration
