@@ -1,3 +1,5 @@
 ssh/.ssh/known_hosts
-emacs/.emacs.d/elpa/
 
+# Ignore everything by default, then manage by exception
+emacs/.emacs.d/*
+!emacs/.emacs.d/init.el
