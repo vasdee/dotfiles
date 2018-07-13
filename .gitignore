@@ -3,3 +3,5 @@ ssh/.ssh/known_hosts
 # Ignore everything by default, then manage by exception
 emacs/.emacs.d/*
 !emacs/.emacs.d/init.el
+!emacs/.emacs.d/snippets/*
+!emacs/.emacs.d/templates/*

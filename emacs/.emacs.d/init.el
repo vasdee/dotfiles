@@ -13,19 +13,17 @@
   (package-refresh-contents))
 
 (defvar myPackages
-  '(better-defaults
-    ;;auto-complete
-    elpy
+  '(elpy
     flycheck
     web-mode
-    ;;tern
-    ;;tern-auto-complete
-    material-theme
     js2-mode
-    ;;company-tern
+    rjsx-mode
     company
     tide
     neotree
+    yasnippet
+    dracula-theme
+    zenburn-theme
     ))
 
 (mapc #'(lambda (package)
@@ -36,20 +34,24 @@
 ;; -------------------------------------
 ;; BASIC CUSTOMIZATION
 ;; -------------------------------------
-
-(require 'auto-complete)
 (require 'neotree)
+(require 'yasnippet)
+(require 'web-mode)
+(require 'tide)
+
+(yas-global-mode 1)
 (global-set-key [f8] 'neotree-toggle)
+(global-display-line-numbers-mode)
 
 (setq inhibit-startup-message t)
-(load-theme 'material t)
-(global-display-line-numbers-mode)
-(elpy-enable t)
-(global-auto-complete-mode t)
+(load-theme 'zenburn t)
+(elpy-enable)
 (scroll-bar-mode -1)
 (tool-bar-mode  -1)
 (tooltip-mode -1)
 (menu-bar-mode -1)
+(setq make-backup-files nil) ; stop creating backup~ files
+(setq auto-save-default nil) ; stop creating #autosave# files
 
 ;; -------------------------------------
 ;; python configuration
@@ -73,7 +75,6 @@
 ;; -------------------------------------
 ;; Javascript config
 ;; -------------------------------------
-(require 'tide)
 (defun setup-tide-mode ()
   (interactive)
   (tide-setup)
@@ -87,24 +88,23 @@
 
 ;; configure javascript-tide checker to run after your default javascript checker
 
-;;(add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
-;;(add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode))
+;(add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
+;(add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode))
 
 (add-hook 'js-mode-hook #'setup-tide-mode)
 ;;(flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
 
-(require 'web-mode)
-(add-to-list 'auto-mode-alist '("\\.jsx\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode))
 (add-hook 'web-mode-hook
           (lambda ()
             (when (string-equal "jsx" (file-name-extension buffer-file-name))
               (setup-tide-mode))))
+              
 ;; configure jsx-tide checker to run after your default jsx checker
 (flycheck-add-mode 'javascript-eslint 'web-mode)
 (flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
       
-;; -------------------------------------      
-      
+;; -------------------------------------            
 ;; init.el ends here
 
 (custom-set-variables
@@ -114,10 +114,17 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (tern-auto-complete tide js2-mode web-mode material-theme flycheck elpy better-defaults)))
+    (rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
  '(safe-local-variable-values
    (quote
-    ((eval add-to-list
+    ((neotree-change-root "/home/vasdee/work/dev/crew_rostering")
+     (eval neotree-change-root "/home/vasdee/work/dev/crew_rostering")
+     (eval setq elpy-set-project-root "/home/vasdee/work/dev/crew_rostering/backend/")
+     (eval pyvenv-activate "/home/vasdee/work/dev/crew_rostering/backend/venv/")
+     (eval neotree-dir "/home/vasdee/work/dev/crew_rostering")
+     (eval setq elpy-set-project-root "backend")
+     (eval neotree-dir ".")
+     (eval add-to-list
 	   (quote load-path)
 	   (quote "/home/vasdee/work/dev/emacs/frontend/node_modules/tern/emacs/"))
      (eval setq exec-path
