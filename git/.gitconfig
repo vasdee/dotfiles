@@ -6,3 +6,6 @@
 	name = rob miller
 [core]
 	editor = vim
+	
+[push]
+	default = current
