@@ -43,6 +43,7 @@
 (global-set-key [f8] 'neotree-toggle)
 (global-display-line-numbers-mode)
 
+(show-paren-mode 1)
 (setq inhibit-startup-message t)
 (load-theme 'zenburn t)
 (elpy-enable)
