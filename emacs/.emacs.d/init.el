@@ -24,6 +24,7 @@
     yasnippet
     dracula-theme
     zenburn-theme
+    find-file-in-project
     ))
 
 (mapc #'(lambda (package)
@@ -37,6 +38,7 @@
 (require 'neotree)
 (require 'yasnippet)
 (require 'web-mode)
+(require 'find-file-in-project)
 (require 'tide)
 
 (yas-global-mode 1)
@@ -45,7 +47,7 @@
 
 (show-paren-mode 1)
 (setq inhibit-startup-message t)
-(load-theme 'zenburn t)
+(load-theme 'tango-dark t)
 (elpy-enable)
 (scroll-bar-mode -1)
 (tool-bar-mode  -1)
@@ -53,6 +55,9 @@
 (menu-bar-mode -1)
 (setq make-backup-files nil) ; stop creating backup~ files
 (setq auto-save-default nil) ; stop creating #autosave# files
+;; Set a VSCode style find file in project lookup key
+(global-set-key (kbd "C-p") 'find-file-in-project-by-selected)
+(set-face-attribute 'default nil :height 100)
 
 ;; -------------------------------------
 ;; python configuration
@@ -67,12 +72,10 @@
 
 (when (require 'flycheck nil t)
   (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-  (add-hook 'elpy-mode-hook 'flycheck-mode))
-  
-
+  (add-hook 'elpy-mode-hook 'flycheck-mode))  
 ;; -------------------------------------  
-  
-  
+
+
 ;; -------------------------------------
 ;; Javascript config
 ;; -------------------------------------
@@ -93,6 +96,8 @@
 ;(add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode))
 
 (add-hook 'js-mode-hook #'setup-tide-mode)
+
+(add-hook 'js2-mode-hook (lambda () (setq js2-basic-offset 2)))
 ;;(flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
 
 (add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode))
@@ -104,7 +109,8 @@
 ;; configure jsx-tide checker to run after your default jsx checker
 (flycheck-add-mode 'javascript-eslint 'web-mode)
 (flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
-      
+
+
 ;; -------------------------------------            
 ;; init.el ends here
 
@@ -113,12 +119,66 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(company-quickhelp-color-background "#4F4F4F")
+ '(company-quickhelp-color-foreground "#DCDCCC")
+ '(custom-safe-themes
+   (quote
+    ("190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(package-selected-packages
    (quote
-    (rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
+    (solarized-theme markdown-mode rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
+ '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
  '(safe-local-variable-values
    (quote
-    ((neotree-change-root "/home/vasdee/work/dev/crew_rostering")
+    ((eval progn
+	   (require
+	    (quote find-file-in-project))
+	   (setq ffip-prune-patterns
+		 (\`
+		  ("*/venv/*"
+		   (\, "*/node_modules/*")))))
+     (eval neotree-change-root "/home/vasdee/work/dev/crew_rostering/")
+     (eval neotree-change-root @ffip-project-root)
+     (eval setq ffip-prune-patterns
+	   (\`
+	    ("*/venv/*"
+	     (\, @ffip-prune-patterns))))
+     (setq ffip-prune-patterns
+	   (\`
+	    ("*venv*"
+	     (\,@ ffip-prune-patterns))))
+     (setq ffip-prune-patterns
+	   (\`
+	    ("venv"
+	     (\,@ ffip-prune-patterns))))
+     (setq ffip-prune-patterns
+	   (\`
+	    ("backend/venv/*"
+	     (\,@ ffip-prune-patterns))))
+     (setq ffip-prune-patterns
+	   (\`
+	    ("*/venv/*"
+	     (\,@ ffip-prune-patterns))))
+     (eval progn
+	   (require
+	    (quote find-file-in-project))
+	   (setq ffip-prune-patterns
+		 (\`
+		  ("*/venv/*"
+		   (\, @ffip-prune-patterns)))))
+     (eval progn
+	   (require
+	    (quote find-file-in-project))
+	   (setq ffip-prune-patterns
+		 (\`
+		  ("*/venv/*"
+		   (\, "*/node_modules/*")
+		   (\,@ ffip-prune-patterns)))))
+     (eval neotree-change-root
+	   (quote ffip-project-root))
+     (eval setq tide-tsserver-directory "/home/vasdee/work/dev/crew_rostering/frontend/node_modules/typescript/lib/")
+     (eval setq tide-tsserver-executable "/home/vasdee/work/dev/crew_rostering/frontend/node_modules/typescript/bin/tsserver")
+     (neotree-change-root "/home/vasdee/work/dev/crew_rostering")
      (eval neotree-change-root "/home/vasdee/work/dev/crew_rostering")
      (eval setq elpy-set-project-root "/home/vasdee/work/dev/crew_rostering/backend/")
      (eval pyvenv-activate "/home/vasdee/work/dev/crew_rostering/backend/venv/")
@@ -186,3 +246,4 @@
  )
 
 
+(put 'upcase-region 'disabled nil)

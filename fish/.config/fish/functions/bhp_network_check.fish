@@ -1,11 +1,10 @@
 # Get the list of BHP CONNECTION UUIDs via ( this can be VPN or WIFI)
 # nmcli connection
-# Assumes you have 2 scripts already, proxy_on / proxy_off that can be called manually.
 # Place this file in $HOME/.config/fish/functions
 # add bhp_network_check to the bottom of $HOME/.config/fish/config.fish
 
 set BHP_CONNECTION_UUIDS 39a026f2-91e1-4279-bbf9-45d49d41c1a0 81cf5c38-6fe5-4c17-bfe5-d247ca3d0f1e
-set -x PROXY_AUTH millrt9:Sniffles0000%30
+set -x PROXY_AUTH millrt9:Sniffles1111%21
 
 function bhp_network_check
 
