@@ -55,6 +55,10 @@
 (menu-bar-mode -1)
 (setq make-backup-files nil) ; stop creating backup~ files
 (setq auto-save-default nil) ; stop creating #autosave# files
+(setq neo-window-fixed-size nil)
+(setq neo-window-width 50)
+(setq enable-local-variables t) ;; enable dir-locals evals without prompting
+
 ;; Set a VSCode style find file in project lookup key
 (global-set-key (kbd "C-p") 'find-file-in-project-by-selected)
 (set-face-attribute 'default nil :height 100)
@@ -105,7 +109,16 @@
           (lambda ()
             (when (string-equal "jsx" (file-name-extension buffer-file-name))
               (setup-tide-mode))))
-              
+
+(add-hook 'rjsx-mode-hook
+	  (lambda ()
+	    (setq indent-tabs-mode nil) ;; use space instead of tabs
+	    (setq js-indent-level 2) ;; 2 spaces
+	    (setq js2-basic-offset 2) 
+	    ;;(setq js2-strict-missing-semi-warning nil ) ;; disable the semi-colon warning
+	    )
+)
+
 ;; configure jsx-tide checker to run after your default jsx checker
 (flycheck-add-mode 'javascript-eslint 'web-mode)
 (flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
@@ -131,6 +144,26 @@
  '(safe-local-variable-values
    (quote
     ((eval progn
+	   (require
+	    (quote find-file-in-project))
+	   (setq ffip-prune-patterns
+		 (\`
+		  ("*/htmlcov/*"
+		   (\, "*/venv/*")
+		   (\, "*/node_modules/*")))))
+     (eval message "Project directory set to `%s'." my-project-path)
+     (eval set
+	   (make-local-variable
+	    (quote my-project-path))
+	   (file-name-directory
+	    (let
+		((d
+		  (dir-locals-find-file ".")))
+	      (if
+		  (stringp d)
+		  d
+		(car d)))))
+     (eval progn
 	   (require
 	    (quote find-file-in-project))
 	   (setq ffip-prune-patterns
@@ -247,3 +280,4 @@
 
 
 (put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)

@@ -39,11 +39,11 @@ end
 
 
 function bhp_proxy_off
-	set -x -g https_proxy
-	set -x -g http_proxy
-	set -x -g HTTP_PROXY
-	set -x -g HTTPS_PROXY
-	set -x -g no_proxy
+	set -e -g https_proxy
+	set -e -g http_proxy
+	set -e -g HTTP_PROXY
+	set -e -g HTTPS_PROXY
+	set -e -g no_proxy
 	
 	sed -i 's/^ ProxyCommand/ #ProxyCommand/g' ~/.ssh/config
 end
