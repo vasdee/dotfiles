@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "allowSyntheticDefaultImports": true,
+    "noEmit": true,
+    "allowJs": true,
+    "checkJs": true,
+    "jsx": "react",
+    "lib": [ "dom", "es6" ],
+    "baseUrl": "./src/",
+    "module": "es6",  
+    "paths": {
+      "assets/*" : ["assets/*"],
+      "config/*" : ["app/config/*"],
+      "settings/*" : ["app/config/settings.js"],
+      "library/*" : ["app/core/*"],
+      "components/*" : ["app/components/**"],
+      "views/*" : ["app/views/**"],
+      "actions/*" : ["app/data/actions/*"],
+      "reducers/*" : ["app/data/reducers/*"],
+      "selectors/*" : ["app/data/selectors/*"],
+      "api/*": ["app/data/api/*"],
+      "store/*": ["app/data/store/*"],
+      "libs/*": ["libs/**"]
+      }
+      
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
+
