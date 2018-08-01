@@ -57,7 +57,7 @@
 (setq auto-save-default nil) ; stop creating #autosave# files
 (setq neo-window-fixed-size nil)
 (setq neo-window-width 50)
-(setq enable-local-variables t) ;; enable dir-locals evals without prompting
+(setq enable-local-eval t) ;; enable dir-locals evals without prompting
 
 ;; Set a VSCode style find file in project lookup key
 (global-set-key (kbd "C-p") 'find-file-in-project-by-selected)
@@ -141,136 +141,7 @@
    (quote
     (solarized-theme markdown-mode rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
  '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
- '(safe-local-variable-values
-   (quote
-    ((eval progn
-	   (require
-	    (quote find-file-in-project))
-	   (setq ffip-prune-patterns
-		 (\`
-		  ("*/htmlcov/*"
-		   (\, "*/venv/*")
-		   (\, "*/node_modules/*")))))
-     (eval message "Project directory set to `%s'." my-project-path)
-     (eval set
-	   (make-local-variable
-	    (quote my-project-path))
-	   (file-name-directory
-	    (let
-		((d
-		  (dir-locals-find-file ".")))
-	      (if
-		  (stringp d)
-		  d
-		(car d)))))
-     (eval progn
-	   (require
-	    (quote find-file-in-project))
-	   (setq ffip-prune-patterns
-		 (\`
-		  ("*/venv/*"
-		   (\, "*/node_modules/*")))))
-     (eval neotree-change-root "/home/vasdee/work/dev/crew_rostering/")
-     (eval neotree-change-root @ffip-project-root)
-     (eval setq ffip-prune-patterns
-	   (\`
-	    ("*/venv/*"
-	     (\, @ffip-prune-patterns))))
-     (setq ffip-prune-patterns
-	   (\`
-	    ("*venv*"
-	     (\,@ ffip-prune-patterns))))
-     (setq ffip-prune-patterns
-	   (\`
-	    ("venv"
-	     (\,@ ffip-prune-patterns))))
-     (setq ffip-prune-patterns
-	   (\`
-	    ("backend/venv/*"
-	     (\,@ ffip-prune-patterns))))
-     (setq ffip-prune-patterns
-	   (\`
-	    ("*/venv/*"
-	     (\,@ ffip-prune-patterns))))
-     (eval progn
-	   (require
-	    (quote find-file-in-project))
-	   (setq ffip-prune-patterns
-		 (\`
-		  ("*/venv/*"
-		   (\, @ffip-prune-patterns)))))
-     (eval progn
-	   (require
-	    (quote find-file-in-project))
-	   (setq ffip-prune-patterns
-		 (\`
-		  ("*/venv/*"
-		   (\, "*/node_modules/*")
-		   (\,@ ffip-prune-patterns)))))
-     (eval neotree-change-root
-	   (quote ffip-project-root))
-     (eval setq tide-tsserver-directory "/home/vasdee/work/dev/crew_rostering/frontend/node_modules/typescript/lib/")
-     (eval setq tide-tsserver-executable "/home/vasdee/work/dev/crew_rostering/frontend/node_modules/typescript/bin/tsserver")
-     (neotree-change-root "/home/vasdee/work/dev/crew_rostering")
-     (eval neotree-change-root "/home/vasdee/work/dev/crew_rostering")
-     (eval setq elpy-set-project-root "/home/vasdee/work/dev/crew_rostering/backend/")
-     (eval pyvenv-activate "/home/vasdee/work/dev/crew_rostering/backend/venv/")
-     (eval neotree-dir "/home/vasdee/work/dev/crew_rostering")
-     (eval setq elpy-set-project-root "backend")
-     (eval neotree-dir ".")
-     (eval add-to-list
-	   (quote load-path)
-	   (quote "/home/vasdee/work/dev/emacs/frontend/node_modules/tern/emacs/"))
-     (eval setq exec-path
-	   (append exec-path
-		   (quote
-		    ("/home/vasdee/work/dev/emacs/frontend/node_modules/tern/bin"))))
-     (eval setenv "PATH"
-	   (concat
-	    (getenv "PATH")
-	    ":/home/vasdee/work/dev/emacs/frontend/node_modules/tern/bin"))
-     (setenv "PATH"
-	     (concat
-	      (getenv "PATH")
-	      ":/home/vasdee/work/dev/emacs/frontend/node_modules/tern/bin"))
-     (setq exec-path
-	   (append exec-path
-		   (quote
-		    ("/home/vasdee/work/dev/emacs/frontend/node_modules/tern/bin"))))
-     (setq exec-path
-	   (append exec-path
-		   (quote
-		    ("/home/vasdee/work/dev/emacs/frontend/node_modules/tern"))))
-     (setenv "PATH"
-	     (concat
-	      (getenv "PATH")
-	      ":/home/vasdee/work/dev/emacs/frontend/node_modules/tern"))
-     (setq exec-path
-	   (append exec-path
-		   (quote
-		    ("frontend/node_modules/tern"))))
-     (setenv "PATH"
-	     (concat
-	      (getenv "PATH")
-	      ":frontend/node_modules/tern"))
-     (setenv "PATH"
-	     (concat
-	      (getenv "PATH")
-	      ":frontend/node_modules/tern/bin"))
-     (setq exec-path
-	   (append exec-path
-		   (quote
-		    ("frontend/node_modules/tern/bin"))))
-     (setenv "PATH"
-	     (concat
-	      (getenv "PATH")
-	      "frontend/node_modules/tern/bin"))
-     (setq exec-path
-	   (append exec-path
-		   (quote
-		    ("frontend/node_modules/tern/bin/"))))
-     (eval pyvenv-activate "backend/venv")
-     (eval pyvenv-activate "venv")))))
+)
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
