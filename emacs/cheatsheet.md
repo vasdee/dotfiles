@@ -39,6 +39,9 @@ C-g C-_ redo  ( then use repeat C-x z to call as required)
 C-c > indent (might be python-mode only)
 C-c < unindent (might be python-mode only)
 
+M-% search and replace strings
+C-M-% search and replace regex patterns
+
 # Frame
 
 C-x 5 f open file in new frame

@@ -25,6 +25,7 @@
     dracula-theme
     zenburn-theme
     find-file-in-project
+    fish-mode
     ))
 
 (mapc #'(lambda (package)
@@ -40,6 +41,7 @@
 (require 'web-mode)
 (require 'find-file-in-project)
 (require 'tide)
+(require 'find-dired)
 
 (yas-global-mode 1)
 (global-set-key [f8] 'neotree-toggle)
@@ -62,6 +64,24 @@
 ;; Set a VSCode style find file in project lookup key
 (global-set-key (kbd "C-p") 'find-file-in-project-by-selected)
 (set-face-attribute 'default nil :height 100)
+
+;; ------------------------------------- 
+;; dired configuration
+;; -------------------------------------
+
+;; When running dired-find
+;;(setq find-ls-option '("-print0 | xargs -0 ls -h" . ""))
+
+(setq find-ls-option '("-print0 | xargs -0 ls -lhd" . "-a"))
+;;'(find-ls-option (quote ("-print0 | xargs -P4 -0 ls -ldN" . "-ldN")))
+;; (setq find-ls-option (quote ("-path '*/.git*' -o -path '*/node_modules/*' -o -path '*/venv/*' -o -path '*/htmlcov/*' -o -path '*/.idea*' -prune -o -print0 | xargs -0 ls -ah" . "-l"))
+
+;; relies on project-dir being set
+(defun my-find-name-dired (pattern)
+  "My version of find-name-dired that always starts in my chosen folder"
+  (interactive "Find Name (file name wildcard): ")
+  (find-name-dired project-dir pattern))
+
 
 ;; -------------------------------------
 ;; python configuration
@@ -139,9 +159,8 @@
     ("190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(package-selected-packages
    (quote
-    (solarized-theme markdown-mode rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
- '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838")))
-)
+    (magit fish-mode solarized-theme markdown-mode rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
+ '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

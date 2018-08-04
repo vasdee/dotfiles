@@ -10,40 +10,37 @@ function bhp_network_check
 
     set ACTIVE_CONNECTION_UUIDS (nmcli -t -f uuid connection show --active)
 
-    echo $ACTIVE_CONNECTION
-
     for con in $BHP_CONNECTION_UUIDS
 
         if contains $con $ACTIVE_CONNECTION_UUIDS
-            bhp_proxy_on
-	        
+            bhp_pproxy_on
+	    echo -n '(bhp)'
             return
         end
 
     end
 
     bhp_proxy_off
-    
+    echo -n '(home)'
 end
 
 
 function bhp_proxy_on
-    echo "BHP proxy on"
-	set -x -g https_proxy http://$PROXY_AUTH@10.17.236.44:8081
-	set -x -g http_proxy http://$PROXY_AUTH@10.17.236.44:8080
-	set -x -g no_proxy localhost,.bhpbilliton.net
+    set -x -g https_proxy http://$PROXY_AUTH@10.17.236.44:8081
+    set -x -g http_proxy http://$PROXY_AUTH@10.17.236.44:8080
+    set -x -g no_proxy localhost,.bhpbilliton.net
 	
-	sed -i 's/^ #ProxyCommand/ ProxyCommand/g' ~/.ssh/config
+    sed -i 's/^ #ProxyCommand/ ProxyCommand/g' ~/.ssh/config
 end
 
 
 
 function bhp_proxy_off
-	set -e -g https_proxy
-	set -e -g http_proxy
-	set -e -g HTTP_PROXY
-	set -e -g HTTPS_PROXY
-	set -e -g no_proxy
+    set -e -g https_proxy
+    set -e -g http_proxy
+    set -e -g HTTP_PROXY
+    set -e -g HTTPS_PROXY
+    set -e -g no_proxy
 	
-	sed -i 's/^ ProxyCommand/ #ProxyCommand/g' ~/.ssh/config
+    sed -i 's/^ ProxyCommand/ #ProxyCommand/g' ~/.ssh/config
 end
