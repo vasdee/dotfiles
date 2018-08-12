@@ -1,5 +1,9 @@
 ssh/.ssh/known_hosts
 
+# Ignore the credentials file for fish
+fish/.config/fish/.credentials
+
+
 # Ignore everything by default, then manage by exception
 emacs/.emacs.d/*
 !emacs/.emacs.d/init.el

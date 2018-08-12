@@ -1,1 +1,1 @@
-source .proxy.fish
+source ~/.config/fish/.credentials
