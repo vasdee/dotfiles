@@ -1,7 +1,7 @@
 # Get the list of BHP CONNECTION UUIDs via ( this can be VPN or WIFI)
 # nmcli connection
 # Place this file in $HOME/.config/fish/functions
-set -x PROXY_AUTH millrt9:Sniffles1111%21
+
 
 function bhp_network_check
     set BHP_CONNECTION_UUIDS 39a026f2-91e1-4279-bbf9-45d49d41c1a0 81cf5c38-6fe5-4c17-bfe5-d247ca3d0f1e

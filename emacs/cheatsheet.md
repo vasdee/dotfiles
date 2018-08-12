@@ -42,6 +42,10 @@ C-c < unindent (might be python-mode only)
 M-% search and replace strings
 C-M-% search and replace regex patterns
 
+# navigating
+
+M-g g goto line
+
 # Frame
 
 C-x 5 f open file in new frame
@@ -69,6 +73,7 @@ M-. go to definition
 M-, jump back from where the go to definition was called
 M-\<left\> unindent
 M-\<right\> indent
+C-x C-; comment block
 
 
 # Rjsx
@@ -87,3 +92,24 @@ C-c C-n Create a file or create a directory if filename ends with a ‘/’
 C-c C-d Delete a file or a directory.
 C-c C-r Rename a file or a directory.
 C-c C-p Copy a file or a directory.
+
+
+# Magit
+
+M-x magit-commit
+M-x magit-status to see git status, and in the status buffer:
+s to stage files
+c c to commit (type the message then C-c C-c to actually commit)
+b b to switch to another branch
+Other handy keys:
+
+P u to do a git push
+F u to do a git pull
+try to press TAB
+
+
+# Ag
+
+g refresh results windown
+q quit results buffer
+k kill results buffer
