@@ -42,9 +42,12 @@
 (require 'find-file-in-project)
 (require 'tide)
 (require 'find-dired)
+(require 'yaml-mode)
+(require 'json-mode)
 
 (yas-global-mode 1)
 (global-set-key [f8] 'neotree-toggle)
+(global-set-key (kbd "<C-f8>") 'neotree-show)
 (global-display-line-numbers-mode)
 
 (show-paren-mode 1)
@@ -119,12 +122,21 @@
 ;(add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
 ;(add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode))
 
-(add-hook 'js-mode-hook #'setup-tide-mode)
+(add-hook 'rjsx--mode-hook #'setup-tide-mode)
 
 (add-hook 'js2-mode-hook (lambda () (setq js2-basic-offset 2)))
 ;;(flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
 
-(add-to-list 'auto-mode-alist '("\\.js\\'" . rjsx-mode))
+(add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
+
+(add-to-list 'auto-mode-alist '("\\.jsx$" . rjsx-mode))
+(add-to-list 'auto-mode-alist '("\\.js$" . rjsx-mode))
+
+(add-hook 'json-mode-hook #'flycheck-mode)
+
+
 (add-hook 'web-mode-hook
           (lambda ()
             (when (string-equal "jsx" (file-name-extension buffer-file-name))
@@ -159,7 +171,7 @@
     ("190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(package-selected-packages
    (quote
-    (yaml-mode ag magit fish-mode solarized-theme markdown-mode rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
+    (json-mode markdown-preview-mode yaml-mode ag magit fish-mode solarized-theme markdown-mode rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
  '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
