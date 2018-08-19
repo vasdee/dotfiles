@@ -64,6 +64,10 @@
 (setq neo-window-width 50)
 (setq enable-local-eval t) ;; enable dir-locals evals without prompting
 
+;; Nicer window moving keys
+(when (fboundp 'windmove-default-keybindings)
+  (windmove-default-keybindings))
+
 ;; Set a VSCode style find file in project lookup key
 (global-set-key (kbd "C-p") 'find-file-in-project-by-selected)
 (set-face-attribute 'default nil :height 100)
