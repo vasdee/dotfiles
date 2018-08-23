@@ -5,6 +5,10 @@
 C = ctrl
 M - alt
 
+# Help 
+
+C-h m Help about the current mode
+
 
 # Buffer (unsaved file)
 
@@ -20,7 +24,7 @@ C-x z repeat last command ( keep pressing z for more)
 # Editing
 
 C-k delete from cursor to end of line
-
+	
 C-e navigate to end of line
 C-a navigate to begging of line
 C-spc mark region (eg selection)

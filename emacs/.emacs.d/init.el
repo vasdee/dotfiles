@@ -44,11 +44,19 @@
 (require 'find-dired)
 (require 'yaml-mode)
 (require 'json-mode)
+(require 'ivy)
+(require 'ag)
 
 (yas-global-mode 1)
 (global-set-key [f8] 'neotree-toggle)
 (global-set-key (kbd "<C-f8>") 'neotree-show)
 (global-display-line-numbers-mode)
+
+;; IVY 
+(ivy-mode 1)
+(setq ivy-use-virtual-buffers t)
+(setq ivy-count-format "(%d/%d) ")
+
 
 (show-paren-mode 1)
 (setq inhibit-startup-message t)
@@ -58,6 +66,7 @@
 (tool-bar-mode  -1)
 (tooltip-mode -1)
 (menu-bar-mode -1)
+;(setq display-line-numbers 'relative)
 (setq make-backup-files nil) ; stop creating backup~ files
 (setq auto-save-default nil) ; stop creating #autosave# files
 (setq neo-window-fixed-size nil)
@@ -69,8 +78,17 @@
   (windmove-default-keybindings))
 
 ;; Set a VSCode style find file in project lookup key
-(global-set-key (kbd "C-p") 'find-file-in-project-by-selected)
+;(global-set-key (kbd "C-p") 'find-file-in-project-by-selected)
+(global-set-key (kbd "C-c p") 'counsel-git)
+(global-set-key (kbd "C-c o") 'ag-project-regexp)
+
 (set-face-attribute 'default nil :height 100)
+
+;; -----------------------------------
+;; MARK DOWN
+;; -----------------------------------
+(setq markdown-command "pandoc")
+
 
 ;; ------------------------------------- 
 ;; dired configuration
@@ -175,7 +193,7 @@
     ("190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(package-selected-packages
    (quote
-    (json-mode markdown-preview-mode yaml-mode ag magit fish-mode solarized-theme markdown-mode rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
+    (counsel json-mode yaml-mode ag magit fish-mode solarized-theme markdown-mode rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
  '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
