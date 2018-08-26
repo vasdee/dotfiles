@@ -4,13 +4,12 @@
 # CONNECTION_UUID, action= up | vpn-up
 # $1 == The Device name, e.g eth0/enp0s25, tun0
 # $2 == The Connection state, e.g up/down, vpn-up
-
 set LOG /tmp/NetworkManager_dispatcher.d.log
 
 set USER vasdee
 set UID 1000
 
-set BHP_CONNECTION_UUIDS 39a026f2-91e1-4279-bbf9-45d49d41c1a0 81cf5c38-6fe5-4c17-bfe5-d247ca3d0f1e
+set BHP_CONNECTION_UUIDS 39a026f2-91e1-4279-bbf9-45d49d41c1a0 81cf5c38-6fe5-4c17-bfe5-d247ca3d0f1e a0cb3713-6bab-4a75-bbcc-0a7a7917e686
 
 echo "Checking network type for $argv and $CONNECTION_UUID" >> $LOG
 
