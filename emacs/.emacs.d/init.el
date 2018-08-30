@@ -23,7 +23,6 @@
     neotree
     yasnippet
     dracula-theme
-    zenburn-theme
     find-file-in-project
     fish-mode
     ))
@@ -72,6 +71,7 @@
 (setq neo-window-fixed-size nil)
 (setq neo-window-width 50)
 (setq enable-local-eval t) ;; enable dir-locals evals without prompting
+(setq truncate-lines t) ;; turn off line wrapping
 
 ;; Nicer window moving keys
 (when (fboundp 'windmove-default-keybindings)
@@ -190,7 +190,7 @@
  '(company-quickhelp-color-foreground "#DCDCCC")
  '(custom-safe-themes
    (quote
-    ("190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
+    ("3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(package-selected-packages
    (quote
     (counsel json-mode yaml-mode ag magit fish-mode solarized-theme markdown-mode rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
