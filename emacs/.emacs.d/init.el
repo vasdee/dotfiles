@@ -25,6 +25,11 @@
     dracula-theme
     find-file-in-project
     fish-mode
+    yaml-mode
+    json-mode
+    ag
+    counsel
+    magit
     ))
 
 (mapc #'(lambda (package)
@@ -94,13 +99,7 @@
 ;; dired configuration
 ;; -------------------------------------
 
-;; When running dired-find
-;;(setq find-ls-option '("-print0 | xargs -0 ls -h" . ""))
-
-(setq find-ls-option '("-print0 | xargs -0 ls -lhd" . "-a"))
-;;'(find-ls-option (quote ("-print0 | xargs -P4 -0 ls -ldN" . "-ldN")))
-;; (setq find-ls-option (quote ("-path '*/.git*' -o -path '*/node_modules/*' -o -path '*/venv/*' -o -path '*/htmlcov/*' -o -path '*/.idea*' -prune -o -print0 | xargs -0 ls -ah" . "-l"))
-
+;;(setq find-ls-option '("-print0 | xargs -0 ls -lhd" . "-a"))
 ;; relies on project-dir being set
 (defun my-find-name-dired (pattern)
   "My version of find-name-dired that always starts in my chosen folder"
