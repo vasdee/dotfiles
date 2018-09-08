@@ -15,7 +15,7 @@ C-h m Help about the current mode
 C-x-s Save buffer to file
 C-s search for string in buffer
 C-x-k kill buffer
-
+C-x b switch to buffer ( type a new name to create a buffer that isn't saved to a file - useful for scratch code)
 C-v scoll page down
 M-v scroll page up
 C-x z repeat last command ( keep pressing z for more)
@@ -60,13 +60,9 @@ C-x 5 0 close frame
 # Window
 
 C-x 3 Split Window Vertically
-
 C-x 2 Split Window Horizontally 
-
 C-x 0 Close window
-
 C-x o Navigate to other window
-
 C-x { increase current window size right
 C-x } increase current window size left
 
@@ -99,7 +95,6 @@ C-c C-p Copy a file or a directory.
 
 
 # Magit
-
 M-x magit-commit
 M-x magit-status to see git status, and in the status buffer:
 s to stage files
@@ -113,7 +108,6 @@ try to press TAB
 
 
 # Ag
-
 g refresh results windown
 q quit results buffer
 k kill results buffer

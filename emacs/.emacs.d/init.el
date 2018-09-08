@@ -30,6 +30,7 @@
     ag
     counsel
     magit
+    markdown-mode
     ))
 
 (mapc #'(lambda (package)
@@ -50,13 +51,17 @@
 (require 'json-mode)
 (require 'ivy)
 (require 'ag)
+(require 'markdown-mode)
 
+;; Global keybindings
 (yas-global-mode 1)
 (global-set-key [f8] 'neotree-toggle)
 (global-set-key (kbd "<C-f8>") 'neotree-show)
 (global-display-line-numbers-mode)
+(global-set-key (kbd "C-x g") 'magit-status)
 
-;; IVY 
+
+;; IVY/counsel/swiper
 (ivy-mode 1)
 (setq ivy-use-virtual-buffers t)
 (setq ivy-count-format "(%d/%d) ")
@@ -70,7 +75,8 @@
 (tool-bar-mode  -1)
 (tooltip-mode -1)
 (menu-bar-mode -1)
-;(setq display-line-numbers 'relative)
+(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+(setq display-line-numbers 'relative)
 (setq make-backup-files nil) ; stop creating backup~ files
 (setq auto-save-default nil) ; stop creating #autosave# files
 (setq neo-window-fixed-size nil)
@@ -192,7 +198,7 @@
     ("3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(package-selected-packages
    (quote
-    (counsel json-mode yaml-mode ag magit fish-mode solarized-theme markdown-mode rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
+    (all-the-icons counsel json-mode yaml-mode ag magit fish-mode solarized-theme markdown-mode rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
  '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
