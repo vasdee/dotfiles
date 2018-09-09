@@ -112,6 +112,10 @@
   (interactive "Find Name (file name wildcard): ")
   (find-name-dired project-dir pattern))
 
+(add-hook 'dired-mode-hook  (lambda() ()
+			      (dired-hide-details-mode)
+			    )
+)
 
 ;; -------------------------------------
 ;; python configuration
