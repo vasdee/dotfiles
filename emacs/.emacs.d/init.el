@@ -83,7 +83,7 @@
 (setq neo-window-width 50)
 (setq enable-local-eval t) ;; enable dir-locals evals without prompting
 (set-default 'truncate-lines t) ;; turn off line wrapping
-
+(delete-selection-mode t)
 ;; Nicer window moving keys
 (when (fboundp 'windmove-default-keybindings)
   (windmove-default-keybindings))
