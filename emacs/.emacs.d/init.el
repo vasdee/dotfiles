@@ -69,6 +69,8 @@
 
 (show-paren-mode 1)
 (setq inhibit-startup-message t)
+(setq ring-bell-function 'ignore)
+(setq visible-bell 1)
 (load-theme 'tango-dark t)
 (elpy-enable)
 (scroll-bar-mode -1)
