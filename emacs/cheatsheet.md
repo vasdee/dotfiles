@@ -1,16 +1,17 @@
 # Emacs Cheatsheet
 
-# Basic 
+## Basic 
 
 C = ctrl
+
 M - alt
 
-# Help 
+## Help 
 
 C-h m Help about the current mode
 
 
-# Buffer (unsaved file)
+## Buffer (unsaved file)
 
 C-x-s Save buffer to file
 C-s search for string in buffer
@@ -20,8 +21,13 @@ C-v scoll page down
 M-v scroll page up
 C-x z repeat last command ( keep pressing z for more)
 
+## Bookmarks
 
-# Editing
+C-x r m add a bookmark
+C-x r l list bookmark
+
+
+## Editing
 
 C-k delete from cursor to end of line
 	
@@ -46,18 +52,18 @@ C-c < unindent (might be python-mode only)
 M-% search and replace strings
 C-M-% search and replace regex patterns
 
-# navigating
+## navigating
 
 M-g g goto line
 
-# Frame
+## Frame
 
 C-x 5 f open file in new frame
 C-x 5 2 create new frame (empty)
 C-x 5 0 close frame
 
 
-# Window
+## Window
 
 C-x 3 Split Window Vertically
 C-x 2 Split Window Horizontally 
@@ -67,7 +73,7 @@ C-x { increase current window size right
 C-x } increase current window size left
 
 
-# Elpy
+## Elpy
 
 M-. go to definition
 M-, jump back from where the go to definition was called
@@ -76,13 +82,13 @@ M-\<right\> indent
 C-x C-; comment block
 
 
-# Rjsx
+## Rjsx
 M-. go to definition
 M-, jump back from definition
     indent?
     unindent
 
-# Neotree
+## Neotree
 
 H show hidden files
 g refresh
@@ -94,7 +100,7 @@ C-c C-r Rename a file or a directory.
 C-c C-p Copy a file or a directory.
 
 
-# Magit
+## Magit
 M-x magit-commit
 M-x magit-status to see git status, and in the status buffer:
 s to stage files
