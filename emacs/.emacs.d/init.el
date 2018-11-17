@@ -52,6 +52,10 @@
 (require 'ivy)
 (require 'ag)
 (require 'markdown-mode)
+(require 'lsp-mode)
+(require 'lsp-python)
+(require 'lsp-javascript-typescript)
+(require 'company-lsp)
 
 ;; Global keybindings
 (yas-global-mode 1)
@@ -67,7 +71,7 @@
 (setq ivy-use-virtual-buffers t)
 (setq ivy-count-format "(%d/%d) ")
 
-
+(add-hook 'after-init-hook #'global-flycheck-mode)
 (show-paren-mode 1)
 (setq inhibit-startup-message t)
 (setq ring-bell-function 'ignore)
@@ -98,13 +102,19 @@
 
 (set-face-attribute 'default nil :height 100)
 
+;; ------------------
+;; COMPANY
+;; -----------------
+(push 'company-lsp company-backends)
+
+
 ;; -----------------------------------
 ;; MARK DOWN
 ;; -----------------------------------
 (setq markdown-command "pandoc")
 
 
-;; ------------------------------------- 
+;; -------------------------------------
 ;; dired configuration
 ;; -------------------------------------
 
@@ -156,7 +166,8 @@
 ;(add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
 ;(add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode))
 
-(add-hook 'rjsx-mode-hook #'setup-tide-mode)
+;(add-hook 'rjsx-mode-hook #'setup-tide-mode)
+(add-hook 'rjsx-mode-hook #'lsp-javascript-typescript-enable)
 
 (add-hook 'js2-mode-hook (lambda () (setq js2-basic-offset 2)))
 ;;(flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
@@ -185,8 +196,20 @@
 	    )
 )
 
+;; Some work arounds for LSP javascript and company mode
+(defun lsp-company-transformer (candidates)
+  (let ((completion-ignore-case t))
+    (all-completions (company-grab-symbol) candidates)))
+
+(defun lsp-js-hook nil
+  (make-local-variable 'company-transformers)
+  (push 'lsp-company-transformer company-transformers))
+
+(add-hook 'rjsx-mode-hook 'lsp-js-hook)
+
 ;; configure jsx-tide checker to run after your default jsx checker
 (flycheck-add-mode 'javascript-eslint 'web-mode)
+(flycheck-add-mode 'javascript-eslint 'rjsx-mode)
 (flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
 
 
@@ -205,7 +228,7 @@
     ("3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(package-selected-packages
    (quote
-    (dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode solarized-theme markdown-mode rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
+    (company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode solarized-theme markdown-mode rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
  '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

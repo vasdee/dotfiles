@@ -7,23 +7,22 @@
     "checkJs": true,
     "jsx": "react",
     "lib": [ "dom", "es6" ],
-    "baseUrl": "./src/",
-    "module": "es6",  
+    "baseUrl": "./",
+    "module": "es6",
     "paths": {
       "assets/*" : ["assets/*"],
-      "config/*" : ["app/config/*"],
-      "settings/*" : ["app/config/settings.js"],
-      "library/*" : ["app/core/*"],
-      "components/*" : ["app/components/**"],
-      "views/*" : ["app/views/**"],
-      "actions/*" : ["app/data/actions/*"],
-      "reducers/*" : ["app/data/reducers/*"],
-      "selectors/*" : ["app/data/selectors/*"],
-      "api/*": ["app/data/api/*"],
-      "store/*": ["app/data/store/*"],
+      "config/*" : ["src/app/config/*"],
+      "settings/*" : ["src/app/config/settings.js"],
+      "library/*" : ["src/app/core/*"],
+      "components/*" : ["src/app/components/**"],
+      "views/*" : ["src/app/views/**"],
+      "actions/*" : ["src/app/data/actions/*"],
+      "reducers/*" : ["src/app/data/reducers/*"],
+      "selectors/*" : ["src/app/data/selectors/*"],
+      "api/*": ["src/app/data/api/*"],
+      "store/*": ["src/app/data/store/*"],
       "libs/*": ["libs/**"]
       }
-      
   },
   "exclude": [
     "node_modules"
