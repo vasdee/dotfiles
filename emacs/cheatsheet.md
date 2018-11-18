@@ -52,9 +52,15 @@ C-c < unindent (might be python-mode only)
 M-% search and replace strings
 C-M-% search and replace regex patterns
 
-## navigating
+## navigating buffer
 
 M-g g goto line
+
+## minibuffer
+
+C-g exit/kill the current command
+M-p previous history item
+M-n next history item
 
 ## Frame
 
@@ -113,7 +119,11 @@ F u to do a git pull
 try to press TAB
 
 
-# Ag
+## Ag
 g refresh results windown
 q quit results buffer
 k kill results buffer
+
+## Package manager (list-packages)
+U mark all for update
+x install all marked packages

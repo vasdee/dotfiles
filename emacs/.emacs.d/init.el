@@ -31,6 +31,12 @@
     counsel
     magit
     markdown-mode
+    lsp-mode
+    lsp-python
+    lsp-javascript-typescript
+    company-lsp
+    lsp-ui
+    dockerfile-mode
     ))
 
 (mapc #'(lambda (package)
