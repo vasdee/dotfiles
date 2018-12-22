@@ -32,10 +32,6 @@
     magit
     markdown-mode
     lsp-mode
-    lsp-python
-    lsp-javascript-typescript
-    company-lsp
-    lsp-ui
     dockerfile-mode
     ))
 
@@ -58,10 +54,12 @@
 (require 'ivy)
 (require 'ag)
 (require 'markdown-mode)
-(require 'lsp-mode)
-(require 'lsp-python)
-(require 'lsp-javascript-typescript)
-(require 'company-lsp)
+(require 'lsp)
+(require 'lsp-clients)
+;(require 'lsp-mode)
+;(require 'lsp-python)
+;(require 'lsp-javascript-typescript)
+;(require 'company-lsp)
 
 ;; Global keybindings
 (yas-global-mode 1)
@@ -88,6 +86,7 @@
 (tool-bar-mode  -1)
 (tooltip-mode -1)
 (menu-bar-mode -1)
+(column-number-mode 1)
 (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
 (setq display-line-numbers 'relative)
 (setq make-backup-files nil) ; stop creating backup~ files
@@ -111,7 +110,7 @@
 ;; ------------------
 ;; COMPANY
 ;; -----------------
-(push 'company-lsp company-backends)
+;(push 'company-lsp company-backends)
 
 
 ;; -----------------------------------
@@ -155,63 +154,39 @@
 
 ;; -------------------------------------
 ;; Javascript config
-;; -------------------------------------
-(defun setup-tide-mode ()
-  (interactive)
-  (tide-setup)
-  (flycheck-mode +1)
-  (setq flycheck-check-syntax-automatically '(save mode-enabled))
-  (eldoc-mode +1)
-  (tide-hl-identifier-mode +1)
-  (company-mode +1))
-  
+;; -------------------------------------  
 (setq company-tooltip-align-annotations t)
-
-;; configure javascript-tide checker to run after your default javascript checker
-
-;(add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
-;(add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode))
-
-;(add-hook 'rjsx-mode-hook #'setup-tide-mode)
-(add-hook 'rjsx-mode-hook #'lsp-javascript-typescript-enable)
-
+(add-hook 'rjsx-mode-hook 'lsp)
 (add-hook 'js2-mode-hook (lambda () (setq js2-basic-offset 2)))
-;;(flycheck-add-next-checker 'javascript-eslint 'javascript-tide 'append)
+
+;; register file types
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
-
 (add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
-
 (add-to-list 'auto-mode-alist '("\\.jsx$" . rjsx-mode))
 (add-to-list 'auto-mode-alist '("\\.js$" . rjsx-mode))
 
 (add-hook 'json-mode-hook #'flycheck-mode)
-
-
-(add-hook 'web-mode-hook
-          (lambda ()
-            (when (string-equal "jsx" (file-name-extension buffer-file-name))
-              (setup-tide-mode))))
-
 (add-hook 'rjsx-mode-hook
 	  (lambda ()
 	    (setq indent-tabs-mode nil) ;; use space instead of tabs
 	    (setq js-indent-level 2) ;; 2 spaces
-	    (setq js2-basic-offset 2) 
+	    (setq js2-basic-offset 2)
 	    ;;(setq js2-strict-missing-semi-warning nil ) ;; disable the semi-colon warning
 	    )
 )
+(add-hook 'rjsx-mode #'lsp-javascript-typescript-enable)
 
 ;; Some work arounds for LSP javascript and company mode
-(defun lsp-company-transformer (candidates)
-  (let ((completion-ignore-case t))
-    (all-completions (company-grab-symbol) candidates)))
+;(defun lsp-company-transformer (candidates)
+;  (let ((completion-ignore-case t))
+;    (all-completions (company-grab-symbol) candidates)))
 
-(defun lsp-js-hook nil
-  (make-local-variable 'company-transformers)
-  (push 'lsp-company-transformer company-transformers))
+;(defun lsp-js-hook nil
+;  (make-local-variable 'company-transformers)
+;  (push 'lsp-company-transformer company-transformers))
 
-(add-hook 'rjsx-mode-hook 'lsp-js-hook)
+;(add-hook 'rjsx-mode-hook 'lsp-js-hook)
 
 ;; configure jsx-tide checker to run after your default jsx checker
 (flycheck-add-mode 'javascript-eslint 'web-mode)
