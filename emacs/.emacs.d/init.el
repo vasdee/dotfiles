@@ -56,16 +56,16 @@
 (require 'markdown-mode)
 (require 'lsp)
 (require 'lsp-clients)
-;(require 'lsp-mode)
+(require 'lsp-mode)
 ;(require 'lsp-python)
 ;(require 'lsp-javascript-typescript)
-;(require 'company-lsp)
+(require 'company-lsp)
 
 ;; Global keybindings
 (yas-global-mode 1)
 (global-set-key [f8] 'neotree-toggle)
 (global-set-key (kbd "<C-f8>") 'neotree-show)
-;;(setq neo-smart-open t)
+(setq neo-smart-open t)
 (global-display-line-numbers-mode)
 (global-set-key (kbd "C-x g") 'magit-status)
 
@@ -107,15 +107,15 @@
 
 (set-face-attribute 'default nil :height 100)
 
-;; ------------------
+;; -------------------------------------
 ;; COMPANY
-;; -----------------
-;(push 'company-lsp company-backends)
+;; -------------------------------------
+(push 'company-lsp company-backends)
 
 
-;; -----------------------------------
+;; -------------------------------------
 ;; MARK DOWN
-;; -----------------------------------
+;; -------------------------------------
 (setq markdown-command "pandoc")
 
 
@@ -134,6 +134,12 @@
 			      (dired-hide-details-mode)
 			    )
 )
+
+;; -------------------------------------
+;; Restructured Text mode
+;; -------------------------------------
+
+(add-hook 'rst-mode-hook #'flyspell-mode)
 
 ;; -------------------------------------
 ;; python configuration
@@ -156,7 +162,7 @@
 ;; Javascript config
 ;; -------------------------------------  
 (setq company-tooltip-align-annotations t)
-(add-hook 'rjsx-mode-hook 'lsp)
+(add-hook 'rjsx-mode-hook #'lsp)
 (add-hook 'js2-mode-hook (lambda () (setq js2-basic-offset 2)))
 
 ;; register file types
