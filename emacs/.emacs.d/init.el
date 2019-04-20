@@ -34,6 +34,7 @@
     lsp-mode
     dockerfile-mode
     flycheck-prospector
+    use-package
     ))
 
 (mapc #'(lambda (package)
@@ -55,12 +56,7 @@
 (require 'ivy)
 (require 'ag)
 (require 'markdown-mode)
-(require 'lsp)
-(require 'lsp-clients)
-(require 'lsp-mode)
-;(require 'lsp-python)
-;(require 'lsp-javascript-typescript)
-(require 'company-lsp)
+(require 'use-package)
 
 ;; Global keybindings
 (yas-global-mode 1)
@@ -82,7 +78,6 @@
 (setq ring-bell-function 'ignore)
 (setq visible-bell 1)
 (load-theme 'tango-dark t)
-(elpy-enable)
 (scroll-bar-mode -1)
 (tool-bar-mode  -1)
 (tooltip-mode -1)
@@ -101,17 +96,87 @@
 (when (fboundp 'windmove-default-keybindings)
   (windmove-default-keybindings))
 
-;; Set a VSCode style find file in project lookup key
-;(global-set-key (kbd "C-p") 'find-file-in-project-by-selected)
+;; ---------------------------------------------------------
+;; Global Configuration across all modes
+;; ---------------------------------------------------------
+; Set a VSCode style find file in project lookup key
 (global-set-key (kbd "C-c p") 'counsel-git)
 (global-set-key (kbd "C-c o") 'ag-project-regexp)
-
+(global-eldoc-mode -1)
+(global-hl-line-mode 1)
+(set-face-background 'hl-line "#3e4446")
+(set-face-foreground 'highlight nil)
 (set-face-attribute 'default nil :height 100)
 
-;; -------------------------------------
-;; COMPANY
-;; -------------------------------------
-(push 'company-lsp company-backends)
+;; --------------------------------------------------------
+;; LSP configuration
+;; --------------------------------------------------------
+(use-package lsp-mode
+  :commands lsp
+  :config
+  (require 'lsp-clients)
+  ;; config lifted from https://vxlabs.com/2018/06/08/python-language-server-with-emacs-and-lsp-mode/
+  (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
+  (setq lsp-prefer-flymake nil)
+  (setq lsp-imenu-sort-methods '(position kind))
+  (setq lsp-inhibit-message t)
+  (set-face-attribute 'lsp-face-highlight-textual nil
+		    :background "#666" :foreground "#ffffff"
+		    )
+  ;(set-face-attributes 'lsp-face-highlight-{textual,read,write} nil :background "color")
+
+  ;; make sure this is activated when python-mode is activated
+  ;; lsp-python-enable is created by macro above
+  (add-hook 'python-mode-hook #'lsp)
+  (add-hook 'rjsx-mode-hook #'lsp)
+  (add-hook 'rjsx-mode-hook #'lsp-javascript-typescript-enable)
+)
+
+(use-package lsp-ui
+  :config
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+  )
+
+(use-package company-lsp)
+
+(use-package lsp-ui
+:after lsp-mode
+:init
+  (setq lsp-ui-sideline-ignore-duplicate t)
+  (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+  (add-hook 'python-mode-hook 'flycheck-mode)
+)
+
+(use-package rjsx-mode
+  :init
+  :config
+  (add-to-list 'auto-mode-alist '("\\.jsx$" . rjsx-mode))
+  (add-to-list 'auto-mode-alist '("\\.js$" . rjsx-mode))
+  (add-hook 'rjsx-mode-hook #'lsp)
+  (add-hook 'rjsx-mode-hook
+	(lambda ()
+	  (setq indent-tabs-mode nil) ;; use space instead of tabs
+	  (setq js-indent-level 2) ;; 2 spaces
+	  (setq js2-basic-offset 2)
+	  (flyspell-mode-off)
+	  (aggressive-indent-mode -1)
+	  ;;(setq js2-strict-missing-semi-warning nil ) ;; disable the semi-colon warning
+	  ))
+)
+
+(use-package python
+  :init
+  (setq-default indent-tab-mode nil)
+  :config
+  (add-to-list 'flycheck-disabled-checkers 'python-flake8)
+  (add-to-list 'flycheck-disabled-checkers 'python-pylint)
+  (eldoc-mode -1)
+)
+
+(use-package flycheck-prospector
+    :if (executable-find "prospector")
+    :hook (flycheck-mode-hook . flycheck-prospector-setup)
+)
 
 
 ;; -------------------------------------
@@ -121,79 +186,26 @@
 
 
 ;; -------------------------------------
-;; dired configuration
-;; -------------------------------------
-
-;;(setq find-ls-option '("-print0 | xargs -0 ls -lhd" . "-a"))
-;; relies on project-dir being set
-(defun my-find-name-dired (pattern)
-  "My version of find-name-dired that always starts in my chosen folder"
-  (interactive "Find Name (file name wildcard): ")
-  (find-name-dired project-dir pattern))
-
-(add-hook 'dired-mode-hook  (lambda() ()
-			      (dired-hide-details-mode)
-			    )
-)
-
-;; -------------------------------------
 ;; Restructured Text mode
 ;; -------------------------------------
 
 (add-hook 'rst-mode-hook #'flyspell-mode)
-
-;; -------------------------------------
-;; python configuration
-;; -------------------------------------
-;;(add-hook 'python-mode-hook
-;;         (lambda ()
-           ;; explicitly load company for the occasion when the deferred
-                       ;; loading with use-package hasn't kicked in yet
-;;            (company-mode)
-;;            (add-to-list 'company-backends
-;;                         (company-mode/backend-with-yas 'elpy-company-backend))))
-
-(when (require 'flycheck nil t)
-  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-  (add-hook 'elpy-mode-hook 'flycheck-mode))  
-;; -------------------------------------  
 
 
 ;; -------------------------------------
 ;; Javascript config
 ;; -------------------------------------  
 (setq company-tooltip-align-annotations t)
-(add-hook 'rjsx-mode-hook #'lsp)
 (add-hook 'js2-mode-hook (lambda () (setq js2-basic-offset 2)))
 
-;; register file types
+;; register file types and hooks
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
 (add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
-(add-to-list 'auto-mode-alist '("\\.jsx$" . rjsx-mode))
-(add-to-list 'auto-mode-alist '("\\.js$" . rjsx-mode))
+
 
 (add-hook 'json-mode-hook #'flycheck-mode)
-(add-hook 'rjsx-mode-hook
-	  (lambda ()
-	    (setq indent-tabs-mode nil) ;; use space instead of tabs
-	    (setq js-indent-level 2) ;; 2 spaces
-	    (setq js2-basic-offset 2)
-	    ;;(setq js2-strict-missing-semi-warning nil ) ;; disable the semi-colon warning
-	    )
-)
-(add-hook 'rjsx-mode #'lsp-javascript-typescript-enable)
 
-;; Some work arounds for LSP javascript and company mode
-;(defun lsp-company-transformer (candidates)
-;  (let ((completion-ignore-case t))
-;    (all-completions (company-grab-symbol) candidates)))
-
-;(defun lsp-js-hook nil
-;  (make-local-variable 'company-transformers)
-;  (push 'lsp-company-transformer company-transformers))
-
-;(add-hook 'rjsx-mode-hook 'lsp-js-hook)
 
 ;; configure jsx-tide checker to run after your default jsx checker
 (flycheck-add-mode 'javascript-eslint 'web-mode)
@@ -216,14 +228,14 @@
     ("3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(package-selected-packages
    (quote
-    (flycheck-prospector company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode solarized-theme markdown-mode rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
+    (use-package flycheck-prospector company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode solarized-theme markdown-mode rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
  '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(lsp-face-highlight-read ((t (:inherit highlight :underline "dark gray")))))
 
 
 (put 'upcase-region 'disabled nil)
