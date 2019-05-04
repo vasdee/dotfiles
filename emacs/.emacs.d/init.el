@@ -77,7 +77,7 @@
 (setq inhibit-startup-message t)
 (setq ring-bell-function 'ignore)
 (setq visible-bell 1)
-(load-theme 'tango-dark t)
+(load-theme 'dracula t)
 (scroll-bar-mode -1)
 (tool-bar-mode  -1)
 (tooltip-mode -1)
