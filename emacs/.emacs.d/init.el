@@ -33,8 +33,8 @@
     markdown-mode
     lsp-mode
     dockerfile-mode
-    flycheck-prospector
     use-package
+    doom-modeline
     ))
 
 (mapc #'(lambda (package)
@@ -73,6 +73,8 @@
 (setq ivy-count-format "(%d/%d) ")
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
+(setq flycheck-check-syntax-automatically '(mode-enabled save))
+;(setq flycheck-check-syntax-automatically '(save mode-enable))
 (show-paren-mode 1)
 (setq inhibit-startup-message t)
 (setq ring-bell-function 'ignore)
@@ -108,6 +110,11 @@
 (set-face-foreground 'highlight nil)
 (set-face-attribute 'default nil :height 100)
 
+(use-package doom-modeline
+      :ensure t
+      :hook (after-init . doom-modeline-mode)
+)
+
 ;; --------------------------------------------------------
 ;; LSP configuration
 ;; --------------------------------------------------------
@@ -127,9 +134,10 @@
 
   ;; make sure this is activated when python-mode is activated
   ;; lsp-python-enable is created by macro above
-  (add-hook 'python-mode-hook #'lsp)
-  (add-hook 'rjsx-mode-hook #'lsp)
-  (add-hook 'rjsx-mode-hook #'lsp-javascript-typescript-enable)
+  (add-hook 'python-mode-hook 'lsp)
+  (add-hook 'rjsx-mode-hook 'lsp)
+  (add-hook 'js2-mode-hook 'lsp)
+  ;(add-hook 'rjsx-mode-hook 'lsp-javascript-typescript)
 )
 
 (use-package lsp-ui
@@ -149,10 +157,9 @@
 
 (use-package rjsx-mode
   :init
-  :config
   (add-to-list 'auto-mode-alist '("\\.jsx$" . rjsx-mode))
   (add-to-list 'auto-mode-alist '("\\.js$" . rjsx-mode))
-  (add-hook 'rjsx-mode-hook #'lsp)
+  ;(add-hook 'rjsx-mode-hook #'lsp)
   (add-hook 'rjsx-mode-hook
 	(lambda ()
 	  (setq indent-tabs-mode nil) ;; use space instead of tabs
@@ -162,21 +169,24 @@
 	  (aggressive-indent-mode -1)
 	  ;;(setq js2-strict-missing-semi-warning nil ) ;; disable the semi-colon warning
 	  ))
+  :config
+   (with-eval-after-load "lsp-javascript-typescript"
+     (add-hook 'rjsx-mode-hook #'lsp))
 )
 
 (use-package python
   :init
   (setq-default indent-tab-mode nil)
   :config
-  (add-to-list 'flycheck-disabled-checkers 'python-flake8)
-  (add-to-list 'flycheck-disabled-checkers 'python-pylint)
+  ;; (add-to-list 'flycheck-disabled-checkers 'python-flake8)
+  ;; (add-to-list 'flycheck-disabled-checkers 'python-pylint)
   (eldoc-mode -1)
 )
 
-(use-package flycheck-prospector
-    :if (executable-find "prospector")
-    :hook (flycheck-mode-hook . flycheck-prospector-setup)
-)
+;; (use-package flycheck-prospector
+;;     :if (executable-find "prospector")
+;;     :hook (flycheck-mode-hook . flycheck-prospector-setup)
+;; )
 
 
 ;; -------------------------------------
@@ -228,7 +238,7 @@
     ("3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(package-selected-packages
    (quote
-    (use-package flycheck-prospector company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode solarized-theme markdown-mode rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
+    (flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode solarized-theme markdown-mode rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
  '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
