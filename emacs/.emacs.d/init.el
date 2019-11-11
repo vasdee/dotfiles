@@ -32,9 +32,11 @@
     magit
     markdown-mode
     lsp-mode
+    company-lsp
     dockerfile-mode
     use-package
     doom-modeline
+    add-node-modules-path
     ))
 
 (mapc #'(lambda (package)
@@ -73,8 +75,7 @@
 (setq ivy-count-format "(%d/%d) ")
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
-(setq flycheck-check-syntax-automatically '(mode-enabled save))
-;(setq flycheck-check-syntax-automatically '(save mode-enable))
+(setq flycheck-check-syntax-automatically '(mode-enabled save mode-enable))
 (show-paren-mode 1)
 (setq inhibit-startup-message t)
 (setq ring-bell-function 'ignore)
@@ -86,7 +87,7 @@
 (menu-bar-mode -1)
 (column-number-mode 1)
 (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
-(setq display-line-numbers 'relative)
+;(setq display-line-numbers 'relative)
 (setq make-backup-files nil) ; stop creating backup~ files
 (setq auto-save-default nil) ; stop creating #autosave# files
 (setq neo-window-fixed-size nil)
@@ -119,6 +120,7 @@
 ;; LSP configuration
 ;; --------------------------------------------------------
 (use-package lsp-mode
+  :ensure t
   :commands lsp
   :config
   (require 'lsp-clients)
@@ -130,63 +132,56 @@
   (set-face-attribute 'lsp-face-highlight-textual nil
 		    :background "#666" :foreground "#ffffff"
 		    )
-  ;(set-face-attributes 'lsp-face-highlight-{textual,read,write} nil :background "color")
-
   ;; make sure this is activated when python-mode is activated
   ;; lsp-python-enable is created by macro above
   (add-hook 'python-mode-hook 'lsp)
   (add-hook 'rjsx-mode-hook 'lsp)
   (add-hook 'js2-mode-hook 'lsp)
-  ;(add-hook 'rjsx-mode-hook 'lsp-javascript-typescript)
+)
+
+(use-package company-lsp
+  :ensure t
 )
 
 (use-package lsp-ui
-  :config
-  (add-hook 'lsp-mode-hook 'lsp-ui-mode)
-  )
-
-(use-package company-lsp)
-
-(use-package lsp-ui
-:after lsp-mode
-:init
+  :after lsp-mode
+  :init
   (setq lsp-ui-sideline-ignore-duplicate t)
+  (setq lsp-ui-sideline-mode -1)
   (add-hook 'lsp-mode-hook 'lsp-ui-mode)
   (add-hook 'python-mode-hook 'flycheck-mode)
 )
 
 (use-package rjsx-mode
+  :ensure t
   :init
   (add-to-list 'auto-mode-alist '("\\.jsx$" . rjsx-mode))
   (add-to-list 'auto-mode-alist '("\\.js$" . rjsx-mode))
-  ;(add-hook 'rjsx-mode-hook #'lsp)
-  (add-hook 'rjsx-mode-hook
-	(lambda ()
-	  (setq indent-tabs-mode nil) ;; use space instead of tabs
-	  (setq js-indent-level 2) ;; 2 spaces
-	  (setq js2-basic-offset 2)
-	  (flyspell-mode-off)
-	  (aggressive-indent-mode -1)
-	  ;;(setq js2-strict-missing-semi-warning nil ) ;; disable the semi-colon warning
-	  ))
+  (add-hook 'rjsx-mode-hook (lambda ()
+			      (flyspell-mode-off)
+			      ;(aggressive-indent-mode 1)
+			      (setq indent-tabs-mode nil) ;; use space instead of tabs
+			      (setq js-indent-level 2) ;; 2 spaces
+			      (setq js2-basic-offset 2)
+			      ))
   :config
+   (with-eval-after-load 'rjsx-mode'
+     (add-hook 'rjsx-mode-hook #'add-node-modules-path)
+   )
    (with-eval-after-load "lsp-javascript-typescript"
-     (add-hook 'rjsx-mode-hook #'lsp))
+     (add-hook 'rjsx-mode-hook #'lsp)
+   )
 )
 
 (use-package python
   :init
+  ;; Do not use tabs for indenting
   (setq-default indent-tab-mode nil)
   :config
-  ;; (add-to-list 'flycheck-disabled-checkers 'python-flake8)
+  (add-to-list 'flycheck-disabled-checkers 'python-flake8)
   ;; (add-to-list 'flycheck-disabled-checkers 'python-pylint)
   (eldoc-mode -1)
 )
-
-;; (use-package flycheck-prospector
-;;     :if (executable-find "prospector")
-;;     :hook (flycheck-mode-hook . flycheck-prospector-setup)
-;; )
 
 
 ;; -------------------------------------
@@ -204,7 +199,7 @@
 
 ;; -------------------------------------
 ;; Javascript config
-;; -------------------------------------  
+;; -------------------------------------
 (setq company-tooltip-align-annotations t)
 (add-hook 'js2-mode-hook (lambda () (setq js2-basic-offset 2)))
 
@@ -220,10 +215,10 @@
 ;; configure jsx-tide checker to run after your default jsx checker
 (flycheck-add-mode 'javascript-eslint 'web-mode)
 (flycheck-add-mode 'javascript-eslint 'rjsx-mode)
-(flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)
+(flycheck-add-next-checker 'javascript-tide 'javascript-eslint 'append)
 
 
-;; -------------------------------------            
+;; -------------------------------------
 ;; init.el ends here
 
 (custom-set-variables
