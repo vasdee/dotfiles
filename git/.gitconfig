@@ -1,5 +1,6 @@
 [http]
 	sslVerify = false
+	proxy = http://millrt9:Sniffles6666^@proxy-per.bhpbilliton.net:8080
 
 [user]
 	email = robert.miller1@bhpbilliton.com
