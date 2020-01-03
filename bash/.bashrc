@@ -116,7 +116,7 @@ if ! shopt -oq posix; then
   fi
 fi
 export DOCKER_HOST=tcp://localhost:2375
-export HTTP_PROXY=http://proxy-bne.bhpbilliton.net:8080
-export HTTPS_PROXY=http://proxy-bne.bhpbilliton.net:8081
-export http_proxy=$HTTP_PROXY
-export https_proxy=$HTTPS_PROXY
+#export HTTP_PROXY=http://proxy-bne.bhpbilliton.net:8080
+#export HTTPS_PROXY=http://proxy-bne.bhpbilliton.net:8081
+#export http_proxy=$HTTP_PROXY
+#export https_proxy=$HTTPS_PROXY
