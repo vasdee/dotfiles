@@ -7,8 +7,9 @@ alias hs="history | grep -i"
 #LOCAL_HTTP_PROXY=http://YXBhY1xtaWxscnQ5OlNuaWZmbGVzNzc3NyY=@proxy-per.bhpbilliton.net:8080
 #LOCAL_HTTPS_PROXY=http://YXBhY1xtaWxscnQ5OlNuaWZmbGVzNzc3NyY=@proxy-per.bhpbilliton.net:8081
 
-LOCAL_HTTP_PROXY=http://localhost:3128
-LOCAL_HTTPS_PROXY=http://localhost:3128
+LOCAL_PROXY_DOMAIN=localhost:3128
+LOCAL_HTTP_PROXY=http://${LOCAL_PROXY_DOMAIN}
+LOCAL_HTTPS_PROXY=http://${LOCAL_PROXY_DOMAIN}
 LOCAL_NO_PROXY="locahost,127.0.0.1"
 
 function docker_client_proxy_on() {
@@ -26,7 +27,7 @@ function docker_client_proxy_off() {
 
 
 function ssh_proxy_on() {
-    sed -Ei "s|^ (##)?ProxyCommand.*$| ProxyCommand nc -X connect -x $LOCAL_HTTP_PROXY %h %p|g" ~/.ssh/config
+    sed -Ei "s|^ (##)?ProxyCommand.*$| ProxyCommand nc -X connect -x $LOCAL_PROXY_DOMAIN %h %p|g" ~/.ssh/config
 }
 
 function ssh_proxy_off() {
