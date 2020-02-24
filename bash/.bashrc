@@ -115,6 +115,7 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+export DISPLAY=:0
 export DOCKER_HOST=tcp://localhost:2375
 #export HTTP_PROXY=http://proxy-bne.bhpbilliton.net:8080
 #export HTTPS_PROXY=http://proxy-bne.bhpbilliton.net:8081

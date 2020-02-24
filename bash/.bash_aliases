@@ -35,6 +35,7 @@ function ssh_proxy_off() {
 }
 
 function git_proxy_on() {
+    git_proxy_off
     git config --global --add http.proxy ${LOCAL_HTTP_PROXY}
     git config --global --add https.proxy ${LOCAL_HTTPS_PROXY}
 }
@@ -42,7 +43,6 @@ function git_proxy_on() {
 function git_proxy_off() {
     git config --global --unset-all http.proxy
     git config --global --unset-all https.proxy
-
 }
 
 function enable_proxy() {
@@ -51,6 +51,8 @@ function enable_proxy() {
     export HTTPS_PROXY=${LOCAL_HTTPS_PROXY}
     export http_proxy=${LOCAL_HTTP_PROXY}
     export https_proxy=${LOCAL_HTTPS_PROXY}
+    export NO_PROXY=${LOCAL_NO_PROXY}
+    export no_proxy=${LOCAL_NO_PROXY}
 
     git_proxy_on
     docker_client_proxy_on
@@ -68,6 +70,8 @@ function disable_proxy() {
     unset HTTPS_PROXY
     unset http_proxy
     unset https_proxy
+    unset NO_PROXY
+    unset no_proxy
 
 
     git_proxy_off
