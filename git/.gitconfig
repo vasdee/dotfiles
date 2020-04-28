@@ -6,8 +6,11 @@
 	name = rob miller
 [core]
 	editor = "emacs -nw"
-	autocrlf = true
+	autocrlf = false
 	whitespace = cr-at-eol
+	safecrlf = false
+	eol = crlf
+
 	
 [push]
 	default = current
