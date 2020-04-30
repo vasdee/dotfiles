@@ -2,15 +2,6 @@
 
 alias hs="history | grep -i"
 
-# QVBBQ1xtaWxscnQ5OlNuaWZmbGVzNzc3NyY=
-# U0EtSU9SLUpLTlNERVY6V3QjWjFhUnlqSHA1
-#LOCAL_HTTP_PROXY=http://YXBhY1xtaWxscnQ5OlNuaWZmbGVzNzc3NyY=@proxy-per.bhpbilliton.net:8080
-#LOCAL_HTTPS_PROXY=http://YXBhY1xtaWxscnQ5OlNuaWZmbGVzNzc3NyY=@proxy-per.bhpbilliton.net:8081
-
-LOCAL_PROXY_DOMAIN=localhost:3128
-LOCAL_HTTP_PROXY=http://${LOCAL_PROXY_DOMAIN}
-LOCAL_HTTPS_PROXY=http://${LOCAL_PROXY_DOMAIN}
-LOCAL_NO_PROXY="locahost,127.0.0.1"
 
 function docker_client_proxy_on() {
     sed -iE "s|\"httpProxy\":.*$|\"httpProxy\": \"${LOCAL_HTTP_PROXY}\",|g" ~/.docker/config.json
@@ -27,7 +18,7 @@ function docker_client_proxy_off() {
 
 
 function ssh_proxy_on() {
-    sed -Ei "s|^ (##)?ProxyCommand.*$| ProxyCommand nc -X connect -x $LOCAL_PROXY_DOMAIN %h %p|g" ~/.ssh/config
+    sed -Ei "s|^ (##)?ProxyCommand.*$| ProxyCommand ncat --proxy $LOCAL_HTTPS_PROXY %h %p|g" ~/.ssh/config
 }
 
 function ssh_proxy_off() {
@@ -57,8 +48,6 @@ function enable_proxy() {
     git_proxy_on
     docker_client_proxy_on
     ssh_proxy_on
-
-    alias apt-get="apt-get -o Acquire::http::proxy=true"
 }
 
 
@@ -73,9 +62,7 @@ function disable_proxy() {
     unset NO_PROXY
     unset no_proxy
 
-
     git_proxy_off
     docker_client_proxy_off
     ssh_proxy_off
-    alias apt-get="apt-get -o Acquire::http::proxy=false"
 }
