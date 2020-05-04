@@ -4,8 +4,8 @@ alias hs="history | grep -i"
 
 
 function docker_client_proxy_on() {
-    sed -iE "s|\"httpProxy\":.*$|\"httpProxy\": \"${LOCAL_HTTP_PROXY}\",|g" ~/.docker/config.json
-    sed -iE "s|\"httpsProxy\":.*$|\"httpsProxy\": \"${LOCAL_HTTP_PROXY}\",|g" ~/.docker/config.json
+    sed -iE "s|\"httpProxy\":.*$|\"httpProxy\": \"${LOCAL_PROXY_DOMAIN}\",|g" ~/.docker/config.json
+    sed -iE "s|\"httpsProxy\":.*$|\"httpsProxy\": \"${LOCAL_PROXY_DOMAIN}\",|g" ~/.docker/config.json
     sed -iE "s|\"noProxy\":.*$|\"noProxy\": \"${LOCAL_NO_PROXY}\"|g" ~/.docker/config.json
 
 }
@@ -18,7 +18,8 @@ function docker_client_proxy_off() {
 
 
 function ssh_proxy_on() {
-    sed -Ei "s|^ (##)?ProxyCommand.*$| ProxyCommand ncat --proxy $LOCAL_HTTPS_PROXY %h %p|g" ~/.ssh/config
+    PROXY=${LOCAL_PROXY_DOMAIN}:8081
+    sed -Ei "s|^ (##)?ProxyCommand.*$| ProxyCommand ncat --proxy ${LOCAL_PROXY_DOMAIN} %h %p|g" ~/.ssh/config
 }
 
 function ssh_proxy_off() {
@@ -27,8 +28,8 @@ function ssh_proxy_off() {
 
 function git_proxy_on() {
     git_proxy_off
-    git config --global --add http.proxy ${LOCAL_HTTP_PROXY}
-    git config --global --add https.proxy ${LOCAL_HTTPS_PROXY}
+    git config --global --add http.proxy ${LOCAL_PROXY_DOMAIN}
+    git config --global --add https.proxy ${LOCAL_PROXY_DOMAIN}
 }
 
 function git_proxy_off() {
@@ -38,10 +39,10 @@ function git_proxy_off() {
 
 function enable_proxy() {
     echo "Proxy enabled"
-    export HTTP_PROXY=${LOCAL_HTTP_PROXY}
-    export HTTPS_PROXY=${LOCAL_HTTPS_PROXY}
-    export http_proxy=${LOCAL_HTTP_PROXY}
-    export https_proxy=${LOCAL_HTTPS_PROXY}
+    export HTTP_PROXY=${LOCAL_PROXY_DOMAIN}
+    export HTTPS_PROXY=${LOCAL_PROXY_DOMAIN}
+    export http_proxy=${LOCAL_PROXY_DOMAIN}
+    export https_proxy=${LOCAL_PROXY_DOMAIN}
     export NO_PROXY=${LOCAL_NO_PROXY}
     export no_proxy=${LOCAL_NO_PROXY}
 
