@@ -18,23 +18,23 @@ function docker_client_proxy_off() {
 
 
 function ssh_proxy_on() {
-    PROXY=${LOCAL_PROXY_DOMAIN}:8081
-    sed -Ei "s|^ (##)?ProxyCommand.*$| ProxyCommand ncat --proxy ${LOCAL_PROXY_DOMAIN} %h %p|g" ~/.ssh/config
+    alias ssh=ssh -o ProxyCommand="ncat --proxy ${LOCAL_PROXY_DOMAIN} %h %p"
 }
 
 function ssh_proxy_off() {
-    sed -iE "s|^ ProxyCommand.*$| ##ProxyCommand|g" ~/.ssh/config
+    unalias ssh
 }
 
 function git_proxy_on() {
-    git_proxy_off
-    git config --global --add http.proxy ${LOCAL_PROXY_DOMAIN}
-    git config --global --add https.proxy ${LOCAL_PROXY_DOMAIN}
+    export GIT_SSH_COMMAND="ssh -o ProxyCommand=\"ncat --proxy ${LOCAL_PROXY_DOMAIN} %h %p\""
+    git config --local --add http.proxy ${LOCAL_PROXY_DOMAIN}
+    git config --local --add https.proxy ${LOCAL_PROXY_DOMAIN}
 }
 
 function git_proxy_off() {
-    git config --global --unset-all http.proxy
-    git config --global --unset-all https.proxy
+    unset GIT_SSH_COMMAND
+    git config --local --unset-all http.proxy
+    git config --local --unset-all https.proxy
 }
 
 function enable_proxy() {
