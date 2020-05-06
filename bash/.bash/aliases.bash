@@ -18,11 +18,11 @@ function docker_client_proxy_off() {
 
 
 function ssh_proxy_on() {
-    alias ssh=ssh -o ProxyCommand="ncat --proxy ${LOCAL_PROXY_DOMAIN} %h %p"
+    alias ssh="ssh -o ProxyCommand=\"ncat --proxy ${LOCAL_PROXY_DOMAIN} %h %p\""
 }
 
 function ssh_proxy_off() {
-    unalias ssh
+    [[ $(type -t ssh) == "alias" ]] && unalias ssh
 }
 
 function git_proxy_on() {
