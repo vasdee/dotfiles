@@ -1,6 +1,7 @@
 #!/bin/bash
 
 alias hs="history | grep -i"
+alias ll="ls -lah"
 
 
 function docker_client_proxy_on() {

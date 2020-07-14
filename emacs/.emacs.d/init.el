@@ -38,6 +38,7 @@
     use-package
     doom-modeline
     add-node-modules-path
+    projectile
     ))
 
 (mapc #'(lambda (package)
@@ -60,6 +61,7 @@
 (require 'ag)
 (require 'markdown-mode)
 (require 'use-package)
+
 
 ;; Global keybindings
 (yas-global-mode 1)
@@ -111,6 +113,8 @@
 (set-face-background 'hl-line "#3e4446")
 (set-face-foreground 'highlight nil)
 (set-face-attribute 'default nil :height 100)
+(projectile-mode +1)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
 (use-package doom-modeline
       :ensure t
@@ -133,6 +137,10 @@
   (set-face-attribute 'lsp-face-highlight-textual nil
 		    :background "#666" :foreground "#ffffff"
 		    )
+  ;; https://emacs-lsp.github.io/lsp-mode/page/performance/
+  (setq gc-cons-threshold 100000000)
+  (setq read-process-output-max (* 1024 1024)) ;; 1mb
+  (setq lsp-idle-delay 0.500)
   ;; make sure this is activated when python-mode is activated
   ;; lsp-python-enable is created by macro above
   (add-hook 'python-mode-hook 'lsp)
@@ -182,6 +190,11 @@
   (add-to-list 'flycheck-disabled-checkers 'python-flake8)
   ;; (add-to-list 'flycheck-disabled-checkers 'python-pylint)
   (eldoc-mode -1)
+
+  (when (> (length (locate-dominating-file default-directory "Pipfile")) 0)
+    (message . ("Found pip file, adding venv to path"))
+    (add-to-list 'exec-path (concat (string-trim-right (shell-command-to-string "pipenv --venv")) "/bin/"))
+  )
 )
 
 
