@@ -106,15 +106,15 @@
 ;; Global Configuration across all modes
 ;; ---------------------------------------------------------
 ; Set a VSCode style find file in project lookup key
-(global-set-key (kbd "C-c p") 'counsel-git)
+(global-set-key (kbd "C-x p") 'counsel-git)
 (global-set-key (kbd "C-c o") 'ag-project-regexp)
 (global-eldoc-mode -1)
 (global-hl-line-mode 1)
 (set-face-background 'hl-line "#3e4446")
 (set-face-foreground 'highlight nil)
 (set-face-attribute 'default nil :height 100)
-(projectile-mode +1)
-(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+;(projectile-mode +1)
+;(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
 (use-package doom-modeline
       :ensure t
@@ -247,7 +247,7 @@
     ("3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(package-selected-packages
    (quote
-    (all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode solarized-theme markdown-mode rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
+    (powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode solarized-theme markdown-mode rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
  '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
