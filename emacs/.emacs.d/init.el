@@ -9,17 +9,17 @@
 	     '("melpa" . "http://melpa.org/packages/") t)
 
 (package-initialize)
+
 (when (not package-archive-contents)
   (package-refresh-contents))
 
 (defvar myPackages
-  '(elpy
+  '(
     flycheck
     web-mode
     js2-mode
     rjsx-mode
     company
-    tide
     neotree
     yasnippet
     dracula-theme
@@ -38,7 +38,6 @@
     use-package
     doom-modeline
     add-node-modules-path
-    projectile
     ))
 
 (mapc #'(lambda (package)
@@ -49,36 +48,23 @@
 ;; -------------------------------------
 ;; BASIC CUSTOMIZATION
 ;; -------------------------------------
-(require 'neotree)
 (require 'yasnippet)
 (require 'web-mode)
 (require 'find-file-in-project)
-(require 'tide)
 (require 'find-dired)
-(require 'yaml-mode)
 (require 'json-mode)
-(require 'ivy)
 (require 'ag)
 (require 'markdown-mode)
 (require 'use-package)
 
-
+;; ---------------------------------------------------------
+;; Global Configuration across all modes
+;; ---------------------------------------------------------
 ;; Global keybindings
 (yas-global-mode 1)
-(global-set-key [f8] 'neotree-toggle)
-(global-set-key (kbd "<C-f8>") 'neotree-show)
-(setq neo-smart-open t)
 (global-display-line-numbers-mode)
-(global-set-key (kbd "C-x g") 'magit-status)
 
-
-;; IVY/counsel/swiper
-(ivy-mode 1)
-(setq ivy-use-virtual-buffers t)
-(setq ivy-count-format "(%d/%d) ")
-
-(add-hook 'after-init-hook #'global-flycheck-mode)
-(setq flycheck-check-syntax-automatically '(mode-enabled save mode-enable))
+;; Global Config options
 (show-paren-mode 1)
 (setq inhibit-startup-message t)
 (setq ring-bell-function 'ignore)
@@ -89,22 +75,17 @@
 (tooltip-mode -1)
 (menu-bar-mode -1)
 (column-number-mode 1)
-(setq neo-theme (if (display-graphic-p) 'classic 'arrow))
 ;(setq display-line-numbers 'relative)
 (setq make-backup-files nil) ; stop creating backup~ files
 (setq auto-save-default nil) ; stop creating #autosave# files
-(setq neo-window-fixed-size nil)
-(setq neo-window-width 50)
 (setq enable-local-eval t) ;; enable dir-locals evals without prompting
 (set-default 'truncate-lines t) ;; turn off line wrapping
 (delete-selection-mode t)
+
 ;; Nicer window moving keys
 (when (fboundp 'windmove-default-keybindings)
   (windmove-default-keybindings))
 
-;; ---------------------------------------------------------
-;; Global Configuration across all modes
-;; ---------------------------------------------------------
 ; Set a VSCode style find file in project lookup key
 (global-set-key (kbd "C-x p") 'counsel-git)
 (global-set-key (kbd "C-c o") 'ag-project-regexp)
@@ -113,24 +94,54 @@
 (set-face-background 'hl-line "#3e4446")
 (set-face-foreground 'highlight nil)
 (set-face-attribute 'default nil :height 100)
-;(projectile-mode +1)
-;(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
-(use-package doom-modeline
-      :ensure t
-      :hook (after-init . doom-modeline-mode)
+;; ---------------------------------------------------------
+;; Package configurations
+;; ---------------------------------------------------------
+
+(use-package magit
+  :ensure t
+  :bind (("C-x g" . magit-status))
 )
 
-;; --------------------------------------------------------
-;; LSP configuration
-;; --------------------------------------------------------
+(use-package neotree
+  :ensure t
+  :config
+  (setq neo-theme (if (display-graphic-p) 'classic 'arrow))
+  (setq neo-window-fixed-size nil)
+  (setq neo-window-width 50)
+  (global-set-key [f8] 'neotree-toggle)
+  (global-set-key (kbd "<C-f8>") 'neotree-show)
+  (setq neo-smart-open t)
+)
+
+(use-package ivy
+  :ensure t
+  :config
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-count-format "(%d/%d) ")
+  (ivy-mode 1)
+)
+
+(use-package flycheck
+  :ensure t
+  :init
+  (global-flycheck-mode)
+  (setq flycheck-check-syntax-automatically '(mode-enabled save mode-enable))
+)
+
+
+(use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode)
+)
+
+
 (use-package lsp-mode
   :ensure t
   :commands lsp
   :config
   (require 'lsp-clients)
-  ;; config lifted from https://vxlabs.com/2018/06/08/python-language-server-with-emacs-and-lsp-mode/
-  (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
   (setq lsp-prefer-flymake nil)
   (setq lsp-imenu-sort-methods '(position kind))
   (setq lsp-inhibit-message t)
@@ -143,6 +154,9 @@
   (setq lsp-idle-delay 0.500)
   ;; make sure this is activated when python-mode is activated
   ;; lsp-python-enable is created by macro above
+
+  ;; config lifted from https://vxlabs.com/2018/06/08/python-language-server-with-emacs-and-lsp-mode/
+  (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
   (add-hook 'python-mode-hook 'lsp)
   (add-hook 'rjsx-mode-hook 'lsp)
   (add-hook 'js2-mode-hook 'lsp)
@@ -197,6 +211,14 @@
   )
 )
 
+(use-package yaml-mode
+  :ensure t
+  :init
+  (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+  (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+)
+
+(add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
 
 ;; -------------------------------------
 ;; MARK DOWN
@@ -216,20 +238,12 @@
 ;; -------------------------------------
 (setq company-tooltip-align-annotations t)
 (add-hook 'js2-mode-hook (lambda () (setq js2-basic-offset 2)))
-
-;; register file types and hooks
-(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
-(add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
-
-
 (add-hook 'json-mode-hook #'flycheck-mode)
-
 
 ;; configure jsx-tide checker to run after your default jsx checker
 (flycheck-add-mode 'javascript-eslint 'web-mode)
 (flycheck-add-mode 'javascript-eslint 'rjsx-mode)
-(flycheck-add-next-checker 'javascript-tide 'javascript-eslint 'append)
+;(flycheck-add-next-checker 'javascript-eslint 'append)
 
 
 ;; -------------------------------------
@@ -247,7 +261,7 @@
     ("3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default)))
  '(package-selected-packages
    (quote
-    (powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode solarized-theme markdown-mode rjsx-mode dracula-theme yasnippet-snippets tide js2-mode web-mode flycheck elpy)))
+    (powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck)))
  '(pdf-view-midnight-colors (quote ("#DCDCCC" . "#383838"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
