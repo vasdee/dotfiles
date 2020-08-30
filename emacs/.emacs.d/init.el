@@ -1,5 +1,4 @@
 ;; init.el --- Emacs configuration
-
 ;; INSTALL PACKAGES
 ;; --------------------------------------
 
@@ -48,7 +47,7 @@
 ;; -------------------------------------
 ;; BASIC CUSTOMIZATION
 ;; -------------------------------------
-(require 'yasnippet)
+;(require 'yasnippet)
 (require 'web-mode)
 (require 'find-file-in-project)
 (require 'find-dired)
@@ -61,7 +60,7 @@
 ;; Global Configuration across all modes
 ;; ---------------------------------------------------------
 ;; Global keybindings
-(yas-global-mode 1)
+;(yas-global-mode 1)
 (global-display-line-numbers-mode)
 
 ;; Global Config options
@@ -91,13 +90,26 @@
 (global-set-key (kbd "C-c o") 'ag-project-regexp)
 (global-eldoc-mode -1)
 (global-hl-line-mode 1)
-(set-face-background 'hl-line "#3e4446")
+;(set-face-background 'hl-line "#3e4446")
 (set-face-foreground 'highlight nil)
 (set-face-attribute 'default nil :height 100)
 
 ;; ---------------------------------------------------------
 ;; Package configurations
 ;; ---------------------------------------------------------
+(use-package yasnippet
+  :ensure t
+  :config
+  (yas-global-mode +1)
+)
+
+(use-package projectile
+  :ensure t
+  :config
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (projectile-mode +1)
+)
 
 (use-package magit
   :ensure t
