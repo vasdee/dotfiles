@@ -99,8 +99,10 @@
 ;; ---------------------------------------------------------
 (use-package yasnippet
   :ensure t
-  :config
+  :init
   (yas-global-mode +1)
+  ;:hook
+  ;(after-init . yas-global-mode)
 )
 
 (use-package projectile
@@ -122,6 +124,7 @@
   (setq neo-theme (if (display-graphic-p) 'classic 'arrow))
   (setq neo-window-fixed-size nil)
   (setq neo-window-width 50)
+  (setq-default neo-show-hidden-files t)
   (global-set-key [f8] 'neotree-toggle)
   (global-set-key (kbd "<C-f8>") 'neotree-show)
   (setq neo-smart-open t)
@@ -129,6 +132,8 @@
 
 (use-package ivy
   :ensure t
+  :init
+  (ivy-mode 1)
   :config
   (setq ivy-use-virtual-buffers t)
   (setq ivy-count-format "(%d/%d) ")
@@ -140,6 +145,9 @@
   :init
   (global-flycheck-mode)
   (setq flycheck-check-syntax-automatically '(mode-enabled save mode-enable))
+  :config
+  (flycheck-add-mode 'javascript-eslint 'web-mode)
+  (flycheck-add-mode 'javascript-eslint 'rjsx-mode)
 )
 
 
@@ -252,10 +260,6 @@
 (add-hook 'js2-mode-hook (lambda () (setq js2-basic-offset 2)))
 (add-hook 'json-mode-hook #'flycheck-mode)
 
-;; configure jsx-tide checker to run after your default jsx checker
-(flycheck-add-mode 'javascript-eslint 'web-mode)
-(flycheck-add-mode 'javascript-eslint 'rjsx-mode)
-;(flycheck-add-next-checker 'javascript-eslint 'append)
 
 
 ;; -------------------------------------

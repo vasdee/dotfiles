@@ -127,3 +127,12 @@ k kill results buffer
 ## Package manager (list-packages)
 U mark all for update
 x install all marked packages
+
+
+## Table editing 
+
+table-
+
+
+## Json 
+
