@@ -3,6 +3,7 @@
 alias hs="history | grep -i"
 alias ll="ls -lah"
 alias cdi="cd ~/work/dev/iiot-platform/"
+alias dots="cd ~/dotfiles/"
 
 
 function docker_client_proxy_on() {
