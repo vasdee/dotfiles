@@ -156,6 +156,9 @@
   :hook (after-init . doom-modeline-mode)
 )
 
+(use-package restclient
+  :ensure t
+)
 
 (use-package lsp-mode
   :ensure t
@@ -175,16 +178,26 @@
   ;; make sure this is activated when python-mode is activated
   ;; lsp-python-enable is created by macro above
 
+  :hook
   ;; config lifted from https://vxlabs.com/2018/06/08/python-language-server-with-emacs-and-lsp-mode/
-  (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
-  (add-hook 'python-mode-hook 'lsp)
-  (add-hook 'rjsx-mode-hook 'lsp)
-  (add-hook 'js2-mode-hook 'lsp)
+  ('lsp-after-open-hook 'lsp-enable-imenu)
+  ('python-mode-hook 'lsp)
+  ('rjsx-mode-hook 'lsp)
+  ('js2-mode-hook 'lsp)
+  ('csharp-mode-hook 'lsp)
+  ('typescript-mode-hook 'lsp)
 )
 
 (use-package company-lsp
   :ensure t
 )
+
+(use-package  csharp-mode
+  :ensure t
+  :config
+  ;; There are errors in the current version, this seems stable enough
+  (setq lsp-csharp-server-path "/home/vasdee/.emacs.d/.cache/lsp/omnisharp-roslyn/v1.37.3/run")
+ )
 
 (use-package lsp-ui
   :after lsp-mode
@@ -193,6 +206,13 @@
   (setq lsp-ui-sideline-mode -1)
   (add-hook 'lsp-mode-hook 'lsp-ui-mode)
   (add-hook 'python-mode-hook 'flycheck-mode)
+)
+
+(use-package typescript-mode
+  :ensure t
+  :init
+  (add-to-list 'auto-mode-alist '("\\.ts$" . typescript-mode))
+  (add-to-list 'auto-mode-alist '("\\.tsx$" . typescript-mode))
 )
 
 (use-package rjsx-mode
@@ -224,7 +244,8 @@
   (add-to-list 'flycheck-disabled-checkers 'python-flake8)
   ;; (add-to-list 'flycheck-disabled-checkers 'python-pylint)
   (eldoc-mode -1)
-  (setq python-shell-interpreter "ipython")
+  (setq python-shell-interpreter "ipython"
+    python-shell-interpreter-args "--simple-prompt -i")
 
   (when (> (length (locate-dominating-file default-directory "Pipfile")) 0)
     (message . ("Found pip file, adding venv to path"))
@@ -276,7 +297,7 @@
  '(custom-safe-themes
    '("3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))
  '(package-selected-packages
-   '(x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
+   '(csharp-mode restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838")))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
