@@ -1,102 +1,94 @@
-;; init.el --- Emacs configuration
-;; INSTALL PACKAGES
-;; --------------------------------------
-
-(require 'package)
-
-(add-to-list 'package-archives
-	     '("melpa" . "http://melpa.org/packages/") t)
-
-(package-initialize)
-
-(when (not package-archive-contents)
-  (package-refresh-contents))
-
-(defvar myPackages
-  '(
-    flycheck
-    web-mode
-    js2-mode
-    rjsx-mode
-    company
-    neotree
-    yasnippet
-    dracula-theme
-    find-file-in-project
-    fish-mode
-    yaml-mode
-    json-mode
-    ag
-    counsel
-    magit
-    markdown-mode
-    lsp-mode
-    company-lsp
-    lsp-ui
-    dockerfile-mode
-    use-package
-    doom-modeline
-    add-node-modules-path
-    ))
-
-(mapc #'(lambda (package)
-    (unless (package-installed-p package)
-      (package-install package)))
-      myPackages)
-
-;; -------------------------------------
-;; BASIC CUSTOMIZATION
-;; -------------------------------------
-;(require 'yasnippet)
-(require 'web-mode)
-(require 'find-file-in-project)
-(require 'find-dired)
-(require 'json-mode)
-(require 'ag)
-(require 'markdown-mode)
-(require 'use-package)
-
 ;; ---------------------------------------------------------
 ;; Global Configuration across all modes
 ;; ---------------------------------------------------------
-;; Global keybindings
-;(yas-global-mode 1)
+
 (global-display-line-numbers-mode)
+
+; Never use tabs
+(setq-default indent-tabs-mode nil)
 
 ;; Global Config options
 (show-paren-mode 1)
-(setq inhibit-startup-message t)
+
+;; No Splash
+(setq inhibit-startup-message t
+ inhibit-startup-echo-area-message t)
+
 (setq ring-bell-function 'ignore)
 (setq visible-bell 1)
-(load-theme 'dracula t)
 (scroll-bar-mode -1)
 (tool-bar-mode  -1)
 (tooltip-mode -1)
 (menu-bar-mode -1)
 (column-number-mode 1)
 ;(setq display-line-numbers 'relative)
-(setq make-backup-files nil) ; stop creating backup~ files
-(setq auto-save-default nil) ; stop creating #autosave# files
-(setq enable-local-eval t) ;; enable dir-locals evals without prompting
-(set-default 'truncate-lines t) ;; turn off line wrapping
+
+;; stop creating backup~ files
+(setq make-backup-files nil)
+ 
+;; stop creating #autosave# files
+(setq auto-save-default nil)
+
+;; enable dir-locals evals without prompting
+(setq enable-local-eval t) 
+
+;; turn off line wrapping
+(set-default 'truncate-lines t) 
 (delete-selection-mode t)
 
 ;; Nicer window moving keys
 (when (fboundp 'windmove-default-keybindings)
   (windmove-default-keybindings))
 
-; Set a VSCode style find file in project lookup key
-(global-set-key (kbd "C-x p") 'counsel-git)
-(global-set-key (kbd "C-c o") 'ag-project-regexp)
 (global-eldoc-mode -1)
 (global-hl-line-mode 1)
-;(set-face-background 'hl-line "#3e4446")
-(set-face-foreground 'highlight nil)
-(set-face-attribute 'default nil :height 100)
+
+;; -------------------------------------------------------
+;; Add package management and bootstrap use package
+;; -------------------------------------------------------
+(require 'package)
+(setq package-enable-at-startup nil)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+
+(package-initialize)
+
+;; Bootstrap `use-package'
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(require 'use-package)
 
 ;; ---------------------------------------------------------
 ;; Package configurations
 ;; ---------------------------------------------------------
+
+(use-package flycheck
+  :ensure t
+  :init
+  (global-flycheck-mode)
+  :config
+  (setq flycheck-check-syntax-automatically '(mode-enabled save mode-enable))
+)
+
+(use-package dockerfile-mode
+  :ensure t
+)
+
+(use-package dracula-theme
+  :ensure t
+  :config
+  (load-theme 'dracula t)
+)
+
+(use-package ag
+  :ensure t
+  :init
+  (setq ag-reuse-buffers t)
+  :bind
+  ("C-c o" . ag-project-regexp)
+)
+
 (use-package yasnippet
   :ensure t
   :init
@@ -111,6 +103,25 @@
   (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (projectile-mode +1)
+  (setq projectile-completion-system 'ivy)
+)
+
+(use-package aggressive-indent
+  :ensure t
+  :hook (
+         (css-mode . aggressive-indent-mode)
+         (emacs-lisp-mode . aggressive-indent-mode)
+         (js-mode . aggressive-indent-mode)
+         (lisp-mode . aggressive-indent-mode)
+         )
+  :custom (aggressive-indent-comments-too)
+)
+
+(use-package move-text
+  :ensure t
+  :bind (("M-p" . move-text-up)
+         ("M-n" . move-text-down))
+  :config (move-text-default-bindings)
 )
 
 (use-package magit
@@ -121,33 +132,49 @@
 (use-package neotree
   :ensure t
   :config
-  (setq neo-theme (if (display-graphic-p) 'classic 'arrow))
+  (setq neo-theme (if (display-graphic-p) 'icons 'classic))
   (setq neo-window-fixed-size nil)
   (setq neo-window-width 50)
   (setq-default neo-show-hidden-files t)
+  (setq neo-smart-open t)
   (global-set-key [f8] 'neotree-toggle)
   (global-set-key (kbd "<C-f8>") 'neotree-show)
-  (setq neo-smart-open t)
+  ;:bind
+  ;("[f8]" . neotree-toggle)
+  ;("<C-f8>" . neotree-show)
+)
+
+(use-package all-the-icons
+  :if (display-graphic-p)
+  :config (unless (find-font (font-spec :name "all-the-icons"))
+            (all-the-icons-install-fonts t))
 )
 
 (use-package ivy
   :ensure t
-  :init
-  (ivy-mode 1)
   :config
   (setq ivy-use-virtual-buffers t)
   (setq ivy-count-format "(%d/%d) ")
   (ivy-mode 1)
+  :bind 
+  ("C-x b" . ivy-switch-buffer)
+  ("C-x B" . ivy-switch-buffer-other-window)
 )
 
-(use-package flycheck
-  :ensure t
-  :init
-  (global-flycheck-mode)
-  (setq flycheck-check-syntax-automatically '(mode-enabled save mode-enable))
+(use-package counsel
+  :after ivy
   :config
-  (flycheck-add-mode 'javascript-eslint 'web-mode)
-  (flycheck-add-mode 'javascript-eslint 'rjsx-mode)
+  (counsel-mode)
+  :bind
+    ;; Set a VSCode style find file in project lookup key
+  ("C-x p" . counsel-git)
+)
+
+(use-package swiper
+  :after ivy
+  :bind
+  ("C-s" . swiper)
+  ("C-r" . swiper)
 )
 
 
@@ -164,13 +191,8 @@
   :ensure t
   :commands lsp
   :config
-;;  (require 'lsp-clients)
   (setq lsp-prefer-flymake nil)
   (setq lsp-imenu-sort-methods '(position kind))
-  (setq lsp-inhibit-message t)
-  (set-face-attribute 'lsp-face-highlight-textual nil
-		    :background "#666" :foreground "#ffffff"
-		    )
   ;; https://emacs-lsp.github.io/lsp-mode/page/performance/
   (setq gc-cons-threshold 100000000)
   (setq read-process-output-max (* 1024 1024)) ;; 1mb
@@ -183,9 +205,16 @@
   ('lsp-after-open-hook 'lsp-enable-imenu)
   ('python-mode-hook 'lsp)
   ('rjsx-mode-hook 'lsp)
-  ('js2-mode-hook 'lsp)
   ('csharp-mode-hook 'lsp)
   ('typescript-mode-hook 'lsp)
+  ('web-mode-hook 'lsp)
+)
+
+(use-package company
+  :ensure t
+  :config
+  (setq company-tooltip-align-annotations t)
+  (setq global-company-mode t)
 )
 
 (use-package company-lsp
@@ -205,14 +234,22 @@
   (setq lsp-ui-sideline-ignore-duplicate t)
   (setq lsp-ui-sideline-mode -1)
   (add-hook 'lsp-mode-hook 'lsp-ui-mode)
-  (add-hook 'python-mode-hook 'flycheck-mode)
+;  (add-hook 'python-mode-hook 'flycheck-mode)
 )
 
-(use-package typescript-mode
+;; Formally type script mode
+(use-package web-mode
   :ensure t
   :init
-  (add-to-list 'auto-mode-alist '("\\.ts$" . typescript-mode))
-  (add-to-list 'auto-mode-alist '("\\.tsx$" . typescript-mode))
+  (add-to-list 'auto-mode-alist '("\\.ts$" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.tsx$" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.html"   . web-mode))
+  :config
+  (setq web-mode-enable-auto-quoting nil)
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-code-indent-offset 2)
+  (setq web-mode-attr-indent-offset 2)
+  (setq web-mode-attr-value-indent-offset 2)
 )
 
 (use-package rjsx-mode
@@ -228,9 +265,6 @@
 			      (setq js2-basic-offset 2)
 			      ))
   :config
-   (with-eval-after-load 'rjsx-mode'
-     (add-hook 'rjsx-mode-hook #'add-node-modules-path)
-   )
    (with-eval-after-load "lsp-javascript-typescript"
      (add-hook 'rjsx-mode-hook #'lsp)
    )
@@ -260,12 +294,23 @@
   (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
 )
 
-(add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
+(use-package json-mode
+  :ensure t
+  :init
+  (add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
+;  :hook
+;  ('json-mode-hook #'flycheck-mode)
+)
 
 ;; -------------------------------------
 ;; MARK DOWN
 ;; -------------------------------------
-(setq markdown-command "pandoc")
+(use-package markdown-mode
+  :ensure t
+  :config
+  (setq markdown-command "pandoc")
+)
+
 
 
 ;; -------------------------------------
@@ -273,14 +318,6 @@
 ;; -------------------------------------
 
 (add-hook 'rst-mode-hook #'flyspell-mode)
-
-
-;; -------------------------------------
-;; Javascript config
-;; -------------------------------------
-(setq company-tooltip-align-annotations t)
-(add-hook 'js2-mode-hook (lambda () (setq js2-basic-offset 2)))
-(add-hook 'json-mode-hook #'flycheck-mode)
 
 
 
@@ -297,7 +334,7 @@
  '(custom-safe-themes
    '("3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))
  '(package-selected-packages
-   '(csharp-mode restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
+   '(move-text aggressive-indent csharp-mode restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838")))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

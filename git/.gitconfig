@@ -16,3 +16,5 @@
 	default = current
 [alias]
 	st = status
+[pull]
+	rebase = false
