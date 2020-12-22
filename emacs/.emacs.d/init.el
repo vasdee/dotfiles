@@ -79,13 +79,17 @@
 
 (use-package dockerfile-mode
   :ensure t
-)
+  )
+
+(use-package x509-mode
+  :ensure t)
 
 (use-package dracula-theme
   :ensure t
   :config
-  (load-theme 'dracula t)
-)
+                                        ;(load-theme 'dracula t)
+  (load-theme 'spacemacs-dark t)
+  )
 
 (use-package ag
   :ensure t
@@ -93,7 +97,7 @@
   (setq ag-reuse-buffers t)
   :bind
   ("C-c o" . ag-project-regexp)
-)
+  )
 
 (use-package yasnippet
   :ensure t
@@ -110,18 +114,18 @@
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (projectile-mode +1)
   (setq projectile-completion-system 'ivy)
-)
+  )
 
 (use-package aggressive-indent
   :ensure t
   :hook (
          (css-mode . aggressive-indent-mode)
-         (emacs-lisp-mode . aggressive-indent-mode)
-         (js-mode . aggressive-indent-mode)
-         (lisp-mode . aggressive-indent-mode)
+                                        ;(emacs-lisp-mode . aggressive-indent-mode)
+                                        ;(js-mode . aggressive-indent-mode)
+                                        ;(lisp-mode . aggressive-indent-mode)
          )
   :custom (aggressive-indent-comments-too)
-)
+  )
 
 (use-package move-text
   :ensure t
