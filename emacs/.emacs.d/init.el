@@ -1,7 +1,6 @@
 ;; ---------------------------------------------------------
 ;; Global Configuration across all modes
 ;; ---------------------------------------------------------
-
 (global-display-line-numbers-mode)
 
 ; Never use tabs
@@ -63,13 +62,20 @@
 ;; Package configurations
 ;; ---------------------------------------------------------
 
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook)
+  (setq dashboard-items '((recents  . 5)
+                          (bookmarks . 5)
+                          (projects . 5))))
+
 (use-package flycheck
   :ensure t
   :init
   (global-flycheck-mode)
   :config
-  (setq flycheck-check-syntax-automatically '(mode-enabled save mode-enable))
-)
+  (setq flycheck-check-syntax-automatically '(mode-enabled save mode-enable)))
 
 (use-package dockerfile-mode
   :ensure t
@@ -162,6 +168,7 @@
 )
 
 (use-package counsel
+  :ensure t
   :after ivy
   :config
   (counsel-mode)
@@ -202,12 +209,12 @@
 
   :hook
   ;; config lifted from https://vxlabs.com/2018/06/08/python-language-server-with-emacs-and-lsp-mode/
-  ('lsp-after-open-hook 'lsp-enable-imenu)
-  ('python-mode-hook 'lsp)
-  ('rjsx-mode-hook 'lsp)
-  ('csharp-mode-hook 'lsp)
-  ('typescript-mode-hook 'lsp)
-  ('web-mode-hook 'lsp)
+  (lsp-after-open . lsp-enable-imenu)
+  (python-mode . lsp)
+  (rjsx-mode . lsp)
+  (csharp-mode . lsp)
+  (typescript-mode . lsp)
+  (web-mode . lsp)
 )
 
 (use-package company
@@ -233,7 +240,8 @@
   :init
   (setq lsp-ui-sideline-ignore-duplicate t)
   (setq lsp-ui-sideline-mode -1)
-  (add-hook 'lsp-mode-hook 'lsp-ui-mode)
+  :hook
+  (lsp-mode . lsp-ui-mode)
 ;  (add-hook 'python-mode-hook 'flycheck-mode)
 )
 
@@ -334,7 +342,7 @@
  '(custom-safe-themes
    '("3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))
  '(package-selected-packages
-   '(move-text aggressive-indent csharp-mode restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
+   '(spacemacs-theme move-text aggressive-indent csharp-mode restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838")))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
