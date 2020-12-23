@@ -11,7 +11,7 @@
 
 ;; No Splash
 (setq inhibit-startup-message t
- inhibit-startup-echo-area-message t)
+inhibit-startup-echo-area-message t)
 
 (setq ring-bell-function 'ignore)
 (setq visible-bell 1)
@@ -24,7 +24,7 @@
 
 ;; stop creating backup~ files
 (setq make-backup-files nil)
- 
+
 ;; stop creating #autosave# files
 (setq auto-save-default nil)
 
@@ -37,7 +37,7 @@
 
 ;; Nicer window moving keys
 (when (fboundp 'windmove-default-keybindings)
-  (windmove-default-keybindings))
+ (windmove-default-keybindings))
 
 (global-eldoc-mode -1)
 (global-hl-line-mode 1)
@@ -51,10 +51,9 @@
 
 (package-initialize)
 
-;; Bootstrap `use-package'
 (unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+ (package-refresh-contents)
+ (package-install 'use-package))
 
 (require 'use-package)
 
@@ -63,69 +62,70 @@
 ;; ---------------------------------------------------------
 
 (use-package dashboard
-  :ensure t
-  :config
-  (dashboard-setup-startup-hook)
-  (setq dashboard-items '((recents  . 5)
-                          (bookmarks . 5)
-                          (projects . 5))))
+ :ensure t
+ :config
+ (dashboard-setup-startup-hook)
+ (setq dashboard-items '((recents  . 5)
+                         (bookmarks . 5)
+                         (projects . 5))))
 
 (use-package flycheck
-  :ensure t
-  :init
-  (global-flycheck-mode)
-  :config
-  (setq flycheck-check-syntax-automatically '(mode-enabled save mode-enable)))
+ :ensure t
+ :init
+   (global-flycheck-mode)
+ :config
+   (setq flycheck-check-syntax-automatically '(mode-enabled save mode-enable))
+)
 
 (use-package dockerfile-mode
-  :ensure t
-  )
+ :ensure t
+)
 
 (use-package x509-mode
-  :ensure t)
+ :ensure t
+)
 
 (use-package dracula-theme
-  :ensure t
-  :config
-                                        ;(load-theme 'dracula t)
+ :ensure t
+ :config
+  ;(load-theme 'dracula t)
+  ;(load-theme 'nord t)
   (load-theme 'spacemacs-dark t)
-  )
+)
 
 (use-package ag
-  :ensure t
-  :init
-  (setq ag-reuse-buffers t)
-  :bind
-  ("C-c o" . ag-project-regexp)
-  )
+ :ensure t
+ :init
+   (setq ag-reuse-buffers t)
+ :bind
+   ("C-c o" . ag-project-regexp)
+)
 
 (use-package yasnippet
-  :ensure t
-  :init
-  (yas-global-mode +1)
-  ;:hook
-  ;(after-init . yas-global-mode)
+ :ensure t
+ :init
+   (yas-global-mode +1)
 )
 
 (use-package projectile
-  :ensure t
-  :config
-  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (projectile-mode +1)
-  (setq projectile-completion-system 'ivy)
-  )
+ :ensure t
+ :config
+   (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+   (projectile-mode +1)
+   (setq projectile-completion-system 'ivy)
+)
 
 (use-package aggressive-indent
-  :ensure t
-  :hook (
-         (css-mode . aggressive-indent-mode)
-                                        ;(emacs-lisp-mode . aggressive-indent-mode)
-                                        ;(js-mode . aggressive-indent-mode)
-                                        ;(lisp-mode . aggressive-indent-mode)
-         )
+ :ensure t
+ :hook (
+        (css-mode . aggressive-indent-mode)
+        ;(emacs-lisp-mode . aggressive-indent-mode)
+        ;(js-mode . aggressive-indent-mode)
+        ;(lisp-mode . aggressive-indent-mode)
+        )
   :custom (aggressive-indent-comments-too)
-  )
+)
 
 (use-package move-text
   :ensure t
@@ -142,16 +142,17 @@
 (use-package neotree
   :ensure t
   :config
-  (setq neo-theme (if (display-graphic-p) 'icons 'classic))
-  (setq neo-window-fixed-size nil)
-  (setq neo-window-width 50)
-  (setq-default neo-show-hidden-files t)
-  (setq neo-smart-open t)
-  (global-set-key [f8] 'neotree-toggle)
-  (global-set-key (kbd "<C-f8>") 'neotree-show)
-  ;:bind
-  ;("[f8]" . neotree-toggle)
-  ;("<C-f8>" . neotree-show)
+    (setq neo-theme (if (display-graphic-p) 'icons 'classic))
+    (setq neo-window-fixed-size nil)
+    (setq neo-window-width 50)
+    (setq-default neo-show-hidden-files t)
+    (setq neo-smart-open t)
+  :bind
+    ("<f8>" . neotree-toggle)
+    ("<C-f8>" . neotree-show)
+  :hook
+    ;; Disable line-numbers minor mode for neotree
+    (neo-after-create . (lambda (&rest _) (display-line-numbers-mode -1)))
 )
 
 (use-package all-the-icons
@@ -163,12 +164,12 @@
 (use-package ivy
   :ensure t
   :config
-  (setq ivy-use-virtual-buffers t)
-  (setq ivy-count-format "(%d/%d) ")
-  (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-count-format "(%d/%d) ")
+    (ivy-mode 1)
   :bind 
-  ("C-x b" . ivy-switch-buffer)
-  ("C-x B" . ivy-switch-buffer-other-window)
+    ("C-x b" . ivy-switch-buffer)
+    ("C-x B" . ivy-switch-buffer-other-window)
 )
 
 (use-package counsel
@@ -344,7 +345,7 @@
  '(company-quickhelp-color-background "#4F4F4F")
  '(company-quickhelp-color-foreground "#DCDCCC")
  '(custom-safe-themes
-   '("3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))
+   '("37768a79b479684b0756dec7c0fc7652082910c37d8863c35b702db3f16000f8" "2dff5f0b44a9e6c8644b2159414af72261e38686072e063aa66ee98a2faecf0e" "3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))
  '(package-selected-packages
    '(spacemacs-theme move-text aggressive-indent csharp-mode restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838")))
