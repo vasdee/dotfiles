@@ -37,7 +37,8 @@ inhibit-startup-echo-area-message t)
 
 ;; Nicer window moving keys
 (when (fboundp 'windmove-default-keybindings)
- (windmove-default-keybindings))
+  (windmove-default-keybindings)
+)
 
 (global-eldoc-mode -1)
 (global-hl-line-mode 1)
@@ -76,6 +77,9 @@ inhibit-startup-echo-area-message t)
  :config
    (setq flycheck-check-syntax-automatically '(mode-enabled save mode-enable))
    (flycheck-add-mode 'typescript-tslint 'web-mode)
+   ; Disable these until figure out what is required for flycheck linting
+   ;(flycheck-add-mode 'csharp-omnisharp-codecheck 'csharp-mode)
+   ;(add-to-list 'flycheck-checkers 'csharp-omnisharp-codecheck)
 )
 
 (use-package dockerfile-mode
@@ -204,30 +208,30 @@ inhibit-startup-echo-area-message t)
   :ensure t
   :commands lsp
   :config
-  (setq lsp-prefer-flymake nil)
-  (setq lsp-imenu-sort-methods '(position kind))
-  ;; https://emacs-lsp.github.io/lsp-mode/page/performance/
-  (setq gc-cons-threshold 100000000)
-  (setq read-process-output-max (* 1024 1024)) ;; 1mb
-  (setq lsp-idle-delay 0.500)
-  ;; make sure this is activated when python-mode is activated
-  ;; lsp-python-enable is created by macro above
+    (setq lsp-prefer-flymake nil)
+    (setq lsp-imenu-sort-methods '(position kind))
+    ;; https://emacs-lsp.github.io/lsp-mode/page/performance/
+    (setq gc-cons-threshold 100000000)
+    (setq read-process-output-max (* 1024 1024)) ;; 1mb
+    (setq lsp-idle-delay 0.500)
+    ;; make sure this is activated when python-mode is activated
+    ;; lsp-python-enable is created by macro above
 
   :hook
-  ;; config lifted from https://vxlabs.com/2018/06/08/python-language-server-with-emacs-and-lsp-mode/
-  (lsp-after-open . lsp-enable-imenu)
-  (python-mode . lsp)
-  (rjsx-mode . lsp)
-  (csharp-mode . lsp)
-  (typescript-mode . lsp)
-  (web-mode . lsp)
+    ;; config lifted from https://vxlabs.com/2018/06/08/python-language-server-with-emacs-and-lsp-mode/
+    (lsp-after-open . lsp-enable-imenu)
+    (python-mode . lsp)
+    (rjsx-mode . lsp)
+    (csharp-mode . lsp)
+    (typescript-mode . lsp)
+    (web-mode . lsp)
 )
 
 (use-package company
   :ensure t
   :config
-  (setq company-tooltip-align-annotations t)
-  (setq global-company-mode t)
+    (setq company-tooltip-align-annotations t)
+    (setq global-company-mode t)
 )
 
 (use-package company-lsp
@@ -237,32 +241,36 @@ inhibit-startup-echo-area-message t)
 (use-package  csharp-mode
   :ensure t
   :config
-  ;; There are errors in the current version, this seems stable enough
-  (setq lsp-csharp-server-path "/home/vasdee/.emacs.d/.cache/lsp/omnisharp-roslyn/v1.37.3/run")
+    ;; There are errors in the current version, this seems stable enough
+    (setq lsp-csharp-server-path "/home/vasdee/.emacs.d/.cache/lsp/omnisharp-roslyn/v1.37.3/run")
  )
+
+(use-package omnisharp
+  :after csharp-mode
+  :ensure t
+)
 
 (use-package lsp-ui
   :after lsp-mode
   :init
-  (setq lsp-ui-sideline-ignore-duplicate t)
-  (setq lsp-ui-sideline-mode -1)
+    (setq lsp-ui-sideline-ignore-duplicate t)
+    (setq lsp-ui-sideline-mode -1)
   :hook
-  (lsp-mode . lsp-ui-mode)
+    (lsp-mode . lsp-ui-mode)
 )
 
-;; Formally type script mode
 (use-package web-mode
   :ensure t
   :init
-  (add-to-list 'auto-mode-alist '("\\.ts$" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.tsx$" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.html"   . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.ts$" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.tsx$" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.html"   . web-mode))
   :config
-  (setq web-mode-enable-auto-quoting nil)
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-code-indent-offset 2)
-  (setq web-mode-attr-indent-offset 2)
-  (setq web-mode-attr-value-indent-offset 2)
+    (setq web-mode-enable-auto-quoting nil)
+    (setq web-mode-markup-indent-offset 2)
+    (setq web-mode-code-indent-offset 2)
+    (setq web-mode-attr-indent-offset 2)
+    (setq web-mode-attr-value-indent-offset 2)
 )
 
 (use-package rjsx-mode
@@ -273,7 +281,6 @@ inhibit-startup-echo-area-message t)
   (add-hook 'rjsx-mode-hook (lambda ()
 			      (flyspell-mode-off)
 			      ;(aggressive-indent-mode 1)
-			      (setq indent-tabs-mode nil) ;; use space instead of tabs
 			      (setq js-indent-level 2) ;; 2 spaces
 			      (setq js2-basic-offset 2)
 			      ))
@@ -284,15 +291,11 @@ inhibit-startup-echo-area-message t)
 )
 
 (use-package python
-  :init
-  ;; Do not use tabs for indenting
-  (setq-default indent-tab-mode nil)
   :config
-  (add-to-list 'flycheck-disabled-checkers 'python-flake8)
-  ;; (add-to-list 'flycheck-disabled-checkers 'python-pylint)
-  (eldoc-mode -1)
-  (setq python-shell-interpreter "ipython"
-    python-shell-interpreter-args "--simple-prompt -i")
+    (add-to-list 'flycheck-disabled-checkers 'python-flake8)
+    (eldoc-mode -1)
+    (setq python-shell-interpreter "ipython"
+          python-shell-interpreter-args "--simple-prompt -i")
 
   (when (> (length (locate-dominating-file default-directory "Pipfile")) 0)
     (message . ("Found pip file, adding venv to path"))
@@ -313,23 +316,26 @@ inhibit-startup-echo-area-message t)
     (add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
 )
 
-;; -------------------------------------
-;; MARK DOWN
-;; -------------------------------------
 (use-package markdown-mode
   :ensure t
   :config
-  (setq markdown-command "pandoc")
+    (setq markdown-command "pandoc")
 )
 
+(use-package makefile-executor
+  :ensre t
+  :config
+  (add-hook 'makefile-mode-hook 'makefile-executor-mode)
+)
 
-
-;; -------------------------------------
-;; Restructured Text mode
-;; -------------------------------------
-
-(add-hook 'rst-mode-hook #'flyspell-mode)
-
+(use-package rst
+  :ensure t
+  :init
+    (add-to-list 'auto-mode-alist '("\\.rst$" . rst-mode))
+    (add-to-list 'auto-mode-alist '("\\.rest$" . rst-mode))
+  :hook
+    (rst-mode . flyspell-mode)
+)
 
 
 ;; -------------------------------------
@@ -345,7 +351,7 @@ inhibit-startup-echo-area-message t)
  '(custom-safe-themes
    '("37768a79b479684b0756dec7c0fc7652082910c37d8863c35b702db3f16000f8" "2dff5f0b44a9e6c8644b2159414af72261e38686072e063aa66ee98a2faecf0e" "3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))
  '(package-selected-packages
-   '(spacemacs-theme move-text aggressive-indent csharp-mode restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
+   '(makefile-executor omnisharp typescript-mode dashboard magit-popup neotree nord-theme projectile spacemacs-theme move-text aggressive-indent csharp-mode restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838")))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
