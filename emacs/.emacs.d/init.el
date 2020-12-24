@@ -75,6 +75,7 @@ inhibit-startup-echo-area-message t)
    (global-flycheck-mode)
  :config
    (setq flycheck-check-syntax-automatically '(mode-enabled save mode-enable))
+   (flycheck-add-mode 'typescript-tslint 'web-mode)
 )
 
 (use-package dockerfile-mode
@@ -247,7 +248,6 @@ inhibit-startup-echo-area-message t)
   (setq lsp-ui-sideline-mode -1)
   :hook
   (lsp-mode . lsp-ui-mode)
-;  (add-hook 'python-mode-hook 'flycheck-mode)
 )
 
 ;; Formally type script mode
@@ -303,16 +303,14 @@ inhibit-startup-echo-area-message t)
 (use-package yaml-mode
   :ensure t
   :init
-  (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-  (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+    (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+    (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
 )
 
 (use-package json-mode
   :ensure t
   :init
-  (add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
-;  :hook
-;  ('json-mode-hook #'flycheck-mode)
+    (add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
 )
 
 ;; -------------------------------------
