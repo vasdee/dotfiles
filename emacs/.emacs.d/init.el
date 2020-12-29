@@ -323,7 +323,7 @@ inhibit-startup-echo-area-message t)
 )
 
 (use-package makefile-executor
-  :ensre t
+  :ensure t
   :config
   (add-hook 'makefile-mode-hook 'makefile-executor-mode)
 )
