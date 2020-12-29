@@ -68,7 +68,7 @@ inhibit-startup-echo-area-message t)
  (dashboard-setup-startup-hook)
  (setq dashboard-items '((recents  . 5)
                          (bookmarks . 5)
-                         (projects . 5))))
+                         (projects . 10))))
 
 (use-package flycheck
  :ensure t
@@ -214,9 +214,6 @@ inhibit-startup-echo-area-message t)
     (setq gc-cons-threshold 100000000)
     (setq read-process-output-max (* 1024 1024)) ;; 1mb
     (setq lsp-idle-delay 0.500)
-    ;; make sure this is activated when python-mode is activated
-    ;; lsp-python-enable is created by macro above
-
   :hook
     ;; config lifted from https://vxlabs.com/2018/06/08/python-language-server-with-emacs-and-lsp-mode/
     (lsp-after-open . lsp-enable-imenu)
@@ -225,6 +222,14 @@ inhibit-startup-echo-area-message t)
     (csharp-mode . lsp)
     (typescript-mode . lsp)
     (web-mode . lsp)
+)
+
+(use-package dap-mode
+  :ensure t
+  :after lsp-mode
+  :config
+    (dap-mode t)
+    (dap-ui-mode t)
 )
 
 (use-package company
@@ -319,7 +324,7 @@ inhibit-startup-echo-area-message t)
 (use-package markdown-mode
   :ensure t
   :config
-    (setq markdown-command "pandoc")
+    (setq markdown-command  "pandoc --metadata=title=markdown -f markdown -t html5 --mathjax --highlight-style=pygments --standalone")
 )
 
 (use-package makefile-executor
@@ -351,7 +356,7 @@ inhibit-startup-echo-area-message t)
  '(custom-safe-themes
    '("37768a79b479684b0756dec7c0fc7652082910c37d8863c35b702db3f16000f8" "2dff5f0b44a9e6c8644b2159414af72261e38686072e063aa66ee98a2faecf0e" "3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))
  '(package-selected-packages
-   '(makefile-executor omnisharp typescript-mode dashboard magit-popup neotree nord-theme projectile spacemacs-theme move-text aggressive-indent csharp-mode restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
+   '(dap-mode makefile-executor omnisharp typescript-mode dashboard magit-popup neotree nord-theme projectile spacemacs-theme move-text aggressive-indent csharp-mode restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838")))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
