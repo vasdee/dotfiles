@@ -2,7 +2,17 @@
 # It should contain commands to set up aliases, functions, options, key bindings, etc.
 # Lines configured by zsh-newuser-install
 
-#source <(antibody init)
+ZSH=/usr/share/oh-my-zsh/
+ZSH_THEME="agnoster"
+DISABLE_AUTO_UPDATE="true"
+plugins=(git dotnet)
+
+ZSH_CACHE_DIR=$HOME/.cache/oh-my-zsh
+if [[ ! -d $ZSH_CACHE_DIR ]]; then
+  mkdir $ZSH_CACHE_DIR
+fi
+
+source $ZSH/oh-my-zsh.sh
 
 unsetopt beep
 setopt clobber
@@ -17,11 +27,10 @@ compinit
 
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /etc/bash_completion.d/azure-cli
 
 if [ -d ~/.zsh ]; then
     for f in ~/.zsh/*; do
         . ${f}
     done
 fi
-
-source ~/.zsh_plugins.sh
