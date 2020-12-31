@@ -3,7 +3,7 @@
 # Lines configured by zsh-newuser-install
 
 ZSH=/usr/share/oh-my-zsh/
-ZSH_THEME="agnoster"
+ZSH_THEME="robbyrussell"
 DISABLE_AUTO_UPDATE="true"
 plugins=(git dotnet)
 
