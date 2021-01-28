@@ -5,7 +5,7 @@
 	email = robert.miller1@bhpbilliton.com
 	name = rob miller
 [core]
-	editor = "emacs -nw"
+	editor = "vim"
 	autocrlf = false
 	whitespace = cr-at-eol
 	safecrlf = false
@@ -18,3 +18,8 @@
 	st = status
 [pull]
 	rebase = false
+
+[color "status"]
+        branch = magenta
+        untracked = cyan
+        unmerged = yellow

@@ -222,6 +222,7 @@ inhibit-startup-echo-area-message t)
     (csharp-mode . lsp)
     (typescript-mode . lsp)
     (web-mode . lsp)
+    (lsp-after-initialize . (lambda() (flycheck-add-next-checker 'lsp 'typescript-tslint)))
 )
 
 (use-package dap-mode
