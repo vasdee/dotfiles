@@ -70,6 +70,7 @@ inhibit-startup-echo-area-message t)
                          (bookmarks . 5)
                          (projects . 10))))
 
+;; For linting and on the fly syntax checking
 (use-package flycheck
  :ensure t
  :init
@@ -82,10 +83,12 @@ inhibit-startup-echo-area-message t)
    ;(add-to-list 'flycheck-checkers 'csharp-omnisharp-codecheck)
 )
 
+;; Mode for working with Dockerfile
 (use-package dockerfile-mode
  :ensure t
 )
 
+;; For inspecting certificates and private keys
 (use-package x509-mode
  :ensure t
 )
@@ -98,6 +101,7 @@ inhibit-startup-echo-area-message t)
   (load-theme 'spacemacs-dark t)
 )
 
+;; Silver Searcher support
 (use-package ag
  :ensure t
  :init
@@ -106,12 +110,16 @@ inhibit-startup-echo-area-message t)
    ("C-c o" . ag-project-regexp)
 )
 
+;; Snippet manager for creating and using
+;; custom code snippets
 (use-package yasnippet
  :ensure t
  :init
    (yas-global-mode +1)
 )
 
+
+;; Project manager. Organises projects by .git presence and other known files
 (use-package projectile
  :ensure t
  :config
@@ -121,6 +129,7 @@ inhibit-startup-echo-area-message t)
    (setq projectile-completion-system 'ivy)
 )
 
+;; Fix the indenting issues in emacs
 (use-package aggressive-indent
  :ensure t
  :hook (
@@ -139,11 +148,13 @@ inhibit-startup-echo-area-message t)
   :config (move-text-default-bindings)
 )
 
+;; Git interface
 (use-package magit
   :ensure t
   :bind (("C-x g" . magit-status))
 )
 
+;; A simple file explorer 
 (use-package neotree
   :ensure t
   :config
@@ -160,12 +171,15 @@ inhibit-startup-echo-area-message t)
     (neo-after-create . (lambda (&rest _) (display-line-numbers-mode -1)))
 )
 
+;; Icon package for displaying in neotree and modelines
 (use-package all-the-icons
   :if (display-graphic-p)
   :config (unless (find-font (font-spec :name "all-the-icons"))
             (all-the-icons-install-fonts t))
 )
 
+
+;; Allows auto completion of commands in the command buffer
 (use-package ivy
   :ensure t
   :config
@@ -177,6 +191,7 @@ inhibit-startup-echo-area-message t)
     ("C-x B" . ivy-switch-buffer-other-window)
 )
 
+;; Find 
 (use-package counsel
   :ensure t
   :after ivy
@@ -187,6 +202,7 @@ inhibit-startup-echo-area-message t)
   ("C-x p" . counsel-git)
 )
 
+;; Better searching control
 (use-package swiper
   :after ivy
   :bind
@@ -195,18 +211,23 @@ inhibit-startup-echo-area-message t)
 )
 
 
+;; Nice display of the modeline for git, flycheck info
 (use-package doom-modeline
   :ensure t
   :hook (after-init . doom-modeline-mode)
 )
 
+;; Simple client for making REST requests
 (use-package restclient
   :ensure t
 )
 
+;; Language Server protocol support for code completion
 (use-package lsp-mode
   :ensure t
   :commands lsp
+  :init
+    (setq lsp-keymap-prefix "C-c C-l")
   :config
     (setq lsp-prefer-flymake nil)
     (setq lsp-imenu-sort-methods '(position kind))
@@ -223,8 +244,11 @@ inhibit-startup-echo-area-message t)
     (typescript-mode . lsp)
     (web-mode . lsp)
     (lsp-after-initialize . (lambda() (flycheck-add-next-checker 'lsp 'typescript-tslint)))
+  ;:bind
+    ;("C-c l" . lsp-command-map)  
 )
 
+;; Debugging support
 (use-package dap-mode
   :ensure t
   :after lsp-mode
@@ -233,6 +257,7 @@ inhibit-startup-echo-area-message t)
     (dap-ui-mode t)
 )
 
+;; Pop up dialog for autocomplete functions
 (use-package company
   :ensure t
   :config
@@ -240,22 +265,26 @@ inhibit-startup-echo-area-message t)
     (setq global-company-mode t)
 )
 
+;; Allow LSP mode to use company for autocompletion/intellisense
 (use-package company-lsp
   :ensure t
 )
 
+;; Supports highlighting of csharp projects
 (use-package  csharp-mode
   :ensure t
   :config
     ;; There are errors in the current version, this seems stable enough
-    (setq lsp-csharp-server-path "/home/vasdee/.emacs.d/.cache/lsp/omnisharp-roslyn/v1.37.3/run")
+    (setq lsp-csharp-server-path "/home/vasdee/.emacs.d/.cache/lsp/omnisharp-roslyn/v1.37.6/run")
  )
 
+;; Handy functions to support csharp mode
 (use-package omnisharp
   :after csharp-mode
   :ensure t
 )
 
+;; The user interface parts of lsp
 (use-package lsp-ui
   :after lsp-mode
   :init
@@ -265,6 +294,8 @@ inhibit-startup-echo-area-message t)
     (lsp-mode . lsp-ui-mode)
 )
 
+;; Built in package for supporting JS/HTML etc.
+;; This is configured to use type script which works well with react
 (use-package web-mode
   :ensure t
   :init
@@ -279,6 +310,7 @@ inhibit-startup-echo-area-message t)
     (setq web-mode-attr-value-indent-offset 2)
 )
 
+;; Alternative mode for react, when not using typescript
 (use-package rjsx-mode
   :ensure t
   :init
@@ -296,6 +328,7 @@ inhibit-startup-echo-area-message t)
    )
 )
 
+;; Python syntax highlighting support
 (use-package python
   :config
     (add-to-list 'flycheck-disabled-checkers 'python-flake8)
