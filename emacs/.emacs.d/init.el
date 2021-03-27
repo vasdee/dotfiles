@@ -266,9 +266,9 @@ inhibit-startup-echo-area-message t)
 )
 
 ;; Allow LSP mode to use company for autocompletion/intellisense
-(use-package company-lsp
-  :ensure t
-)
+;(use-package company-lsp
+;  :ensure t
+;)
 
 ;; Supports highlighting of csharp projects
 (use-package  csharp-mode
