@@ -13,7 +13,7 @@ then
 fi
 
 if [ -d ~/.bash ]; then
-    for f in ~/.bash/*; do
+    for f in ~/.bash/*.bash; do
         . ${f}
     done
 fi

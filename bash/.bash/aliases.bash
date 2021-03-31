@@ -2,8 +2,8 @@
 
 alias hs="history | grep -i"
 alias ll="ls -lah"
-alias cdi="cd ~/work/dev/iiot-platform/"
-alias cdd="cd ~/work/dev/dash"
+alias cdi="cd ~/Work/iiot-platform/"
+alias cdd="cd ~/Work/Dash/Dev/"
 alias dots="cd ~/dotfiles/"
 
 

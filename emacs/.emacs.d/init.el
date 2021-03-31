@@ -93,9 +93,9 @@ inhibit-startup-echo-area-message t)
  :ensure t
 )
 
-(use-package spacemacs-dark
-  :ensure t
-)
+;(use-package spacemacs-theme
+;  :ensure t
+;)
 
 (use-package dracula-theme
  :ensure t
@@ -277,9 +277,9 @@ inhibit-startup-echo-area-message t)
 ;; Supports highlighting of csharp projects
 (use-package  csharp-mode
   :ensure t
-  ;:config
+  :config
     ;; There are errors in the current version, this seems stable enough
-    ;(setq lsp-csharp-server-path "/home/vasdee/.emacs.d/.cache/lsp/omnisharp-roslyn/v1.37.6/run")
+    (setq lsp-csharp-server-path "/home/vasdee/.emacs.d/.cache/lsp/omnisharp-roslyn/v1.37.7/run")
  )
 
 ;; Handy functions to support csharp mode
