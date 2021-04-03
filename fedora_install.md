@@ -1,5 +1,9 @@
 # Fedora Install Notes
 
+## insync client
+
+https://www.insynchq.com/downloads
+
 
 ## disable selinux 
 
@@ -24,6 +28,10 @@ https://docs.fedoraproject.org/en-US/quick-docs/setup_rpmfusion/
 sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
 sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 ```
+
+### Other packages
+
+https://pkgs.org/
 
 
 ## Intall docker

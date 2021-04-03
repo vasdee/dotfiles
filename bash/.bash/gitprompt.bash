@@ -5,5 +5,6 @@ if [ -f ~/.bash/bash-git-prompt/gitprompt.sh ]; then
     # GIT_PROMPT_THEME=Default
     # To use upstream's default theme, modified by arch maintainer
     GIT_PROMPT_THEME=Default_Arch
-    source ~/.bash/bash-git-prompt/gitprompt.sh
+    # Uncomment to actually activate git-prompt
+    #source ~/.bash/bash-git-prompt/gitprompt.sh
 fi
