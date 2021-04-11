@@ -279,7 +279,7 @@ inhibit-startup-echo-area-message t)
   :ensure t
   :config
     ;; There are errors in the current version, this seems stable enough
-    (setq lsp-csharp-server-path "/home/vasdee/.emacs.d/.cache/lsp/omnisharp-roslyn/v1.37.7/run")
+    (setq lsp-csharp-server-path "/home/vasdee/.emacs.d/.cache/lsp/omnisharp-roslyn/v1.37.8/run")
  )
 
 ;; Handy functions to support csharp mode

@@ -1,5 +1,15 @@
 # Fedora Install Notes
 
+## install tray icons support
+
+```
+sudo dnf install libappindicator-gtk3 libappindicator
+```
+
+then install extension
+
+https://extensions.gnome.org/extension/615/appindicator-support/
+
 ## insync client
 
 https://www.insynchq.com/downloads
@@ -86,10 +96,9 @@ sudo dnf install azure-cli
 ```
 
 
-## Install git\_bash\_prompt
+## Install starship.rs
 
 ```
-cd ~/dotfiles/bash/.bash/
-git clone https://github.com/magicmonty/bash-git-prompt.git --depth=1
+sudo dnf install starship
 
 ```
