@@ -113,3 +113,5 @@ tmux
 emacs
 chrome
 stow
+gnome-tweaks
+tlp
