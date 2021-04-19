@@ -1,5 +1,9 @@
 # Fedora Install Notes
 
+## Enable fast mirror support for DNF
+
+add `fastestmirror=1` to `/etc/dnf/dnf.conf`
+
 ## install tray icons support
 
 ```
@@ -102,3 +106,10 @@ sudo dnf install azure-cli
 sudo dnf install starship
 
 ```
+
+## Random software to install
+
+tmux
+emacs
+chrome
+stow
