@@ -19,16 +19,17 @@ https://extensions.gnome.org/extension/615/appindicator-support/
 https://www.insynchq.com/downloads
 
 
-## disable selinux 
+## Install display-link drivers for docks
+
+Allows using docks that implement the display-link protocol for USB-C, monitors, charging and networking
+
+https://github.com/displaylink-rpm/displaylink-rpm
+
+
+## Disable SELinux and firewalld
 
 ```
 sudo setenforce 0
-```
-
-
-## disable firewalld
-
-```
 sudo systemctl disable firewalld.service 
 sudo systemctl stop firewalld.service
 ```
@@ -48,7 +49,7 @@ sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfre
 https://pkgs.org/
 
 
-## Intall docker
+## Install docker
 
 
 ```
@@ -102,16 +103,28 @@ sudo dnf install azure-cli
 
 ## Install starship.rs
 
-```
-sudo dnf install starship
+Starship exists within the RPM fusion repositories
 
 ```
+sudo dnf install starship
+```
+
+## Install Google Chrome
+
+Download RPM directly from google
+
+https://www.google.com/chrome/
+
+
 
 ## Random software to install
 
 tmux
 emacs
-chrome
 stow
 gnome-tweaks
 tlp
+the_silver_searcher
+dotnet-sdk-3.1
+dotnet-sdk-5.0
+powertop

@@ -68,7 +68,7 @@ inhibit-startup-echo-area-message t)
  (dashboard-setup-startup-hook)
  (setq dashboard-items '((recents  . 5)
                          (bookmarks . 5)
-                         (projects . 10))))
+                         (projects . 20))))
 
 ;; For linting and on the fly syntax checking
 (use-package flycheck
@@ -131,6 +131,13 @@ inhibit-startup-echo-area-message t)
    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
    (projectile-mode +1)
    (setq projectile-completion-system 'ivy)
+   (setq frame-title-format
+    '(""
+      "%b"
+      (:eval
+       (let ((project-name (projectile-project-name)))
+         (unless (string= "-" project-name)
+           (format " in [%s]" project-name))))))
 )
 
 ;; Fix the indenting issues in emacs
@@ -277,9 +284,9 @@ inhibit-startup-echo-area-message t)
 ;; Supports highlighting of csharp projects
 (use-package  csharp-mode
   :ensure t
-  :config
+  ;;:config
     ;; There are errors in the current version, this seems stable enough
-    (setq lsp-csharp-server-path "/home/vasdee/.emacs.d/.cache/lsp/omnisharp-roslyn/v1.37.8/run")
+    ;;(setq lsp-csharp-server-path "/home/vasdee/.emacs.d/.cache/lsp/omnisharp-roslyn/v1.37.8/run")
  )
 
 ;; Handy functions to support csharp mode
