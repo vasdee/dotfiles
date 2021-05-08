@@ -6,7 +6,7 @@
 	name = rob miller
 [core]
 	editor = "vim"
-	autocrlf = false
+	autocrlf = true
 	whitespace = cr-at-eol
 	safecrlf = false
 	eol = crlf
@@ -23,3 +23,5 @@
         branch = magenta
         untracked = cyan
         unmerged = yellow
+[init]
+	defaultBranch = master

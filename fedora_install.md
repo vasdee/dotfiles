@@ -1,5 +1,9 @@
 # Fedora Install Notes
 
+## Enable flathub for flatpaks
+
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
 ## Enable fast mirror support for DNF
 
 add `fastestmirror=1` to `/etc/dnf/dnf.conf`
@@ -18,6 +22,12 @@ https://extensions.gnome.org/extension/615/appindicator-support/
 
 https://www.insynchq.com/downloads
 
+
+## AppImage launcher
+
+https://github.com/TheAssassin/AppImageLauncher/wiki/Install-on-Fedora
+
+place appimages into ~/.local/applications/
 
 ## Install display-link drivers for docks
 
