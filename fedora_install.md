@@ -36,6 +36,10 @@ Allows using docks that implement the display-link protocol for USB-C, monitors,
 https://github.com/displaylink-rpm/displaylink-rpm
 
 
+```
+sudo dnf install ~/Downloads/fedora-34-displaylink-1.9.1-1.x86_64.rpm
+```
+
 ## Disable SELinux and firewalld
 
 ```
@@ -87,6 +91,7 @@ sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/dock
 
 
 sudo dnf install docker-ce docker-ce-cli containerd.io
+
 ```
 
 
@@ -110,6 +115,30 @@ gpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.re
 sudo dnf install azure-cli
 ```
 
+
+## Install Microsoft Powershell
+
+From https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell-core-on-linux?view=powershell-7.1#fedora
+
+```
+# Register the Microsoft signature key
+sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+
+# Register the Microsoft RedHat repository
+curl https://packages.microsoft.com/config/rhel/7/prod.repo | sudo tee /etc/yum.repos.d/microsoft.repo
+
+# Update the list of products
+sudo dnf check-update
+
+# Install a system component
+sudo dnf install compat-openssl10
+
+# Install PowerShell
+sudo dnf install -y powershell
+
+# Start PowerShell
+pwsh
+```
 
 ## Install starship.rs
 

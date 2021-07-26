@@ -6,10 +6,10 @@
 	name = rob miller
 [core]
 	editor = "vim"
-	autocrlf = true
-	whitespace = cr-at-eol
+	autocrlf = input
+	#whitespace = cr-at-eol
 	safecrlf = false
-	eol = crlf
+	eol = lf
 
 	
 [push]

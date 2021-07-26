@@ -238,7 +238,7 @@ inhibit-startup-echo-area-message t)
   :ensure t
   :commands lsp
   :init
-    (setq lsp-keymap-prefix "C-c C-l")
+    (setq lsp-keymap-prefix "C-c l")
   :config
     (setq lsp-prefer-flymake nil)
     (setq lsp-imenu-sort-methods '(position kind))
@@ -250,23 +250,20 @@ inhibit-startup-echo-area-message t)
     ;; config lifted from https://vxlabs.com/2018/06/08/python-language-server-with-emacs-and-lsp-mode/
     (lsp-after-open . lsp-enable-imenu)
     (python-mode . lsp)
-    (rjsx-mode . lsp)
     (csharp-mode . lsp)
     (typescript-mode . lsp)
     (web-mode . lsp)
     (lsp-after-initialize . (lambda() (flycheck-add-next-checker 'lsp 'typescript-tslint)))
-  ;:bind
-    ;("C-c l" . lsp-command-map)  
 )
 
 ;; Debugging support
-(use-package dap-mode
-  :ensure t
-  :after lsp-mode
-  :config
-    (dap-mode t)
-    (dap-ui-mode t)
-)
+;(use-package dap-mode
+;  :ensure t
+;  :after lsp-mode
+  ;:config
+  ;  (dap-mode t)
+  ;  (dap-ui-mode t)
+;)
 
 ;; Pop up dialog for autocomplete functions
 (use-package company
@@ -297,14 +294,14 @@ inhibit-startup-echo-area-message t)
 
 ;; The user interface parts of lsp
 (use-package lsp-ui
-  :after lsp-mode
   :ensure t
   :init
     (setq lsp-ui-sideline-ignore-duplicate t)
     (setq lsp-ui-sideline-mode -1)
-  :hook
-    (lsp-mode . lsp-ui-mode)
-)
+  :commands lsp-ui-mode
+  )
+
+(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
 
 ;; Built in package for supporting JS/HTML etc.
 ;; This is configured to use type script which works well with react
