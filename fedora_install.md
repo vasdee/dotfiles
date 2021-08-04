@@ -115,6 +115,12 @@ gpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.re
 sudo dnf install azure-cli
 ```
 
+## Install Microsoft Teams
+
+https://docs.microsoft.com/en-us/microsoftteams/get-clients
+
+https://packages.microsoft.com/yumrepos/ms-teams
+
 
 ## Install Microsoft Powershell
 
