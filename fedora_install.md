@@ -23,6 +23,11 @@ https://extensions.gnome.org/extension/615/appindicator-support/
 https://www.insynchq.com/downloads
 
 
+## 1Password CLI
+
+https://1password.com/downloads/linux/rpm/thank-you/
+
+
 ## AppImage launcher
 
 https://github.com/TheAssassin/AppImageLauncher/wiki/Install-on-Fedora
