@@ -41,9 +41,26 @@ Allows using docks that implement the display-link protocol for USB-C, monitors,
 https://github.com/displaylink-rpm/displaylink-rpm
 
 
+### Fedora 35 
+
+For Fedora 35 and recent kernels, this is no longer working.
+Evdi must be built off of the master branch, see existing ticket https://github.com/displaylink-rpm/displaylink-rpm/issues/172
+
+
+```
+git clone git@github.com:DisplayLink/evdi.git
+cd evdi
+make 
+sudo make install
+```
+
+
 ```
 sudo dnf install ~/Downloads/fedora-34-displaylink-1.9.1-1.x86_64.rpm
 ```
+
+
+
 
 ## Disable SELinux and firewalld
 
