@@ -5,6 +5,8 @@ alias ll="ls -lah"
 alias cdi="cd ~/Work/iiot-platform/"
 alias cdd="cd ~/Work/Dash/Dev/"
 alias dots="cd ~/dotfiles/"
+alias la='ls -A'
+alias l='ls -CF'
 
 
 function docker_client_proxy_on() {

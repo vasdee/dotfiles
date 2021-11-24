@@ -24,4 +24,4 @@
         untracked = cyan
         unmerged = yellow
 [init]
-	defaultBranch = master
+	defaultBranch = main
