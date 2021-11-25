@@ -25,3 +25,6 @@
         unmerged = yellow
 [init]
 	defaultBranch = main
+
+[credential]
+	helper = store

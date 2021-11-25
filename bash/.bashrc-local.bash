@@ -1,3 +1,4 @@
+
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -12,6 +13,7 @@ then
     PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 fi
 
+# Include the custom bash scripts
 if [ -d ~/.bash ]; then
     for f in ~/.bash/*.bash; do
         . ${f}
