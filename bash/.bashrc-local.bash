@@ -7,6 +7,11 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
+# Source any user specfic credentials that can be used wtihin the customisations
+if [ -f ~/.bash/.secrets ]; then
+    . ~/.bash/.secrets
+fi
+
 # User specific environment
 if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
 then

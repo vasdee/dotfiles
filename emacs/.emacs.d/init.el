@@ -58,6 +58,16 @@ inhibit-startup-echo-area-message t)
 
 (require 'use-package)
 
+
+;; --------------------------------------------------------
+;; Custom Functions Configurations
+;; ---------------------------------------------------------
+
+(defun my/base64-encode-region-no-break ()
+  (interactive)
+  (base64-encode-region (mark) (point) t))
+
+
 ;; ---------------------------------------------------------
 ;; Package configurations
 ;; ---------------------------------------------------------
@@ -130,6 +140,7 @@ inhibit-startup-echo-area-message t)
    (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
    (projectile-mode +1)
+   (setq projectile-project-search-path '("~/code/dash/" "~/code/iiot-platform"))
    (setq projectile-completion-system 'ivy)
    (setq frame-title-format
     '(""
@@ -255,6 +266,13 @@ inhibit-startup-echo-area-message t)
     (web-mode . lsp)
     (lsp-after-initialize . (lambda() (flycheck-add-next-checker 'lsp 'typescript-tslint)))
 )
+
+(use-package lsp-pyright
+  :ensure t
+  :hook (python-mode . (lambda ()
+                          (require 'lsp-pyright)
+                          (lsp)))
+)  ; or lsp-deferred
 
 ;; Debugging support
 ;(use-package dap-mode

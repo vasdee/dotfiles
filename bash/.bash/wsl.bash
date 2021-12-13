@@ -4,4 +4,7 @@ if [ -f /etc/wsl.conf ]; then
 
     # Set the display server from the gateway set by wsl
     export DISPLAY=$(awk '/nameserver/ {print $2}' /etc/resolv.conf):0.0
+
+    # Set an alias for the Windows User profile area
+    export WINPROFILE=/mnt/c/Users/${USER}
 fi
