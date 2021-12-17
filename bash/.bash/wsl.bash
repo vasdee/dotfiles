@@ -7,4 +7,7 @@ if [ -f /etc/wsl.conf ]; then
 
     # Set an alias for the Windows User profile area
     export WINPROFILE=/mnt/c/Users/${USER}
+
+    # Useful for x-server displaying of apps
+    export LIBGL_ALWAYS_INDIRECT=1
 fi

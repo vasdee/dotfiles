@@ -270,8 +270,14 @@ inhibit-startup-echo-area-message t)
 (use-package lsp-pyright
   :ensure t
   :hook (python-mode . (lambda ()
-                          (require 'lsp-pyright)
-                          (lsp)))
+                         (require 'lsp-pyright)
+                         (when (> (length (locate-dominating-file default-directory "Pipfile")) 0)
+                           (message . ("Found pip file, adding venv to path"))
+                           ;;(setq lsp-pyright-venv-path (concat (string-trim-right (shell-command-to-string "pipenv --venv"))))
+                           (setq lsp-pyright-venv-path "/home/millrt9/.local/share/virtualenvs/")
+                           (setq lsp-pyright-venv-directory (file-name-nondirectory (string-trim-right (shell-command-to-string "pipenv --venv"))))
+                         )
+                         (lsp)))
 )  ; or lsp-deferred
 
 ;; Debugging support
@@ -360,12 +366,13 @@ inhibit-startup-echo-area-message t)
   :config
     (add-to-list 'flycheck-disabled-checkers 'python-flake8)
     (eldoc-mode -1)
-    (setq python-shell-interpreter "ipython"
-          python-shell-interpreter-args "--simple-prompt -i")
+    ;(setq python-shell-interpreter "ipython"
+    ;      python-shell-interpreter-args "--simple-prompt -i")
 
   (when (> (length (locate-dominating-file default-directory "Pipfile")) 0)
     (message . ("Found pip file, adding venv to path"))
     (add-to-list 'exec-path (concat (string-trim-right (shell-command-to-string "pipenv --venv")) "/bin/"))
+    (setq lsp-pyright-venv-path (concat (string-trim-right (shell-command-to-string "pipenv --venv")) "/bin/"))
   )
 )
 

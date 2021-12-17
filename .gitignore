@@ -13,3 +13,4 @@ emacs/.emacs.d/*
 # This file is for custom bash directives that aren't common
 # eg WSL vs Actual Linux
 bash/.bash/custom.bash
+bash/.bash/.secrets
