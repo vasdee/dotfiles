@@ -1,5 +1,6 @@
 [http]
 	sslVerify = false
+	postBuffer = 100000000
 
 [user]
 #	email = funky.style@gmail.com
