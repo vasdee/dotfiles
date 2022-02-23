@@ -270,14 +270,15 @@ inhibit-startup-echo-area-message t)
 (use-package lsp-pyright
   :ensure t
   :hook (python-mode . (lambda ()
+                         (setq lsp-pyright-venv-directory ".venv")
                          (require 'lsp-pyright)
                          (when (> (length (locate-dominating-file default-directory "Pipfile")) 0)
                            (message . ("Found pip file, adding venv to path"))
                            ;;(setq lsp-pyright-venv-path (concat (string-trim-right (shell-command-to-string "pipenv --venv"))))
-                           (setq lsp-pyright-venv-path "/home/millrt9/.local/share/virtualenvs")
-                           (setq lsp-pyright-venv-directory (file-name-nondirectory (string-trim-right (shell-command-to-string "pipenv --venv"))))
+                           ;;(setq lsp-pyright-venv-path "/home/millrt9/.local/share/virtualenvs")
+                           ;;(setq lsp-pyright-venv-directory (file-name-nondirectory (string-trim-right (shell-command-to-string "pipenv --venv"))))
                          )
-                         (lsp)))
+                         (lsp-deferred)))
 )  ; or lsp-deferred
 
 ;; Debugging support
