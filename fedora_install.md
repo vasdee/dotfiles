@@ -23,6 +23,14 @@ https://extensions.gnome.org/extension/615/appindicator-support/
 https://www.insynchq.com/downloads
 
 
+## Webex 
+
+sudo dnf install https://binaries.webex.com/WebexDesktop-CentOS-Official-Package/Webex.rpm
+
+or 
+
+https://www.webex.com/downloads.html
+
 ## 1Password CLI
 
 https://1password.com/downloads/linux/rpm/thank-you/
