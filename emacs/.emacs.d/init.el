@@ -38,7 +38,12 @@ inhibit-startup-echo-area-message t)
 ;; Nicer window moving keys
 (when (fboundp 'windmove-default-keybindings)
   (windmove-default-keybindings)
-)
+
+  )
+
+;; smooth scrolling
+(setq scroll-step           1
+      scroll-conservatively 10000)
 
 (global-eldoc-mode -1)
 (global-hl-line-mode 1)
@@ -67,6 +72,11 @@ inhibit-startup-echo-area-message t)
   (interactive)
   (base64-encode-region (mark) (point) t))
 
+(defun my/reload-dotemacs-file ()
+  "reload your .emacs file without restarting Emacs"
+  (interactive)
+  (load-file "~/.emacs.d/init.el")
+)
 
 ;; ---------------------------------------------------------
 ;; Package configurations
@@ -88,10 +98,28 @@ inhibit-startup-echo-area-message t)
    (global-flycheck-mode)
  :config
    (setq flycheck-check-syntax-automatically '(mode-enabled save mode-enable))
-   (flycheck-add-mode 'typescript-tslint 'web-mode)
+   (flycheck-add-mode 'javascript-eslint 'web-mode)
    ; Disable these until figure out what is required for flycheck linting
    ;(flycheck-add-mode 'csharp-omnisharp-codecheck 'csharp-mode)
    ;(add-to-list 'flycheck-checkers 'csharp-omnisharp-codecheck)
+)
+
+(use-package sql
+  :ensure t
+  :init
+  (setq lsp-sqls-workspace-config-path nil)
+  (setq sql-connection-alist
+      '((sw-db
+         (sql-product 'postgres)
+         (sql-server "127.0.0.1")
+         (sql-user "postgres")
+         (sql-password "admin")
+         (sql-database "postgres")
+         (sql-port 5433))))
+  (setq lsp-sqls-connections
+    '(
+      ((driver . "postgresql") (dataSourceName . "host=127.0.0.1 port=5433 user=postgres password=admin dbname=postgres sslmode=disable")))
+    ) 
 )
 
 ;; Mode for working with Dockerfile
@@ -387,7 +415,8 @@ inhibit-startup-echo-area-message t)
     (typescript-mode . lsp)
     (web-mode . lsp)
     (svelte-mode . lsp)
-    (lsp-after-initialize . (lambda() (flycheck-add-next-checker 'lsp 'typescript-tslint)))
+    (sql-mode . lsp)
+    (lsp-after-initialize . (lambda() (flycheck-add-next-checker 'lsp 'javascript-eslint)))
 )
 
 ;;
@@ -501,6 +530,12 @@ inhibit-startup-echo-area-message t)
    )
 )
 
+
+;; Debugging with realgud
+(use-package realgud
+  :ensure t
+)
+
 ;; Python syntax highlighting support
 (use-package python
   :config
@@ -570,7 +605,7 @@ inhibit-startup-echo-area-message t)
  '(custom-safe-themes
    '("37768a79b479684b0756dec7c0fc7652082910c37d8863c35b702db3f16000f8" "2dff5f0b44a9e6c8644b2159414af72261e38686072e063aa66ee98a2faecf0e" "3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))
  '(package-selected-packages
-   '(svelte-mode svelt-mode color-theme-sanityinc-tomorrow csv-mode dash dap-mode makefile-executor omnisharp typescript-mode dashboard magit-popup neotree nord-theme projectile spacemacs-theme move-text aggressive-indent csharp-mode restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
+   '(sql-mode realgud svelte-mode svelt-mode color-theme-sanityinc-tomorrow csv-mode dash dap-mode makefile-executor omnisharp typescript-mode dashboard magit-popup neotree nord-theme projectile spacemacs-theme move-text aggressive-indent csharp-mode restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838")))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
