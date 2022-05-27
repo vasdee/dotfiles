@@ -184,7 +184,7 @@ inhibit-startup-echo-area-message t)
    (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
    (projectile-mode +1)
-   (setq projectile-project-search-path '("~/Work/dash/" "~/Work/IIoT/" "~/Work/" "~/Projects"))
+   (setq projectile-project-search-path '("~/Work/dash/" "~/Work/IIoT/" "~/Work/" "~/Projects" "~/Work/SW/"))
    (setq projectile-completion-system 'ivy)
    (setq frame-title-format
     '(""
@@ -259,7 +259,7 @@ inhibit-startup-echo-area-message t)
           treemacs-recenter-after-tag-follow       nil
           treemacs-recenter-after-project-jump     'always
           treemacs-recenter-after-project-expand   'on-distance
-          treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask")
+          treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask" "__pycache__")
           treemacs-show-cursor                     nil
           treemacs-show-hidden-files               t
           treemacs-silent-filewatch                nil
@@ -285,7 +285,8 @@ inhibit-startup-echo-area-message t)
     (treemacs-follow-mode t)
     (treemacs-filewatch-mode t)
     (treemacs-fringe-indicator-mode 'always)
-
+    (treemacs-project-follow-mode t)
+    
     (pcase (cons (not (null (executable-find "git")))
                  (not (null treemacs-python-executable)))
       (`(t . t)
@@ -447,6 +448,20 @@ inhibit-startup-echo-area-message t)
   ;  (dap-ui-mode t)
 ;)
 
+(use-package dap-python
+  :defer t
+  :after lsp-mode
+  :config
+    (dap-register-debug-template "PyTest"
+      (list :type "python"
+        :args "-i"
+        :cwd nil
+        :env '(("DEBUG" . "1"))
+        :target-module (expand-file-name "~/src/myapp/.env/bin/myapp")
+        :request "launch"
+        :name "PyTest"))
+)
+
 ;; Pop up dialog for autocomplete functions
 (use-package company
   :ensure t
@@ -602,11 +617,14 @@ inhibit-startup-echo-area-message t)
  ;; If there is more than one, they won't work right.
  '(company-quickhelp-color-background "#4F4F4F")
  '(company-quickhelp-color-foreground "#DCDCCC")
+ '(css-indent-offset 4)
  '(custom-safe-themes
    '("37768a79b479684b0756dec7c0fc7652082910c37d8863c35b702db3f16000f8" "2dff5f0b44a9e6c8644b2159414af72261e38686072e063aa66ee98a2faecf0e" "3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))
+ '(js-indent-level 4)
  '(package-selected-packages
-   '(sql-mode realgud svelte-mode svelt-mode color-theme-sanityinc-tomorrow csv-mode dash dap-mode makefile-executor omnisharp typescript-mode dashboard magit-popup neotree nord-theme projectile spacemacs-theme move-text aggressive-indent csharp-mode restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
- '(pdf-view-midnight-colors '("#DCDCCC" . "#383838")))
+   '(dap-python sql-mode realgud svelte-mode svelt-mode color-theme-sanityinc-tomorrow csv-mode dash dap-mode makefile-executor omnisharp typescript-mode dashboard magit-popup neotree nord-theme projectile spacemacs-theme move-text aggressive-indent csharp-mode restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
+ '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
+ '(sgml-basic-offset 4))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
