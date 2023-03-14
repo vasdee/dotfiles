@@ -23,6 +23,20 @@ https://extensions.gnome.org/extension/615/appindicator-support/
 https://www.insynchq.com/downloads
 
 
+## Webex 
+
+sudo dnf install https://binaries.webex.com/WebexDesktop-CentOS-Official-Package/Webex.rpm
+
+or 
+
+https://www.webex.com/downloads.html
+
+## Drawio
+
+Latest release tag from here https://github.com/jgraph/drawio-desktop/releases
+
+sudo dnf install https://github.com/jgraph/drawio-desktop/releases/download/v20.3.0/drawio-x86_64-20.3.0.rpm
+
 ## 1Password CLI
 
 https://1password.com/downloads/linux/rpm/thank-you/
@@ -137,7 +151,7 @@ gpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.re
 sudo dnf install azure-cli
 ```
 
-## Install Microsoft Teams
+## Install Microsoft Teasm
 
 https://docs.microsoft.com/en-us/microsoftteams/get-clients
 
