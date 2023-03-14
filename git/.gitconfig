@@ -17,6 +17,8 @@
 	default = current
 [alias]
 	st = status
+	semver = tag --list release/* --sort=-version:refname
+        gl = log --simplify-by-decoration --decorate --oneline
 [pull]
 	rebase = false
 

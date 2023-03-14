@@ -69,11 +69,12 @@ inhibit-startup-echo-area-message t)
 ;; ---------------------------------------------------------
 
 (defun my/base64-encode-region-no-break ()
+  "Base 64 encode a region and ignore the line break."
   (interactive)
   (base64-encode-region (mark) (point) t))
 
 (defun my/reload-dotemacs-file ()
-  "reload your .emacs file without restarting Emacs"
+  "Reload your .emacs file without restarting Emacs."
   (interactive)
   (load-file "~/.emacs.d/init.el")
 )
@@ -189,7 +190,7 @@ inhibit-startup-echo-area-message t)
    (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
    (projectile-mode +1)
-   (setq projectile-project-search-path '("~/Work/dash/" "~/Work/IIoT/" "~/Work/" "~/Projects" "~/Work/SW/"))
+   (setq projectile-project-search-path '("~/Work/IIoT/" "~/Work/" "~/Projects"))
    (setq projectile-completion-system 'ivy)
    (setq frame-title-format
     '(""
@@ -413,6 +414,7 @@ inhibit-startup-echo-area-message t)
     (setq gc-cons-threshold 100000000)
     (setq read-process-output-max (* 1024 1024)) ;; 1mb
     (setq lsp-idle-delay 0.500)
+    (setq lsp-file-watch-threshold 2000)
   :hook
     ;; config lifted from https://vxlabs.com/2018/06/08/python-language-server-with-emacs-and-lsp-mode/
     (lsp-after-open . lsp-enable-imenu)
@@ -494,9 +496,9 @@ inhibit-startup-echo-area-message t)
 ;; Supports highlighting of csharp projects
 (use-package  csharp-mode
   :ensure t
-  ;;:config
+  :config
     ;; There are errors in the current version, this seems stable enough
-    ;;(setq lsp-csharp-server-path "/home/vasdee/.emacs.d/.cache/lsp/omnisharp-roslyn/v1.37.8/run")
+    (setq lsp-csharp-server-path "~/.emacs.d/.cache/lsp/latest/omnisharp-roslyn/Omnisharp")
  )
 
 ;; Handy functions to support csharp mode
@@ -556,9 +558,22 @@ inhibit-startup-echo-area-message t)
   :ensure t
 )
 
+(use-package display-fill-column-indicator
+  :ensure t
+  :hook
+  (python-mode . (lambda()
+                   (message "hook fired for display-fill-column-indicator")
+                   (setq display-fill-column-indicator-column 140)
+                   (display-fill-column-indicator-mode)
+                   
+                 )
+               ) 
+)
+
 ;; Python syntax highlighting support
 (use-package python
   :config
+    (setq display-fill-column-indicator-column 140)
     (add-to-list 'flycheck-disabled-checkers 'python-flake8)
     (eldoc-mode -1)
     ;(setq python-shell-interpreter "ipython"
@@ -568,7 +583,15 @@ inhibit-startup-echo-area-message t)
     (message . ("Found pip file, adding venv to path"))
     (add-to-list 'exec-path (concat (string-trim-right (shell-command-to-string "pipenv --venv")) "/bin/"))
     (setq lsp-pyright-venv-path (concat (string-trim-right (shell-command-to-string "pipenv --venv")) "/bin/"))
-  )
+    )
+)
+
+(use-package pyvenv
+  :ensure t
+  :config
+  (pyvenv-mode t)
+  :hook
+  (python-mode . (lambda () (pyvenv-activate)))
 )
 
 (use-package yaml-mode
@@ -627,9 +650,10 @@ inhibit-startup-echo-area-message t)
    '("37768a79b479684b0756dec7c0fc7652082910c37d8863c35b702db3f16000f8" "2dff5f0b44a9e6c8644b2159414af72261e38686072e063aa66ee98a2faecf0e" "3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))
  '(js-indent-level 4)
  '(package-selected-packages
-   '(terraform-mode dap-python sql-mode realgud svelte-mode svelt-mode color-theme-sanityinc-tomorrow csv-mode dash dap-mode makefile-executor omnisharp typescript-mode dashboard magit-popup neotree nord-theme projectile spacemacs-theme move-text aggressive-indent csharp-mode restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
+   '(pyvenv just-mode treemacs-all-the-icons terraform-mode dap-python sql-mode svelte-mode svelt-mode color-theme-sanityinc-tomorrow csv-mode dash dap-mode makefile-executor omnisharp typescript-mode dashboard magit-popup neotree nord-theme projectile spacemacs-theme move-text aggressive-indent csharp-mode restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
- '(sgml-basic-offset 4))
+ '(sgml-basic-offset 4)
+ '(warning-suppress-types '((comp))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
