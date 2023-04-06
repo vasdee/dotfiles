@@ -5,12 +5,14 @@
 [user]
 #	email = funky.style@gmail.com
 	name = rob miller
+	email = robert.miller1@bhp.com
 [core]
 	editor = "vim"
 	autocrlf = input
 	#whitespace = cr-at-eol
 	safecrlf = false
 	eol = lf
+	filemode = false
 
 	
 [push]
