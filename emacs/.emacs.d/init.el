@@ -609,14 +609,16 @@ inhibit-startup-echo-area-message t)
   :init
     (add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
 )
-
 (use-package markdown-mode
+
   :ensure t
   :config
     (setq markdown-command  "pandoc --metadata=title=markdown -f markdown -t html5 --mathjax --highlight-style=pygments --standalone")
 )
 
 (use-package flyspell-mode
+  :init
+    (setq-default ispell-program-name "aspell")
   :hook
     (markdown-mode . flyspell-mode)
     (rst-mode . flyspell-mode)
