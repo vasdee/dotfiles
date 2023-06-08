@@ -21,6 +21,8 @@
 	st = status
 	semver = tag --list release/* --sort=-version:refname
         gl = log --simplify-by-decoration --decorate --oneline
+	purge-tag = !git tag --delete $1 && git push --delete origin $1 && :
+	ec = config --global -e
 [pull]
 	rebase = false
 

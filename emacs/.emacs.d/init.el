@@ -1,8 +1,9 @@
 ;; ---------------------------------------------------------
 ;; Global Configuration across all modes
 ;; ---------------------------------------------------------
-(global-display-line-numbers-mode)
-
+;(global-display-line-numbers-mode)
+;(global-set-key (kbd "C-x C-b") 'ibuffer)
+;
 ; Never use tabs
 (setq-default indent-tabs-mode nil)
 
@@ -48,6 +49,19 @@ inhibit-startup-echo-area-message t)
 (global-eldoc-mode -1)
 (global-hl-line-mode 1)
 
+(defun font-available-p (font-name)
+  (find-font (font-spec :name font-name)))
+
+(cond
+ ((font-available-p "Cascadia Code")
+  (set-frame-font "Cascadia Code-12" nil t))
+ ((font-available-p "Hack")
+  (set-frame-font "Hack 10" nil t))
+ ((font-available-p "DejaVu Sans Mono")
+  (set-frame-font "DejaVu Sans Mono-12" nil t))
+ ((font-available-p "Inconsolata")
+  (set-frame-font "Inconsolata-12" nil t)))
+
 ;; -------------------------------------------------------
 ;; Add package management and bootstrap use package
 ;; -------------------------------------------------------
@@ -83,6 +97,13 @@ inhibit-startup-echo-area-message t)
 ;; ---------------------------------------------------------
 ;; Package configurations
 ;; ---------------------------------------------------------
+
+(use-package dired
+  :ensure nil
+  :config
+  (setq dired-listing-switches "-laGh1v --group-directories-first")
+  ;(lambda () (display-line-numbers-mode -1))
+)
 
 (use-package terraform-mode
   :ensure t
@@ -157,7 +178,7 @@ inhibit-startup-echo-area-message t)
   :init
   ;(load-theme 'sanityinc-tomorrow-night t)
   ;(load-theme 'sanityinc-tomorrow-bright t)
-  (load-theme 'sanityinc-tomorrow-eighties t)
+  ;(load-theme 'sanityinc-tomorrow-eighties t)
 )
 
 (use-package dracula-theme
@@ -191,7 +212,7 @@ inhibit-startup-echo-area-message t)
    (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
    (projectile-mode +1)
-   (setq projectile-project-search-path '("~/Work/IIoT/" "~/Work/" "~/Projects"))
+   (setq projectile-project-search-path '("~/Work/IIoT/" "~/Work/" "~/Projects" "~/code/iiot-platform/"))
    (setq projectile-completion-system 'ivy)
    (setq frame-title-format
     '(""
@@ -227,136 +248,151 @@ inhibit-startup-echo-area-message t)
   :bind (("C-x g" . magit-status))
 )
 
-(use-package treemacs
+;; can this be converted into use-package using display-line-numbers ?
+(add-hook 'dired-sidebar-mode-hook (lambda () (display-line-numbers-mode -1)))
+(add-hook 'prog-mode-hook (lambda () (display-line-numbers-mode t)))
+(add-hook 'text-mode-hook (lambda () (display-line-numbers-mode t)))
+
+(use-package all-the-icons-dired
+ :ensure t
+ :hook ((dired-mode . all-the-icons-dired-mode))
+)
+
+(use-package dired-sidebar
+  :bind (("C-x t" . dired-sidebar-toggle-sidebar))
   :ensure t
-  :defer t
+  :commands (dired-sidebar-toggle-sidebar)
   :init
-  (with-eval-after-load 'winum
-    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+  (add-hook 'dired-sidebar-mode-hook
+            (lambda ()
+              (unless (file-remote-p default-directory)
+                (auto-revert-mode))))
+  ;(add-hook 'dired-sidebar-mode-hook (lambda() (display-line-numbers-mode -1)))
   :config
-  (progn
-    (setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
-          treemacs-deferred-git-apply-delay        0.5
-          treemacs-directory-name-transformer      #'identity
-          treemacs-display-in-side-window          t
-          treemacs-eldoc-display                   'simple
-          treemacs-file-event-delay                5000
-          treemacs-file-extension-regex            treemacs-last-period-regex-value
-          treemacs-file-follow-delay               0.2
-          treemacs-file-name-transformer           #'identity
-          treemacs-follow-after-init               t
-          treemacs-expand-after-init               t
-          treemacs-find-workspace-method           'find-for-file-or-pick-first
-          treemacs-git-command-pipe                ""
-          treemacs-goto-tag-strategy               'refetch-index
-          treemacs-indentation                     2
-          treemacs-indentation-string              " "
-          treemacs-is-never-other-window           nil
-          treemacs-max-git-entries                 5000
-          treemacs-missing-project-action          'ask
-          treemacs-move-forward-on-expand          nil
-          treemacs-no-png-images                   nil
-          treemacs-no-delete-other-windows         t
-          treemacs-project-follow-cleanup          nil
-          treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
-          treemacs-position                        'left
-          treemacs-read-string-input               'from-child-frame
-          treemacs-recenter-distance               0.1
-          treemacs-recenter-after-file-follow      nil
-          treemacs-recenter-after-tag-follow       nil
-          treemacs-recenter-after-project-jump     'always
-          treemacs-recenter-after-project-expand   'on-distance
-          treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask" "__pycache__")
-          treemacs-show-cursor                     nil
-          treemacs-show-hidden-files               t
-          treemacs-silent-filewatch                nil
-          treemacs-silent-refresh                  nil
-          treemacs-sorting                         'alphabetic-asc
-          treemacs-select-when-already-in-treemacs 'move-back
-          treemacs-space-between-root-nodes        t
-          treemacs-tag-follow-cleanup              t
-          treemacs-tag-follow-delay                1.5
-          treemacs-text-scale                      nil
-          treemacs-user-mode-line-format           nil
-          treemacs-user-header-line-format         nil
-          treemacs-wide-toggle-width               70
-          treemacs-width                           35
-          treemacs-width-increment                 1
-          treemacs-width-is-initially-locked       t
-          treemacs-workspace-switch-cleanup        nil)
+  (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
+  (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
+  ;(setq dired-sidebar-subtree-line-prefix "__")
+  (setq dired-sidebar-theme 'icons)
+  (setq dired-sidebar-use-term-integration t)
+  ;(setq dired-sidebar-use-custom-font t)
+)
 
-    ;; The default width and height of the icons is 22 pixels. If you are
-    ;; using a Hi-DPI display, uncomment this to double the icon size.
-    ;;(treemacs-resize-icons 44)
+;(treemacs-load-all-the-icons-with-workaround-font "Hack")
 
-    (treemacs-follow-mode t)
-    (treemacs-filewatch-mode t)
-    (treemacs-fringe-indicator-mode 'always)
-    (treemacs-project-follow-mode t)
-    
-    (pcase (cons (not (null (executable-find "git")))
-                 (not (null treemacs-python-executable)))
-      (`(t . t)
-       (treemacs-git-mode 'deferred))
-      (`(t . _)
-       (treemacs-git-mode 'simple)))
+;;;(use-package treemacs
+;;;  :ensure t
+;;;  :defer t
+;;;  :init
+;;;  (with-eval-after-load 'winum
+;;;    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+;;;  :config
+;;;  (progn
+;;;    (setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
+;;;          treemacs-deferred-git-apply-delay        0.5
+;;;          treemacs-directory-name-transformer      #'identity
+;;;          treemacs-display-in-side-window          t
+;;;          treemacs-eldoc-display                   'simple
+;;;          treemacs-file-event-delay                5000
+;;;          treemacs-file-extension-regex            treemacs-last-period-regex-value
+;;;          treemacs-file-follow-delay               0.2
+;;;          treemacs-file-name-transformer           #'identity
+;;;          treemacs-follow-after-init               t
+;;;          treemacs-expand-after-init               t
+;;;          treemacs-find-workspace-method           'find-for-file-or-pick-first
+;;;          treemacs-git-command-pipe                ""
+;;;          treemacs-goto-tag-strategy               'refetch-index
+;;;          treemacs-indentation                     2
+;;;          treemacs-indentation-string              " "
+;;;          treemacs-is-never-other-window           nil
+;;;          treemacs-max-git-entries                 5000
+;;;          treemacs-missing-project-action          'ask
+;;;          treemacs-move-forward-on-expand          nil
+;;;          treemacs-no-png-images                   nil
+;;;          treemacs-no-delete-other-windows         t
+;;;          treemacs-project-follow-cleanup          nil
+;;;          treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+;;;          treemacs-position                        'left
+;;;          treemacs-read-string-input               'from-child-frame
+;;;          treemacs-recenter-distance               0.1
+;;;          treemacs-recenter-after-file-follow      nil
+;;;          treemacs-recenter-after-tag-follow       nil
+;;;          treemacs-recenter-after-project-jump     'always
+;;;          treemacs-recenter-after-project-expand   'on-distance
+;;;          treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask" "__pycache__")
+;;;          treemacs-show-cursor                     nil
+;;;          treemacs-show-hidden-files               t
+;;;          treemacs-silent-filewatch                nil
+;;;          treemacs-silent-refresh                  nil
+;;;          treemacs-sorting                         'alphabetic-asc
+;;;          treemacs-select-when-already-in-treemacs 'move-back
+;;;          treemacs-space-between-root-nodes        t
+;;;          treemacs-tag-follow-cleanup              t
+;;;          treemacs-tag-follow-delay                1.5
+;;;          treemacs-text-scale                      nil
+;;;          treemacs-user-mode-line-format           nil
+;;;          treemacs-user-header-line-format         nil
+;;;          treemacs-wide-toggle-width               70
+;;;          treemacs-width                           50
+;;;          treemacs-width-increment                 1
+;;;          treemacs-width-is-initially-locked       t
+;;;          treemacs-workspace-switch-cleanup        nil)
+;;;
+;;;    ;; The default width and height of the icons is 22 pixels. If you are
+;;;    ;; using a Hi-DPI display, uncomment this to double the icon size.
+;;;    ;;(treemacs-resize-icons 44)
+;;;
+;;;    (treemacs-follow-mode t)
+;;;    (treemacs-filewatch-mode t)
+;;;    (treemacs-fringe-indicator-mode 'always)
+;;;    (treemacs-project-follow-mode t)
+;;;    
+;;;    (pcase (cons (not (null (executable-find "git")))
+;;;                 (not (null treemacs-python-executable)))
+;;;      (`(t . t)
+;;;       (treemacs-git-mode 'deferred))
+;;;      (`(t . _)
+;;;       (treemacs-git-mode 'simple)))
+;;;
+;;;    (treemacs-hide-gitignored-files-mode nil))
+;;;  :bind
+;;;  (:map global-map
+;;;        ("M-0"       . treemacs-select-window)
+;;;        ("C-x t 1"   . treemacs-delete-other-windows)
+;;;        ("C-x t t"   . treemacs)
+;;;        ("C-x t d"   . treemacs-select-directory)
+;;;        ("C-x t B"   . treemacs-bookmark)
+;;;        ("C-x t C-t" . treemacs-find-file)
+;;;        ("C-x t M-t" . treemacs-find-tag)))
+;;;
+;;;(use-package treemacs-projectile
+;;;  :after (treemacs projectile)
+;;;  :ensure t)
+;;;
+;;;(use-package treemacs-icons-dired
+;;;  :hook (dired-mode . treemacs-icons-dired-enable-once)
+;;;  :ensure t)
+;;;
+;;;(use-package treemacs-magit
+;;;  :after (treemacs magit)
+;;;  :ensure t)
+;;;
+;;;(use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
+;;;  :after (treemacs persp-mode) ;;or perspective vs. persp-mode
+;;;  :ensure t
+;;;  :config (treemacs-set-scope-type 'Perspectives))
+;;;
+;;;(use-package treemacs-tab-bar ;;treemacs-tab-bar if you use tab-bar-mode
+;;;  :after (treemacs)
+;;;  :ensure t
+;;;  :config (treemacs-set-scope-type 'Tabs))
 
-    (treemacs-hide-gitignored-files-mode nil))
-  :bind
-  (:map global-map
-        ("M-0"       . treemacs-select-window)
-        ("C-x t 1"   . treemacs-delete-other-windows)
-        ("C-x t t"   . treemacs)
-        ("C-x t d"   . treemacs-select-directory)
-        ("C-x t B"   . treemacs-bookmark)
-        ("C-x t C-t" . treemacs-find-file)
-        ("C-x t M-t" . treemacs-find-tag)))
-
-(use-package treemacs-projectile
-  :after (treemacs projectile)
-  :ensure t)
-
-(use-package treemacs-icons-dired
-  :hook (dired-mode . treemacs-icons-dired-enable-once)
-  :ensure t)
-
-(use-package treemacs-magit
-  :after (treemacs magit)
-  :ensure t)
-
-(use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
-  :after (treemacs persp-mode) ;;or perspective vs. persp-mode
-  :ensure t
-  :config (treemacs-set-scope-type 'Perspectives))
-
-(use-package treemacs-tab-bar ;;treemacs-tab-bar if you use tab-bar-mode
-  :after (treemacs)
-  :ensure t
-  :config (treemacs-set-scope-type 'Tabs))
-
-;;;; A simple file explorer 
-;;(use-package neotree
-;;  :ensure t
-;;  :config
-;;    (setq neo-theme (if (display-graphic-p) 'icons 'classic))
-;;    (setq neo-window-fixed-size nil)
-;;    (setq neo-window-width 50)
-;;    (setq-default neo-show-hidden-files t)
-;;    (setq neo-smart-open t)
-;;  :bind
-;;    ("<f8>" . neotree-toggle)
-;;    ("<C-f8>" . neotree-show)
-;;  :hook
-;;    ;; Disable line-numbers minor mode for neotree
-;;    (neo-after-create . (lambda (&rest _) (display-line-numbers-mode -1)))
-;;)
 
 ;; Icon package for displaying in neotree and modelines
-(use-package all-the-icons
-  :if (display-graphic-p)
-  :config (unless (find-font (font-spec :name "all-the-icons"))
-            (all-the-icons-install-fonts t))
-)
+;(use-package all-the-icons
+;  :if (display-graphic-p)
+;  :config (unless (find-font (font-spec :name "all-the-icons"))
+;            (all-the-icons-install-fonts t))
+;)
 
 
 ;; Allows auto completion of commands in the command buffer
@@ -653,7 +689,7 @@ inhibit-startup-echo-area-message t)
    '("37768a79b479684b0756dec7c0fc7652082910c37d8863c35b702db3f16000f8" "2dff5f0b44a9e6c8644b2159414af72261e38686072e063aa66ee98a2faecf0e" "3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))
  '(js-indent-level 4)
  '(package-selected-packages
-   '(display-fill-column-indicator treemacs-tab-bar treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs pyvenv just-mode treemacs-all-the-icons terraform-mode dap-python sql-mode svelte-mode svelt-mode color-theme-sanityinc-tomorrow csv-mode dash dap-mode makefile-executor omnisharp typescript-mode dashboard magit-popup neotree nord-theme projectile spacemacs-theme move-text aggressive-indent csharp-mode restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
+   '(dired ls-lisp all-the-icons-dired-mode display-fill-column-indicator treemacs-tab-bar treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs pyvenv just-mode treemacs-all-the-icons terraform-mode dap-python sql-mode svelte-mode svelt-mode color-theme-sanityinc-tomorrow csv-mode dash dap-mode makefile-executor omnisharp typescript-mode dashboard magit-popup neotree nord-theme projectile spacemacs-theme move-text aggressive-indent csharp-mode restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(sgml-basic-offset 4)
  '(warning-suppress-types '((comp))))

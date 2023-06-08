@@ -25,7 +25,7 @@ https://www.insynchq.com/downloads
 
 ## Webex 
 
-sudo dnf install https://binaries.webex.com/WebexDesktop-CentOS-Official-Package/Webex.rpm
+`sudo dnf install https://binaries.webex.com/WebexDesktop-CentOS-Official-Package/Webex.rpm`
 
 or 
 
@@ -197,6 +197,14 @@ Download RPM directly from google
 https://www.google.com/chrome/
 
 
+
+## Pipx
+
+```
+sudo dnf install python3.10 python3.9 pip
+
+pip install --user pipx
+```
 
 ## Random software to install
 

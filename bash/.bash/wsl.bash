@@ -10,6 +10,9 @@ if [ -f /etc/wsl.conf ]; then
 
     export PROJECTS=/mnt/c/Projects/
 
+    # For use within az login commands, this allows windows edge browser to open the interactive
+    # loging auth screen
+    #export BROWSER='/mnt/c/Program\ Files\ \(x86\)/Microsoft/Edge/Application/msedge.exe'
     # Useful for x-server displaying of apps
     #export LIBGL_ALWAYS_INDIRECT=1
 fi
