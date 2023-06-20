@@ -2,7 +2,7 @@
 ;; Global Configuration across all modes
 ;; ---------------------------------------------------------
 ;(global-display-line-numbers-mode)
-;(global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
 ;
 ; Never use tabs
 (setq-default indent-tabs-mode nil)
@@ -100,9 +100,9 @@ inhibit-startup-echo-area-message t)
 
 (use-package dired
   :ensure nil
+  ;:bind ("F" . dired-create-empty-file)
   :config
   (setq dired-listing-switches "-laGh1v --group-directories-first")
-  ;(lambda () (display-line-numbers-mode -1))
 )
 
 (use-package terraform-mode
@@ -184,7 +184,7 @@ inhibit-startup-echo-area-message t)
 (use-package dracula-theme
  :ensure t
  :init
- ;(load-theme 'dracula t)
+ (load-theme 'dracula t)
 )
 
 ;; Silver Searcher support
@@ -248,18 +248,29 @@ inhibit-startup-echo-area-message t)
   :bind (("C-x g" . magit-status))
 )
 
-;; can this be converted into use-package using display-line-numbers ?
-(add-hook 'dired-sidebar-mode-hook (lambda () (display-line-numbers-mode -1)))
-(add-hook 'prog-mode-hook (lambda () (display-line-numbers-mode t)))
-(add-hook 'text-mode-hook (lambda () (display-line-numbers-mode t)))
+(use-package display-line-numbers
+  :ensure nil
+  :hook
+  (
+   ((prog-mode text-mode conf-mode) . (lambda () (display-line-numbers-mode t )))
+  )
+)
 
 (use-package all-the-icons-dired
  :ensure t
  :hook ((dired-mode . all-the-icons-dired-mode))
 )
 
+(defun set-my-var ()
+  "Set the side bar width to large"
+  (interactive)
+  (setq dired-sidebar-width 100))
+
 (use-package dired-sidebar
-  :bind (("C-x t" . dired-sidebar-toggle-sidebar))
+  :bind (
+         ("C-x t" . dired-sidebar-toggle-sidebar)
+         ("C-x w" . set-my-var)
+        )
   :ensure t
   :commands (dired-sidebar-toggle-sidebar)
   :init
@@ -267,7 +278,6 @@ inhibit-startup-echo-area-message t)
             (lambda ()
               (unless (file-remote-p default-directory)
                 (auto-revert-mode))))
-  ;(add-hook 'dired-sidebar-mode-hook (lambda() (display-line-numbers-mode -1)))
   :config
   (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
   (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
@@ -275,124 +285,10 @@ inhibit-startup-echo-area-message t)
   (setq dired-sidebar-theme 'icons)
   (setq dired-sidebar-use-term-integration t)
   ;(setq dired-sidebar-use-custom-font t)
+  (setq dired-sidebar-width 50 )
+  :hook
+  (dired-sidebar-mode . #'hide-mode-line-mode)
 )
-
-;(treemacs-load-all-the-icons-with-workaround-font "Hack")
-
-;;;(use-package treemacs
-;;;  :ensure t
-;;;  :defer t
-;;;  :init
-;;;  (with-eval-after-load 'winum
-;;;    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-;;;  :config
-;;;  (progn
-;;;    (setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
-;;;          treemacs-deferred-git-apply-delay        0.5
-;;;          treemacs-directory-name-transformer      #'identity
-;;;          treemacs-display-in-side-window          t
-;;;          treemacs-eldoc-display                   'simple
-;;;          treemacs-file-event-delay                5000
-;;;          treemacs-file-extension-regex            treemacs-last-period-regex-value
-;;;          treemacs-file-follow-delay               0.2
-;;;          treemacs-file-name-transformer           #'identity
-;;;          treemacs-follow-after-init               t
-;;;          treemacs-expand-after-init               t
-;;;          treemacs-find-workspace-method           'find-for-file-or-pick-first
-;;;          treemacs-git-command-pipe                ""
-;;;          treemacs-goto-tag-strategy               'refetch-index
-;;;          treemacs-indentation                     2
-;;;          treemacs-indentation-string              " "
-;;;          treemacs-is-never-other-window           nil
-;;;          treemacs-max-git-entries                 5000
-;;;          treemacs-missing-project-action          'ask
-;;;          treemacs-move-forward-on-expand          nil
-;;;          treemacs-no-png-images                   nil
-;;;          treemacs-no-delete-other-windows         t
-;;;          treemacs-project-follow-cleanup          nil
-;;;          treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
-;;;          treemacs-position                        'left
-;;;          treemacs-read-string-input               'from-child-frame
-;;;          treemacs-recenter-distance               0.1
-;;;          treemacs-recenter-after-file-follow      nil
-;;;          treemacs-recenter-after-tag-follow       nil
-;;;          treemacs-recenter-after-project-jump     'always
-;;;          treemacs-recenter-after-project-expand   'on-distance
-;;;          treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask" "__pycache__")
-;;;          treemacs-show-cursor                     nil
-;;;          treemacs-show-hidden-files               t
-;;;          treemacs-silent-filewatch                nil
-;;;          treemacs-silent-refresh                  nil
-;;;          treemacs-sorting                         'alphabetic-asc
-;;;          treemacs-select-when-already-in-treemacs 'move-back
-;;;          treemacs-space-between-root-nodes        t
-;;;          treemacs-tag-follow-cleanup              t
-;;;          treemacs-tag-follow-delay                1.5
-;;;          treemacs-text-scale                      nil
-;;;          treemacs-user-mode-line-format           nil
-;;;          treemacs-user-header-line-format         nil
-;;;          treemacs-wide-toggle-width               70
-;;;          treemacs-width                           50
-;;;          treemacs-width-increment                 1
-;;;          treemacs-width-is-initially-locked       t
-;;;          treemacs-workspace-switch-cleanup        nil)
-;;;
-;;;    ;; The default width and height of the icons is 22 pixels. If you are
-;;;    ;; using a Hi-DPI display, uncomment this to double the icon size.
-;;;    ;;(treemacs-resize-icons 44)
-;;;
-;;;    (treemacs-follow-mode t)
-;;;    (treemacs-filewatch-mode t)
-;;;    (treemacs-fringe-indicator-mode 'always)
-;;;    (treemacs-project-follow-mode t)
-;;;    
-;;;    (pcase (cons (not (null (executable-find "git")))
-;;;                 (not (null treemacs-python-executable)))
-;;;      (`(t . t)
-;;;       (treemacs-git-mode 'deferred))
-;;;      (`(t . _)
-;;;       (treemacs-git-mode 'simple)))
-;;;
-;;;    (treemacs-hide-gitignored-files-mode nil))
-;;;  :bind
-;;;  (:map global-map
-;;;        ("M-0"       . treemacs-select-window)
-;;;        ("C-x t 1"   . treemacs-delete-other-windows)
-;;;        ("C-x t t"   . treemacs)
-;;;        ("C-x t d"   . treemacs-select-directory)
-;;;        ("C-x t B"   . treemacs-bookmark)
-;;;        ("C-x t C-t" . treemacs-find-file)
-;;;        ("C-x t M-t" . treemacs-find-tag)))
-;;;
-;;;(use-package treemacs-projectile
-;;;  :after (treemacs projectile)
-;;;  :ensure t)
-;;;
-;;;(use-package treemacs-icons-dired
-;;;  :hook (dired-mode . treemacs-icons-dired-enable-once)
-;;;  :ensure t)
-;;;
-;;;(use-package treemacs-magit
-;;;  :after (treemacs magit)
-;;;  :ensure t)
-;;;
-;;;(use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
-;;;  :after (treemacs persp-mode) ;;or perspective vs. persp-mode
-;;;  :ensure t
-;;;  :config (treemacs-set-scope-type 'Perspectives))
-;;;
-;;;(use-package treemacs-tab-bar ;;treemacs-tab-bar if you use tab-bar-mode
-;;;  :after (treemacs)
-;;;  :ensure t
-;;;  :config (treemacs-set-scope-type 'Tabs))
-
-
-;; Icon package for displaying in neotree and modelines
-;(use-package all-the-icons
-;  :if (display-graphic-p)
-;  :config (unless (find-font (font-spec :name "all-the-icons"))
-;            (all-the-icons-install-fonts t))
-;)
 
 
 ;; Allows auto completion of commands in the command buffer
@@ -589,30 +485,24 @@ inhibit-startup-echo-area-message t)
    )
 )
 
-
 ;; Debugging with realgud
 (use-package realgud
-  :ensure t
+  :ensure nil
 )
 
 (use-package display-fill-column-indicator
-  :ensure t
+  :ensure nil
   :hook
-  (python-mode . (lambda()
-                   (message "hook fired for display-fill-column-indicator")
+  (((prog-mode text-mode) . (lambda()
                    (setq display-fill-column-indicator-column 140)
-                   (display-fill-column-indicator-mode)
-                   
-                 )
-               ) 
+                   (display-fill-column-indicator-mode))))
 )
 
 ;; Python syntax highlighting support
 (use-package python
   :config
-    (setq display-fill-column-indicator-column 140)
     (add-to-list 'flycheck-disabled-checkers 'python-flake8)
-    (eldoc-mode -1)
+    (eldoc-mode t)
     ;(setq python-shell-interpreter "ipython"
     ;      python-shell-interpreter-args "--simple-prompt -i")
 
