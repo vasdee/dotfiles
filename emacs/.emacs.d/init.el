@@ -103,7 +103,8 @@ inhibit-startup-echo-area-message t)
     "Like `find-file' but with `default-directory' set to the one specified by listing header."
     (interactive)
     (let ((default-directory (dired-current-directory)))
-      (call-interactively #'find-file)))
+                                        ;(call-interactively #'find-file)))
+      (call-interactively #'dired-create-empty-file)))
 
 ;; ---------------------------------------------------------
 ;; Package configurations
@@ -141,6 +142,10 @@ inhibit-startup-echo-area-message t)
    ; Disable these until figure out what is required for flycheck linting
    ;(flycheck-add-mode 'csharp-omnisharp-codecheck 'csharp-mode)
    ;(add-to-list 'flycheck-checkers 'csharp-omnisharp-codecheck)
+)
+
+(use-package poetry
+  :ensure t
 )
 
 (use-package sql
@@ -286,7 +291,13 @@ inhibit-startup-echo-area-message t)
 (use-package dired-sidebar
   :bind (
          ("C-x t" . dired-sidebar-toggle-sidebar)
-         ("C-x w" . set-my-var)
+         )
+  :bind
+  (:map dired-sidebar-mode-map
+        ("N" . my/dired-find-file)
+        ;("F" . dired-create-empty-file)
+        ;("C-t c d" . dired-create-directory)
+        ;("C-t d d" . dired-do-delete)
         )
   :ensure t
   :commands (dired-sidebar-toggle-sidebar)
@@ -296,6 +307,8 @@ inhibit-startup-echo-area-message t)
               (unless (file-remote-p default-directory)
                 (auto-revert-mode))))
   :config
+  (add-to-list 'dired-sidebar-special-refresh-commands '(my/dired-find-file dired-create-empty-file))
+  (setq dired-sidebar-should-follow-file t)
   (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
   (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
   ;(setq dired-sidebar-subtree-line-prefix "__")
@@ -538,6 +551,10 @@ inhibit-startup-echo-area-message t)
   ;(python-mode . (lambda () (pyvenv-activate .venv)))
 )
 
+(use-package python-mode
+  :ensure t
+)
+
 (use-package yaml-mode
   :ensure t
   :init
@@ -596,7 +613,7 @@ inhibit-startup-echo-area-message t)
    '("37768a79b479684b0756dec7c0fc7652082910c37d8863c35b702db3f16000f8" "2dff5f0b44a9e6c8644b2159414af72261e38686072e063aa66ee98a2faecf0e" "3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))
  '(js-indent-level 4)
  '(package-selected-packages
-   '(dired-gitignore dired ls-lisp all-the-icons-dired-mode display-fill-column-indicator treemacs-tab-bar treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs pyvenv just-mode treemacs-all-the-icons terraform-mode dap-python sql-mode svelte-mode svelt-mode color-theme-sanityinc-tomorrow csv-mode dash dap-mode makefile-executor omnisharp typescript-mode dashboard magit-popup neotree nord-theme projectile spacemacs-theme move-text aggressive-indent csharp-mode restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
+   '(python-mode poetry dired-gitignore dired ls-lisp all-the-icons-dired-mode display-fill-column-indicator treemacs-tab-bar treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs pyvenv just-mode treemacs-all-the-icons terraform-mode dap-python sql-mode svelte-mode svelt-mode color-theme-sanityinc-tomorrow csv-mode dash dap-mode makefile-executor omnisharp typescript-mode dashboard magit-popup neotree nord-theme projectile spacemacs-theme move-text aggressive-indent csharp-mode restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(sgml-basic-offset 4)
  '(warning-suppress-types '((comp))))
