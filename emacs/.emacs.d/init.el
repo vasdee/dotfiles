@@ -67,6 +67,26 @@ inhibit-startup-echo-area-message t)
  ((font-available-p "Inconsolata")
   (set-frame-font "Inconsolata-12" nil t)))
 
+
+;; credit: yorickvP on Github
+(when (getenv "WSLENV")
+  (message . ("In a WSL environment, setting custom copy and paste using wl-clipboard if installed"))
+  (setq wl-copy-process nil)
+  (defun wl-copy (text)
+    (setq wl-copy-process (make-process :name "wl-copy"
+                                        :buffer nil
+                                        :command '("wl-copy" "-f" "-n")
+                                        :connection-type 'pipe))
+    (process-send-string wl-copy-process text)
+    (process-send-eof wl-copy-process))
+  (defun wl-paste ()
+    (if (and wl-copy-process (process-live-p wl-copy-process))
+        nil ; should return nil if we're the current paste owner
+        (shell-command-to-string "wl-paste -n | tr -d \r")))
+  (setq interprogram-cut-function 'wl-copy)
+  (setq interprogram-paste-function 'wl-paste)
+)
+
 ;; -------------------------------------------------------
 ;; Add package management and bootstrap use package
 ;; -------------------------------------------------------
@@ -99,12 +119,18 @@ inhibit-startup-echo-area-message t)
   (load-file "~/.emacs.d/init.el")
 )
 
-(defun my/dired-find-file ()
+(defun my/dired-new-file ()
     "Like `find-file' but with `default-directory' set to the one specified by listing header."
     (interactive)
     (let ((default-directory (dired-current-directory)))
                                         ;(call-interactively #'find-file)))
       (call-interactively #'dired-create-empty-file)))
+
+(defun my/dired-gitignore-filter()
+    "Enable dired-gitignore-mode to use the current directory for filtering."
+    (interactive)
+    (let ((default-directory (dired-current-directory)))
+      (call-interactively #'dired-gitignore-mode)))
 
 ;; ---------------------------------------------------------
 ;; Package configurations
@@ -112,10 +138,13 @@ inhibit-startup-echo-area-message t)
 
 (use-package dired
   :ensure nil
-  :bind ("C-x C-f" . my/dired-find-file)
   :config
   (setq dired-listing-switches "-laGh1v --group-directories-first")
 )
+
+;(use-package dired-filter
+;  :ensure t
+;)
 
 (use-package terraform-mode
   :ensure t
@@ -184,7 +213,7 @@ inhibit-startup-echo-area-message t)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package spacemacs-theme
-  :defer t
+  :ensure t
   :init
   (load-theme 'spacemacs-dark t)
 )
@@ -284,17 +313,21 @@ inhibit-startup-echo-area-message t)
 )
 
 (defun set-my-var ()
-  "Set the side bar width to large"
+  "Set the side bar width to large."
   (interactive)
   (setq dired-sidebar-width 100))
+
 
 (use-package dired-sidebar
   :bind (
          ("C-x t" . dired-sidebar-toggle-sidebar)
+         ("C-x j" . dired-sidebar-jump-to-sidebar)
          )
   :bind
   (:map dired-sidebar-mode-map
-        ("N" . my/dired-find-file)
+        ("N" . my/dired-new-file)
+        ("C-i" . #'dired-gitignore-mode)
+        ;("C-i" . dired-filter-by-git-ignored)
         ;("F" . dired-create-empty-file)
         ;("C-t c d" . dired-create-directory)
         ;("C-t d d" . dired-do-delete)
@@ -456,9 +489,14 @@ inhibit-startup-echo-area-message t)
     (svelte-basic-offset 4)
 )
 
+(use-package ace-window
+  :ensure t
+  :bind (("M-o" . ace-window))
+)
+
 ;; Supports highlighting of csharp projects
 (use-package  csharp-mode
-  :ensure t
+  :ensure nil
   :config
     ;; There are errors in the current version, this seems stable enough
     (setq lsp-csharp-server-path "~/.emacs.d/.cache/lsp/latest/omnisharp-roslyn/Omnisharp")
@@ -515,11 +553,6 @@ inhibit-startup-echo-area-message t)
    )
 )
 
-;; Debugging with realgud
-(use-package realgud
-  :ensure nil
-)
-
 (use-package display-fill-column-indicator
   :ensure nil
   :hook
@@ -553,6 +586,8 @@ inhibit-startup-echo-area-message t)
 
 (use-package python-mode
   :ensure t
+  :config 
+  (py-underscore-word-syntax-p-off)
 )
 
 (use-package yaml-mode
@@ -612,8 +647,11 @@ inhibit-startup-echo-area-message t)
  '(custom-safe-themes
    '("37768a79b479684b0756dec7c0fc7652082910c37d8863c35b702db3f16000f8" "2dff5f0b44a9e6c8644b2159414af72261e38686072e063aa66ee98a2faecf0e" "3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))
  '(js-indent-level 4)
+ '(newsticker-url-list
+   '(("phoronix" "https://www.phoronix.com/phoronix-rss.php" nil nil nil)
+     ("hacker news" "https://news.ycombinator.com/rss" nil nil nil)))
  '(package-selected-packages
-   '(python-mode poetry dired-gitignore dired ls-lisp all-the-icons-dired-mode display-fill-column-indicator treemacs-tab-bar treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs pyvenv just-mode treemacs-all-the-icons terraform-mode dap-python sql-mode svelte-mode svelt-mode color-theme-sanityinc-tomorrow csv-mode dash dap-mode makefile-executor omnisharp typescript-mode dashboard magit-popup neotree nord-theme projectile spacemacs-theme move-text aggressive-indent csharp-mode restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
+   '(omnisharp python-mode poetry dired-gitignore dired ls-lisp all-the-icons-dired-mode display-fill-column-indicator pyvenv just-mode terraform-mode dap-python sql-mode svelte-mode svelt-mode color-theme-sanityinc-tomorrow csv-mode dash dap-mode makefile-executor typescript-mode dashboard magit-popup neotree nord-theme projectile spacemacs-theme move-text aggressive-indent restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(sgml-basic-offset 4)
  '(warning-suppress-types '((comp))))

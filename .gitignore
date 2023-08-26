@@ -14,3 +14,5 @@ emacs/.emacs.d/*
 # eg WSL vs Actual Linux
 bash/.bash/custom.bash
 bash/.bash/.secrets
+
+ssh/.ssh/iiot/
