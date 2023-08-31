@@ -58,6 +58,8 @@ inhibit-startup-echo-area-message t)
   (find-font (font-spec :name font-name)))
 
 (cond
+ ((font-available-p "JetBrains Mono")
+  (set-frame-font "JetBrains Mono-10" nil t))
  ((font-available-p "Cascadia Code")
   (set-frame-font "Cascadia Code-12" nil t))
  ((font-available-p "Hack")
@@ -158,7 +160,10 @@ inhibit-startup-echo-area-message t)
  (setq dashboard-center-content t)
  (setq dashboard-items '((recents  . 5)
                          (bookmarks . 5)
-                         (projects . 20))))
+                         (projects . 20)))
+ (setq dashboard-display-icons-p t)
+ (setq dashboard-icon-type 'all-the-icons) ;; use `all-the-icons' package 
+ )
 
 ;; For linting and on the fly syntax checking
 (use-package flycheck
@@ -215,7 +220,7 @@ inhibit-startup-echo-area-message t)
 (use-package spacemacs-theme
   :ensure t
   :init
-  (load-theme 'spacemacs-dark t)
+  ;(load-theme 'spacemacs-dark t)
 )
 
 (use-package color-theme-sanityinc-tomorrow
@@ -229,8 +234,15 @@ inhibit-startup-echo-area-message t)
 (use-package dracula-theme
  :ensure t
  :init
- (load-theme 'dracula t)
+ ;(load-theme 'dracula t)
 )
+
+(use-package material-theme
+ :ensure t
+ :init
+ (load-theme 'material t)
+)
+
 
 ;; Silver Searcher support
 (use-package ag
@@ -311,11 +323,6 @@ inhibit-startup-echo-area-message t)
   :ensure t
   ;:bind (("" . #'dired-gitignore-mode))
 )
-
-(defun set-my-var ()
-  "Set the side bar width to large."
-  (interactive)
-  (setq dired-sidebar-width 100))
 
 
 (use-package dired-sidebar
@@ -502,12 +509,6 @@ inhibit-startup-echo-area-message t)
     (setq lsp-csharp-server-path "~/.emacs.d/.cache/lsp/latest/omnisharp-roslyn/Omnisharp")
  )
 
-;; Handy functions to support csharp mode
-(use-package omnisharp
-  :after csharp-mode
-  :ensure t
-)
-
 ;; The user interface parts of lsp
 (use-package lsp-ui
   :ensure t
@@ -651,7 +652,7 @@ inhibit-startup-echo-area-message t)
    '(("phoronix" "https://www.phoronix.com/phoronix-rss.php" nil nil nil)
      ("hacker news" "https://news.ycombinator.com/rss" nil nil nil)))
  '(package-selected-packages
-   '(omnisharp python-mode poetry dired-gitignore dired ls-lisp all-the-icons-dired-mode display-fill-column-indicator pyvenv just-mode terraform-mode dap-python sql-mode svelte-mode svelt-mode color-theme-sanityinc-tomorrow csv-mode dash dap-mode makefile-executor typescript-mode dashboard magit-popup neotree nord-theme projectile spacemacs-theme move-text aggressive-indent restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
+   '(python-mode poetry dired-gitignore dired ls-lisp all-the-icons-dired-mode display-fill-column-indicator pyvenv just-mode terraform-mode dap-python sql-mode svelte-mode svelt-mode color-theme-sanityinc-tomorrow csv-mode dash dap-mode makefile-executor typescript-mode dashboard magit-popup neotree nord-theme projectile spacemacs-theme move-text aggressive-indent restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(sgml-basic-offset 4)
  '(warning-suppress-types '((comp))))
