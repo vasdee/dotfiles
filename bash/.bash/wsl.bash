@@ -10,6 +10,13 @@ if [ -f /etc/wsl.conf ]; then
 
     export PROJECTS=/mnt/c/Projects/
 
+    # A stupid workaround to WSLg losing the X11 server socket
+    function wsl_fix_x11_socket()
+    {
+	sudo rm -r /tmp/.X11-unix && ln -s /mnt/wslg/.X11-unix /tmp/.X11-unix
+    }
+
+    wsl_fix_x11_socket
     # For use within az login commands, this allows windows edge browser to open the interactive
     # loging auth screen
     #export BROWSER='/mnt/c/Program\ Files\ \(x86\)/Microsoft/Edge/Application/msedge.exe'

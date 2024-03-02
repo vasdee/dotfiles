@@ -9,6 +9,7 @@ emacs/.emacs.d/*
 !emacs/.emacs.d/init.el
 !emacs/.emacs.d/snippets/
 !emacs/.emacs.d/templates/
+!emacs/.emacs.d/early-init.el
 
 # This file is for custom bash directives that aren't common
 # eg WSL vs Actual Linux

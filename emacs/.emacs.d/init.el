@@ -1,45 +1,30 @@
 ;; ---------------------------------------------------------
 ;; Global Configuration across all modes
 ;; ---------------------------------------------------------
-;(global-display-line-numbers-mode)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
-;
-; Never use tabs
-(setq-default indent-tabs-mode nil)
 
-(setq backup-directory-alist
-      `((".*" . "~/.emacs.d/backups")))
-(setq auto-save-file-name-transforms
-      `((".*" "~/.emacs.d/backups" t)))
+(use-package emacs
+  :init
+  (defalias 'yes-or-no-p 'y-or-n-p) ;; life is too short
+  (show-paren-mode t)
+  (setq enable-local-eval t) 
+  (setq make-backup-files nil)
+  (setq auto-save-default nil)
+  ;; keep backup and save files in a dedicated directory
+  (setq backup-directory-alist
+        `((".*" . ,(concat user-emacs-directory "backups")))
+        auto-save-file-name-transforms
+        `((".*" ,(concat user-emacs-directory "backups") t)))
+  (setq indent-tabs-mode nil)
 
-;; Global Config options
-(show-paren-mode 1)
+  ;; No bell notification
+  (setq ring-bell-function 'ignore)
+  (setq visible-bell 1)
 
-;; No Splash
-(setq inhibit-startup-message t
-inhibit-startup-echo-area-message t)
+  (set-default 'truncate-lines t) ;; turn off line wrapping
+  (delete-selection-mode t)
+)
 
-(setq ring-bell-function 'ignore)
-(setq visible-bell 1)
-(scroll-bar-mode -1)
-(tool-bar-mode  -1)
-(tooltip-mode -1)
-(menu-bar-mode -1)
-(column-number-mode 1)
-;(setq display-line-numbers 'relative)
-
-;; stop creating backup~ files
-(setq make-backup-files nil)
-
-;; stop creating #autosave# files
-(setq auto-save-default nil)
-
-;; enable dir-locals evals without prompting
-(setq enable-local-eval t) 
-
-;; turn off line wrapping
-(set-default 'truncate-lines t) 
-(delete-selection-mode t)
 
 ;; Nicer window moving keys
 (when (fboundp 'windmove-default-keybindings)
@@ -121,32 +106,19 @@ inhibit-startup-echo-area-message t)
   (load-file "~/.emacs.d/init.el")
 )
 
-(defun my/dired-new-file ()
-    "Like `find-file' but with `default-directory' set to the one specified by listing header."
-    (interactive)
-    (let ((default-directory (dired-current-directory)))
-                                        ;(call-interactively #'find-file)))
-      (call-interactively #'dired-create-empty-file)))
-
-(defun my/dired-gitignore-filter()
-    "Enable dired-gitignore-mode to use the current directory for filtering."
-    (interactive)
-    (let ((default-directory (dired-current-directory)))
-      (call-interactively #'dired-gitignore-mode)))
-
 ;; ---------------------------------------------------------
 ;; Package configurations
 ;; ---------------------------------------------------------
+
+(use-package docker
+  :ensure t
+  :bind ("C-c d" . docker))
 
 (use-package dired
   :ensure nil
   :config
   (setq dired-listing-switches "-laGh1v --group-directories-first")
 )
-
-;(use-package dired-filter
-;  :ensure t
-;)
 
 (use-package terraform-mode
   :ensure t
@@ -262,6 +234,11 @@ inhibit-startup-echo-area-message t)
 )
 
 
+;;;(use-package project
+;;;  :ensure t
+;;;  :bind-keymap ("C-c p" . project-prefix-map)
+;;;)
+
 ;; Project manager. Organises projects by .git presence and other known files
 (use-package projectile
  :ensure t
@@ -324,41 +301,142 @@ inhibit-startup-echo-area-message t)
   ;:bind (("" . #'dired-gitignore-mode))
 )
 
-
-(use-package dired-sidebar
-  :bind (
-         ("C-x t" . dired-sidebar-toggle-sidebar)
-         ("C-x j" . dired-sidebar-jump-to-sidebar)
-         )
-  :bind
-  (:map dired-sidebar-mode-map
-        ("N" . my/dired-new-file)
-        ("C-i" . #'dired-gitignore-mode)
-        ;("C-i" . dired-filter-by-git-ignored)
-        ;("F" . dired-create-empty-file)
-        ;("C-t c d" . dired-create-directory)
-        ;("C-t d d" . dired-do-delete)
-        )
+(use-package treemacs
   :ensure t
-  :commands (dired-sidebar-toggle-sidebar)
+  :defer t
   :init
-  (add-hook 'dired-sidebar-mode-hook
-            (lambda ()
-              (unless (file-remote-p default-directory)
-                (auto-revert-mode))))
+  (with-eval-after-load 'winum
+    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
   :config
-  (add-to-list 'dired-sidebar-special-refresh-commands '(my/dired-find-file dired-create-empty-file))
-  (setq dired-sidebar-should-follow-file t)
-  (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
-  (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
-  ;(setq dired-sidebar-subtree-line-prefix "__")
-  (setq dired-sidebar-theme 'icons)
-  (setq dired-sidebar-use-term-integration t)
-  ;(setq dired-sidebar-use-custom-font t)
-  (setq dired-sidebar-width 50 )
-  :hook
-  (dired-sidebar-mode . #'hide-mode-line-mode)
-)
+  (progn
+    (setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
+          treemacs-deferred-git-apply-delay        0.5
+          treemacs-directory-name-transformer      #'identity
+          treemacs-display-in-side-window          t
+          treemacs-eldoc-display                   'simple
+          treemacs-file-event-delay                2000
+          treemacs-file-extension-regex            treemacs-last-period-regex-value
+          treemacs-file-follow-delay               0.2
+          treemacs-file-name-transformer           #'identity
+          treemacs-follow-after-init               t
+          treemacs-expand-after-init               t
+          treemacs-find-workspace-method           'find-for-file-or-pick-first
+          treemacs-git-command-pipe                ""
+          treemacs-goto-tag-strategy               'refetch-index
+          treemacs-header-scroll-indicators        '(nil . "^^^^^^")
+          treemacs-hide-dot-git-directory          t
+          treemacs-indentation                     2
+          treemacs-indentation-string              " "
+          treemacs-is-never-other-window           nil
+          treemacs-max-git-entries                 5000
+          treemacs-missing-project-action          'ask
+          treemacs-move-forward-on-expand          nil
+          treemacs-no-png-images                   nil
+          treemacs-no-delete-other-windows         t
+          treemacs-project-follow-cleanup          nil
+          treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+          treemacs-position                        'left
+          treemacs-read-string-input               'from-child-frame
+          treemacs-recenter-distance               0.1
+          treemacs-recenter-after-file-follow      nil
+          treemacs-recenter-after-tag-follow       nil
+          treemacs-recenter-after-project-jump     'always
+          treemacs-recenter-after-project-expand   'on-distance
+          treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask")
+          treemacs-project-follow-into-home        nil
+          treemacs-show-cursor                     nil
+          treemacs-show-hidden-files               t
+          treemacs-silent-filewatch                nil
+          treemacs-silent-refresh                  nil
+          treemacs-sorting                         'alphabetic-asc
+          treemacs-select-when-already-in-treemacs 'move-back
+          treemacs-space-between-root-nodes        t
+          treemacs-tag-follow-cleanup              t
+          treemacs-tag-follow-delay                1.5
+          treemacs-text-scale                      nil
+          treemacs-user-mode-line-format           nil
+          treemacs-user-header-line-format         nil
+          treemacs-wide-toggle-width               70
+          treemacs-width                           35
+          treemacs-width-increment                 1
+          treemacs-width-is-initially-locked       t
+          treemacs-workspace-switch-cleanup        nil)
+
+    ;; The default width and height of the icons is 22 pixels. If you are
+    ;; using a Hi-DPI display, uncomment this to double the icon size.
+    ;;(treemacs-resize-icons 44)
+
+    (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (treemacs-fringe-indicator-mode 'always)
+    (when treemacs-python-executable
+      (treemacs-git-commit-diff-mode t))
+
+    (pcase (cons (not (null (executable-find "git")))
+                 (not (null treemacs-python-executable)))
+      (`(t . t)
+       (treemacs-git-mode 'deferred))
+      (`(t . _)
+       (treemacs-git-mode 'simple)))
+
+    (treemacs-hide-gitignored-files-mode nil))
+  :bind
+  (:map global-map
+        ("M-0"       . treemacs-select-window)
+        ("C-x t 1"   . treemacs-delete-other-windows)
+        ("C-x t t"   . treemacs)
+        ("C-x t d"   . treemacs-select-directory)
+        ("C-x t B"   . treemacs-bookmark)
+        ("C-x t C-t" . treemacs-find-file)
+        ("C-x t M-t" . treemacs-find-tag)))
+
+;;;(use-package treemacs-projectile
+;;;  :after (treemacs projectile)
+;;;  :ensure t)
+
+(use-package treemacs-icons-dired
+  :hook (dired-mode . treemacs-icons-dired-enable-once)
+  :ensure t)
+
+(use-package treemacs-magit
+  :after (treemacs magit)
+  :ensure t)
+
+;;(use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
+;;  :after (treemacs persp-mode) ;;or perspective vs. persp-mode
+;;  :ensure t
+;;  :config (treemacs-set-scope-type 'Perspectives))
+
+;;(use-package tab-bar
+;;  :ensure nil
+;;  :config
+;;  (tab-bar-mode t)
+;;  :bind (
+;;         ("M-<left>". 'tab-bar-switch-to-prev-tab)
+;;         ("M-<right>". 'tab-bar-switch-to-next-tab)
+;;  )
+;;)
+;;
+;;(use-package treemacs-tab-bar ;;treemacs-tab-bar if you use tab-bar-mode
+;;  :after (treemacs)
+;;  :ensure t
+;;  :config (treemacs-set-scope-type 'Tabs))
+
+
+;;(use-package tabspaces
+;;  ;; use this next line only if you also use straight, otherwise ignore it. 
+;;  :ensure t
+;;  :hook (after-init . tabspaces-mode) ;; use this only if you want the minor-mode loaded at startup. 
+;;  :commands (tabspaces-switch-or-create-workspace
+;;             tabspaces-open-or-create-project-and-workspace)
+;;  :custom
+;;  (tabspaces-use-filtered-buffers-as-default t)
+;;  (tabspaces-default-tab "Default")
+;;  (tabspaces-remove-to-default t)
+;;  (tabspaces-include-buffers '("*scratch*"))
+;;  ;; sessions
+;;  (tabspaces-session t)
+;;  (tabspaces-session-auto-restore t))
 
 
 ;; Allows auto completion of commands in the command buffer
@@ -484,17 +562,6 @@ inhibit-startup-echo-area-message t)
 ;(use-package company-lsp
 ;  :ensure t
 ;)
-
-(use-package svelte-mode
-  :ensure t
-  :init
-    (setq svelte-basic-offset 4)
-  :config
-    (setq svelte-basic-offset 4)
-  :custom
-    (customize-set-variable 'svelte-basic-offset 4)
-    (svelte-basic-offset 4)
-)
 
 (use-package ace-window
   :ensure t
@@ -652,7 +719,7 @@ inhibit-startup-echo-area-message t)
    '(("phoronix" "https://www.phoronix.com/phoronix-rss.php" nil nil nil)
      ("hacker news" "https://news.ycombinator.com/rss" nil nil nil)))
  '(package-selected-packages
-   '(python-mode poetry dired-gitignore dired ls-lisp all-the-icons-dired-mode display-fill-column-indicator pyvenv just-mode terraform-mode dap-python sql-mode svelte-mode svelt-mode color-theme-sanityinc-tomorrow csv-mode dash dap-mode makefile-executor typescript-mode dashboard magit-popup neotree nord-theme projectile spacemacs-theme move-text aggressive-indent restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
+   '(tabspaces awesome-tab centaur-tabs treemacs-tab-bar treemacs-persp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs python-mode poetry dired-gitignore dired ls-lisp all-the-icons-dired-mode display-fill-column-indicator pyvenv just-mode terraform-mode dap-python sql-mode svelte-mode svelt-mode color-theme-sanityinc-tomorrow csv-mode dash dap-mode makefile-executor typescript-mode dashboard magit-popup neotree nord-theme projectile spacemacs-theme move-text aggressive-indent restclient x509-mode powershell all-the-icons-dired lsp-elixir flycheck-prospector doom-modeline docker-compose-mode use-package company-lsp lsp-python lsp-ui lsp-mode dockerfile-mode add-node-modules-path all-the-icons counsel json-mode yaml-mode ag magit fish-mode markdown-mode rjsx-mode dracula-theme yasnippet-snippets js2-mode web-mode flycheck))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(sgml-basic-offset 4)
  '(warning-suppress-types '((comp))))
