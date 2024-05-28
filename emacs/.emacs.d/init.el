@@ -56,7 +56,8 @@
 
 
 ;; credit: yorickvP on Github
-(when (getenv "WSLENV")
+;; temporarily disabling this method, as this is not a wayland build of emacs
+(when (getenv "WSLENV2")
   (message . ("In a WSL environment, setting custom copy and paste using wl-clipboard if installed"))
   (setq wl-copy-process nil)
   (defun wl-copy (text)
@@ -109,6 +110,12 @@
 ;; ---------------------------------------------------------
 ;; Package configurations
 ;; ---------------------------------------------------------
+
+(use-package just-mode
+  :ensure t
+)
+
+
 
 (use-package docker
   :ensure t
@@ -505,7 +512,7 @@
     (web-mode . lsp)
     (svelte-mode . lsp)
     (sql-mode . lsp)
-    (lsp-after-initialize . (lambda() (flycheck-add-next-checker 'lsp 'javascript-eslint)))
+    (lsp-after-initialize . (lambda() (flycheck-add-next-checker 'lsp 'python-ruff)))
 )
 
 ;;
@@ -514,16 +521,6 @@
   :hook (python-mode . (lambda ()
                          (setq lsp-pyright-venv-directory ".venv")
                          (require 'lsp-pyright)
-                         (when (> (length (locate-dominating-file default-directory "Pipfile")) 0)
-                           (message . ("Found pip file, adding venv to path"))
-                           (setq venv-path (concat default-directory ".venv/bin"))
-                           (message . (venv-path))
-                           ;(add-to-list 'python-shell-exec-path venv-path)
-                           ;;(setq python-shell-exec-path (append python-shell-exec-path '(concat (default-directory ".venv"))))
-                           ;;(setq lsp-pyright-venv-path (concat (string-trim-right (shell-command-to-string "pipenv --venv"))))
-                           ;;(setq lsp-pyright-venv-path "/home/millrt9/.local/share/virtualenvs")
-                           ;;(setq lsp-pyright-venv-directory (file-name-nondirectory (string-trim-right (shell-command-to-string "pipenv --venv"))))
-                         )
                          (lsp-deferred)))
 )  ; or lsp-deferred
 
@@ -630,19 +627,14 @@
 )
 
 ;; Python syntax highlighting support
-(use-package python
-  :config
-    (add-to-list 'flycheck-disabled-checkers 'python-flake8)
-    (eldoc-mode t)
-    ;(setq python-shell-interpreter "ipython"
-    ;      python-shell-interpreter-args "--simple-prompt -i")
-
-  (when (> (length (locate-dominating-file default-directory "Pipfile")) 0)
-    (message . ("Found pip file, adding venv to path"))
-    (add-to-list 'exec-path (concat (string-trim-right (shell-command-to-string "pipenv --venv")) "/bin/"))
-    (setq lsp-pyright-venv-path (concat (string-trim-right (shell-command-to-string "pipenv --venv")) "/bin/"))
-    )
-)
+;; this is disabled in favour of python-mode.el
+;;(use-package python
+;;  :config
+;;  (add-to-list 'flycheck-disabled-checkers 'python-flake8)
+;;  (add-to-list 'flycheck-checkers 'python-ruff)
+;;  (eldoc-mode t)
+;;
+;;)
 
 (use-package pyvenv
   :ensure t
@@ -654,8 +646,11 @@
 
 (use-package python-mode
   :ensure t
-  :config 
+  :config
   (py-underscore-word-syntax-p-off)
+  (add-to-list 'flycheck-disabled-checkers 'python-flake8)
+  (add-to-list 'flycheck-checkers 'python-ruff)
+  (eldoc-mode t)
 )
 
 (use-package yaml-mode
