@@ -7,7 +7,7 @@ alias cdd="cd ~/code/dash/"
 alias dots="cd ~/dotfiles/"
 alias la='ls -A'
 alias l='ls -CF'
-
+alias dotenv="[[ -f .env ]] && set -a && source .env && set +a"
 
 function docker_client_proxy_on() {
     sed -iE "s|\"httpProxy\":.*$|\"httpProxy\": \"${LOCAL_PROXY_DOMAIN}\",|g" ~/.docker/config.json
