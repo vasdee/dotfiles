@@ -1,7 +1,7 @@
 # Do specific  WSL things if the conf file exists
 # To force this to happen, sudo touch /etc/wsl.conf an empty file
 if [ -n "$WSLENV" ]; then
-
+    echo "We are in WSL environment, set some custom hacks..."
     # Set the display server from the gateway set by wsl
     #export DISPLAY=$(awk '/nameserver/ {print $2}' /etc/resolv.conf):0.0
 
@@ -23,4 +23,6 @@ if [ -n "$WSLENV" ]; then
     export BROWSER=/usr/bin/wslview
     # Useful for x-server displaying of apps
     #export LIBGL_ALWAYS_INDIRECT=1
+    export COLORTERM=truecolor
+    export JUST_IIOT_PATH=${HOME}/.config/just/justfile
 fi

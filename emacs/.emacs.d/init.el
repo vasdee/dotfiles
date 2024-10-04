@@ -113,6 +113,8 @@
 
 (use-package just-mode
   :ensure t
+  :config
+  (setq-default indent-tabs-mode nil)
 )
 
 
@@ -253,7 +255,7 @@
    (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
    (projectile-mode +1)
-   (setq projectile-project-search-path '("~/Work/IIoT/" "~/Work/" "~/Projects" "~/code/iiot-platform/"))
+   (setq projectile-project-search-path '("~/Work/IIoT/" "~/Work/" "~/Projects" "~/code/iiot-platform/" "~/code/psdcp/"))
    (setq projectile-completion-system 'ivy)
    (setq frame-title-format
     '(""
