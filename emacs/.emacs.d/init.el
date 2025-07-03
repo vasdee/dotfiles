@@ -23,6 +23,17 @@
 
   (set-default 'truncate-lines t) ;; turn off line wrapping
   (delete-selection-mode t)
+
+  (setq window-sides-slots '(1 0 1 0))
+
+  (add-to-list 'display-buffer-alist
+        `(,(rx (| "*compilation*" "*grep*" "*Embark Export" "*Occur" "*Flycheck" "*Messages" "*Help" "*scratch"))
+          display-buffer-in-side-window
+          (side . right)
+          (slot . 0)
+          (window-parameters . ((no-delete-other-windows . t)))
+          (window-width . 80)))
+  
 )
 
 
@@ -57,7 +68,7 @@
 
 ;; credit: yorickvP on Github
 ;; temporarily disabling this method, as this is not a wayland build of emacs
-(when (getenv "WSLENV")
+(when (getenv "WSLENV2")
   (message . ("In a WSL environment, setting custom copy and paste using wl-clipboard if installed"))
   (setq wl-copy-process nil)
   (defun wl-copy (text)
@@ -117,8 +128,6 @@
   (setq-default indent-tabs-mode nil)
 )
 
-
-
 (use-package docker
   :ensure t
   :bind ("C-c d" . docker))
@@ -133,7 +142,6 @@
   :ensure t
 )
 
-
 (use-package dashboard
  :ensure t
  :config
@@ -144,7 +152,7 @@
                          (projects . 20)))
  (setq dashboard-display-icons-p t)
  (setq dashboard-icon-type 'all-the-icons) ;; use `all-the-icons' package 
- )
+)
 
 ;; For linting and on the fly syntax checking
 (use-package flycheck
@@ -157,10 +165,6 @@
    ; Disable these until figure out what is required for flycheck linting
    ;(flycheck-add-mode 'csharp-omnisharp-codecheck 'csharp-mode)
    ;(add-to-list 'flycheck-checkers 'csharp-omnisharp-codecheck)
-)
-
-(use-package poetry
-  :ensure t
 )
 
 (use-package sql
@@ -178,7 +182,7 @@
   (setq lsp-sqls-connections
     '(
       ((driver . "postgresql") (dataSourceName . "host=127.0.0.1 port=5433 user=postgres password=admin dbname=postgres sslmode=disable")))
-    ) 
+    )
 )
 
 ;; Mode for working with Dockerfile
@@ -206,9 +210,9 @@
 
 (use-package color-theme-sanityinc-tomorrow
   :ensure t
-  :init
   ;(load-theme 'sanityinc-tomorrow-night t)
   ;(load-theme 'sanityinc-tomorrow-bright t)
+  :init
   ;(load-theme 'sanityinc-tomorrow-eighties t)
 )
 
@@ -242,29 +246,32 @@
    (yas-global-mode +1)
 )
 
-
-;;;(use-package project
-;;;  :ensure t
-;;;  :bind-keymap ("C-c p" . project-prefix-map)
-;;;)
-
-;; Project manager. Organises projects by .git presence and other known files
-(use-package projectile
- :ensure t
- :config
-   (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
-   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-   (projectile-mode +1)
-   (setq projectile-project-search-path '("~/Work/IIoT/" "~/Work/" "~/Projects" "~/code/iiot-platform/" "~/code/psdcp/" "~/code/lat/"))
-   (setq projectile-completion-system 'ivy)
-   (setq frame-title-format
-    '(""
-      "%b"
-      (:eval
-       (let ((project-name (projectile-project-name)))
-         (unless (string= "-" project-name)
-           (format " [%s]" project-name))))))
+;; use in-built project.el to manage projects
+(use-package project
+  :ensure t
+  ;:bind-keymap ("C-c p" . project-prefix-map)
+  :config
+  ;; set the formatting to show the project name in the tab-bar
+  (setq tab-bar-format '(tab-bar-format-history tab-bar-format-tabs-groups tab-bar-separator tab-bar-format-add-tab))
+  ;; make the default action when switching/opening a project to select a file
+  (setq project-switch-commands 'project-find-file)  
 )
+
+;; Consolidates project buffers into a tab
+(use-package project-tab-groups
+  :ensure t
+  :config
+  (project-tab-groups-mode 1))
+
+
+;; Make the tab-bar look more flat, like what's in neovim
+(use-package vim-tab-bar
+  :ensure t
+  :commands vim-tab-bar-mode
+  :hook
+  (after-init . vim-tab-bar-mode)
+  :config
+  (setq vim-tab-bar-show-groups t))
 
 ;; Fix the indenting issues in emacs
 (use-package aggressive-indent
@@ -310,144 +317,6 @@
   ;:bind (("" . #'dired-gitignore-mode))
 )
 
-(use-package treemacs
-  :ensure t
-  :defer t
-  :init
-  (with-eval-after-load 'winum
-    (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
-  :config
-  (progn
-    (setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
-          treemacs-deferred-git-apply-delay        0.5
-          treemacs-directory-name-transformer      #'identity
-          treemacs-display-in-side-window          t
-          treemacs-eldoc-display                   'simple
-          treemacs-file-event-delay                2000
-          treemacs-file-extension-regex            treemacs-last-period-regex-value
-          treemacs-file-follow-delay               0.2
-          treemacs-file-name-transformer           #'identity
-          treemacs-follow-after-init               t
-          treemacs-expand-after-init               t
-          treemacs-find-workspace-method           'find-for-file-or-pick-first
-          treemacs-git-command-pipe                ""
-          treemacs-goto-tag-strategy               'refetch-index
-          treemacs-header-scroll-indicators        '(nil . "^^^^^^")
-          treemacs-hide-dot-git-directory          t
-          treemacs-indentation                     2
-          treemacs-indentation-string              " "
-          treemacs-is-never-other-window           nil
-          treemacs-max-git-entries                 5000
-          treemacs-missing-project-action          'ask
-          treemacs-move-forward-on-expand          nil
-          treemacs-no-png-images                   nil
-          treemacs-no-delete-other-windows         t
-          treemacs-project-follow-cleanup          nil
-          treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
-          treemacs-position                        'left
-          treemacs-read-string-input               'from-child-frame
-          treemacs-recenter-distance               0.1
-          treemacs-recenter-after-file-follow      nil
-          treemacs-recenter-after-tag-follow       nil
-          treemacs-recenter-after-project-jump     'always
-          treemacs-recenter-after-project-expand   'on-distance
-          treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask")
-          treemacs-project-follow-into-home        nil
-          treemacs-show-cursor                     nil
-          treemacs-show-hidden-files               t
-          treemacs-silent-filewatch                nil
-          treemacs-silent-refresh                  nil
-          treemacs-sorting                         'alphabetic-asc
-          treemacs-select-when-already-in-treemacs 'move-back
-          treemacs-space-between-root-nodes        t
-          treemacs-tag-follow-cleanup              t
-          treemacs-tag-follow-delay                1.5
-          treemacs-text-scale                      nil
-          treemacs-user-mode-line-format           nil
-          treemacs-user-header-line-format         nil
-          treemacs-wide-toggle-width               70
-          treemacs-width                           35
-          treemacs-width-increment                 1
-          treemacs-width-is-initially-locked       t
-          treemacs-workspace-switch-cleanup        nil)
-
-    ;; The default width and height of the icons is 22 pixels. If you are
-    ;; using a Hi-DPI display, uncomment this to double the icon size.
-    ;;(treemacs-resize-icons 44)
-
-    (treemacs-follow-mode t)
-    (treemacs-filewatch-mode t)
-    (treemacs-fringe-indicator-mode 'always)
-    (when treemacs-python-executable
-      (treemacs-git-commit-diff-mode t))
-
-    (pcase (cons (not (null (executable-find "git")))
-                 (not (null treemacs-python-executable)))
-      (`(t . t)
-       (treemacs-git-mode 'deferred))
-      (`(t . _)
-       (treemacs-git-mode 'simple)))
-
-    (treemacs-hide-gitignored-files-mode nil))
-  :bind
-  (:map global-map
-        ("M-0"       . treemacs-select-window)
-        ("C-x t 1"   . treemacs-delete-other-windows)
-        ("C-x t t"   . treemacs)
-        ("C-x t d"   . treemacs-select-directory)
-        ("C-x t B"   . treemacs-bookmark)
-        ("C-x t C-t" . treemacs-find-file)
-        ("C-x t M-t" . treemacs-find-tag)))
-
-;;;(use-package treemacs-projectile
-;;;  :after (treemacs projectile)
-;;;  :ensure t)
-
-(use-package treemacs-icons-dired
-  :hook (dired-mode . treemacs-icons-dired-enable-once)
-  :ensure t)
-
-(use-package treemacs-magit
-  :after (treemacs magit)
-  :ensure t)
-
-;;(use-package treemacs-persp ;;treemacs-perspective if you use perspective.el vs. persp-mode
-;;  :after (treemacs persp-mode) ;;or perspective vs. persp-mode
-;;  :ensure t
-;;  :config (treemacs-set-scope-type 'Perspectives))
-
-;;(use-package tab-bar
-;;  :ensure nil
-;;  :config
-;;  (tab-bar-mode t)
-;;  :bind (
-;;         ("M-<left>". 'tab-bar-switch-to-prev-tab)
-;;         ("M-<right>". 'tab-bar-switch-to-next-tab)
-;;  )
-;;)
-;;
-;;(use-package treemacs-tab-bar ;;treemacs-tab-bar if you use tab-bar-mode
-;;  :after (treemacs)
-;;  :ensure t
-;;  :config (treemacs-set-scope-type 'Tabs))
-
-
-;;(use-package tabspaces
-;;  ;; use this next line only if you also use straight, otherwise ignore it. 
-;;  :ensure t
-;;  :hook (after-init . tabspaces-mode) ;; use this only if you want the minor-mode loaded at startup. 
-;;  :commands (tabspaces-switch-or-create-workspace
-;;             tabspaces-open-or-create-project-and-workspace)
-;;  :custom
-;;  (tabspaces-use-filtered-buffers-as-default t)
-;;  (tabspaces-default-tab "Default")
-;;  (tabspaces-remove-to-default t)
-;;  (tabspaces-include-buffers '("*scratch*"))
-;;  ;; sessions
-;;  (tabspaces-session t)
-;;  (tabspaces-session-auto-restore t))
-
-
 ;; Allows auto completion of commands in the command buffer
 (use-package ivy
   :ensure t
@@ -460,7 +329,7 @@
     ("C-x B" . ivy-switch-buffer-other-window)
 )
 
-;; Find 
+;; ensures completion happens in ivy
 (use-package counsel
   :ensure t
   :after ivy
@@ -468,7 +337,7 @@
   (counsel-mode)
   :bind
     ;; Set a VSCode style find file in project lookup key
-  ("C-x p" . counsel-git)
+    ("C-c p f" . counsel-find-file)
 )
 
 ;; Better searching control
@@ -491,100 +360,51 @@
   :ensure t
 )
 
-;; Language Server protocol support for code completion
-(use-package lsp-mode
+(use-package eglot
   :ensure t
-  :commands lsp
-  :init
-    (setq lsp-keymap-prefix "C-c l")
-  :config
-    (setq lsp-prefer-flymake nil)
-    (setq lsp-imenu-sort-methods '(position kind))
-    ;; https://emacs-lsp.github.io/lsp-mode/page/performance/
-    (setq gc-cons-threshold 100000000)
-    (setq read-process-output-max (* 1024 1024)) ;; 1mb
-    (setq lsp-idle-delay 0.500)
-    (setq lsp-file-watch-threshold 2000)
-  :hook
-    ;; config lifted from https://vxlabs.com/2018/06/08/python-language-server-with-emacs-and-lsp-mode/
-    (lsp-after-open . lsp-enable-imenu)
-    (python-mode . lsp)
-    (csharp-mode . lsp)
-    (typescript-mode . lsp)
-    (web-mode . lsp)
-    (svelte-mode . lsp)
-    (sql-mode . lsp)
-    (lsp-after-initialize . (lambda() (flycheck-add-next-checker 'lsp 'python-ruff)))
-)
-
-;;
-(use-package lsp-pyright
-  :ensure t
-  :hook (python-mode . (lambda ()
-                         (setq lsp-pyright-venv-directory ".venv")
-                         (require 'lsp-pyright)
-                         (lsp-deferred)))
-)  ; or lsp-deferred
-
-;; Debugging support
-;(use-package dap-mode
-;  :ensure t
-;  :after lsp-mode
-  ;:config
-  ;  (dap-mode t)
-  ;  (dap-ui-mode t)
-;)
-
-(use-package dap-python
   :defer t
-  :after lsp-mode
+  :hook ((python-mode . eglot-ensure))
   :config
-    (dap-register-debug-template "PyTest"
-      (list :type "python"
-        :args "-i"
-        :cwd nil
-        :env '(("DEBUG" . "1"))
-        :target-module (expand-file-name "~/src/myapp/.env/bin/myapp")
-        :request "launch"
-        :name "PyTest"))
+  (add-to-list 'eglot-server-programs
+               `(python-mode . ,(eglot-alternatives '(("basedpyright-langserver" "--stdio")))))
+  (setq-default eglot-workspace-configuration
+                '((:pyright . (:venvPath ".venv" :pythonPath "."))))
+  )
+
+;; Show a nice hover box showing documentation via eldoc
+(use-package eldoc-box
+  :ensure t
+  :hook (eglot-managed-mode . eldoc-box-hover-at-point-mode) ; (lambda() (#'eldoc-box-help-at-point t))
 )
+
 
 ;; Pop up dialog for autocomplete functions
 (use-package company
   :ensure t
-  :config
-    (setq company-tooltip-align-annotations t)
-    (setq global-company-mode t)
+  :hook (( prog-mode . company-mode))
+  :config 
+    ;(setq company-tooltip-align-annotations t)
+    ;(setq global-company-mode t)
+  :bind (:map company-active-map
+                ("<return>" . nil)
+                ("RET" . nil)
+                ("C-<return>" . company-complete-selection)
+                ([tab] . company-complete-selection)
+                ("TAB" . company-complete-selection))
+  :custom
+  ('(company-quickhelp-color-background "#4F4F4F")
+   '(company-quickhelp-color-foreground "#DCDCCC"))
 )
 
-;; Allow LSP mode to use company for autocompletion/intellisense
-;(use-package company-lsp
-;  :ensure t
-;)
+;(use-package company-box
+;    :ensure t
+;    :hook (company-mode . company-box-mode)))
 
 (use-package ace-window
   :ensure t
   :bind (("M-o" . ace-window))
 )
 
-;; Supports highlighting of csharp projects
-(use-package  csharp-mode
-  :ensure nil
-  :config
-    ;; There are errors in the current version, this seems stable enough
-    (setq lsp-csharp-server-path "~/.emacs.d/.cache/lsp/latest/omnisharp-roslyn/Omnisharp")
- )
-
-;; The user interface parts of lsp
-(use-package lsp-ui
-  :ensure t
-  :init
-    (setq lsp-ui-sideline-ignore-duplicate t)
-    (setq lsp-ui-sideline-mode -1)
-  :commands lsp-ui-mode
-  )
-
-(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
 
 ;; Built in package for supporting JS/HTML etc.
 ;; This is configured to use type script which works well with react
@@ -602,23 +422,6 @@
     (setq web-mode-attr-value-indent-offset 2)
 )
 
-;; Alternative mode for react, when not using typescript
-(use-package rjsx-mode
-  :ensure t
-  :init
-  (add-to-list 'auto-mode-alist '("\\.jsx$" . rjsx-mode))
-  (add-to-list 'auto-mode-alist '("\\.js$" . rjsx-mode))
-  (add-hook 'rjsx-mode-hook (lambda ()
-			      (flyspell-mode-off)
-			      ;(aggressive-indent-mode 1)
-			      (setq js-indent-level 2) ;; 2 spaces
-			      (setq js2-basic-offset 2)
-			      ))
-  :config
-   (with-eval-after-load "lsp-javascript-typescript"
-     (add-hook 'rjsx-mode-hook #'lsp)
-   )
-)
 
 (use-package display-fill-column-indicator
   :ensure nil
@@ -628,29 +431,11 @@
                    (display-fill-column-indicator-mode))))
 )
 
-;; Python syntax highlighting support
-;; this is disabled in favour of python-mode.el
-;;(use-package python
-;;  :config
-;;  (add-to-list 'flycheck-disabled-checkers 'python-flake8)
-;;  (add-to-list 'flycheck-checkers 'python-ruff)
-;;  (eldoc-mode t)
-;;
-;;)
-
-(use-package pyvenv
-  :ensure t
-  :config
-  (pyvenv-mode t)
-  ;:hook
-  ;(python-mode . (lambda () (pyvenv-activate .venv)))
-)
-
 (use-package python-mode
   :ensure t
   :config
   (py-underscore-word-syntax-p-off)
-  (add-to-list 'flycheck-disabled-checkers 'python-flake8)
+  (add-to-list 'flycheck-disabled-checkers '(python-flake8 python-mypy))
   (add-to-list 'flycheck-checkers 'python-ruff)
   (eldoc-mode t)
 )
@@ -727,20 +512,15 @@
                            all-the-icons-dired
                            all-the-icons-dired-mode awesome-tab
                            centaur-tabs color-theme-sanityinc-tomorrow
-                           company-lsp dap-mode dap-python dired
-                           dired-gitignore
+                           dired dired-gitignore
                            display-fill-column-indicator
                            docker-compose-mode fish-mode
                            flycheck-prospector json-mode just-mode
-                           ls-lisp lsp-elixir lsp-python magit
-                           magit-popup makefile-executor move-text
-                           neotree nord-theme poetry powershell
-                           projectile pyvenv restclient rjsx-mode
-                           sql-mode svelt-mode svelte-mode
-                           treemacs-icons-dired treemacs-magit
-                           treemacs-persp treemacs-projectile
-                           treemacs-tab-bar typescript-mode
-                           use-package x509-mode yasnippet-snippets))
+                           ls-lisp magit magit-popup makefile-executor
+                           move-text nord-theme powershell restclient
+                           rjsx-mode sql-mode treemacs-icons-dired
+                           typescript-mode use-package vim-tab-bar
+                           x509-mode yasnippet-snippets))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(sgml-basic-offset 4)
  '(warning-suppress-types '((comp))))
