@@ -138,6 +138,14 @@
   (setq dired-listing-switches "-laGh1v --group-directories-first")
 )
 
+(use-package dired-subtree
+  :ensure t
+  :after dired
+  :bind (:map dired-mode-map
+      ("<tab>" . 'dired-subtree-toggle)
+      )
+)
+
 (use-package terraform-mode
   :ensure t
 )
@@ -251,6 +259,7 @@
   :ensure t
   ;:bind-keymap ("C-c p" . project-prefix-map)
   :config
+  (setq xref-search-program 'ripgrep)
   ;; set the formatting to show the project name in the tab-bar
   (setq tab-bar-format '(tab-bar-format-history tab-bar-format-tabs-groups tab-bar-separator tab-bar-format-add-tab))
   ;; make the default action when switching/opening a project to select a file
@@ -320,13 +329,14 @@
 ;; Allows auto completion of commands in the command buffer
 (use-package ivy
   :ensure t
+  :init
+    (ivy-mode 1)
   :config
     (setq ivy-use-virtual-buffers t)
     (setq ivy-count-format "(%d/%d) ")
-    (ivy-mode 1)
   :bind 
     ("C-x b" . ivy-switch-buffer)
-    ("C-x B" . ivy-switch-buffer-other-window)
+    ("C-x B" . ivy-switch-buffer-other-window)   
 )
 
 ;; ensures completion happens in ivy
@@ -337,7 +347,8 @@
   (counsel-mode)
   :bind
     ;; Set a VSCode style find file in project lookup key
-    ("C-c p f" . counsel-find-file)
+  ("C-c p f" . counsel-find-file)
+  ("M-x" . counsel-M-x)
 )
 
 ;; Better searching control
@@ -511,16 +522,16 @@
    '(add-node-modules-path ag aggressive-indent all-the-icons
                            all-the-icons-dired
                            all-the-icons-dired-mode awesome-tab
-                           centaur-tabs color-theme-sanityinc-tomorrow
-                           dired dired-gitignore
+                           color-theme-sanityinc-tomorrow dired
+                           dired-gitignore
                            display-fill-column-indicator
                            docker-compose-mode fish-mode
                            flycheck-prospector json-mode just-mode
                            ls-lisp magit magit-popup makefile-executor
                            move-text nord-theme powershell restclient
-                           rjsx-mode sql-mode treemacs-icons-dired
-                           typescript-mode use-package vim-tab-bar
-                           x509-mode yasnippet-snippets))
+                           rjsx-mode sql-mode typescript-mode
+                           use-package vim-tab-bar x509-mode
+                           yasnippet-snippets))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(sgml-basic-offset 4)
  '(warning-suppress-types '((comp))))
