@@ -519,19 +519,17 @@
    '(("phoronix" "https://www.phoronix.com/phoronix-rss.php" nil nil nil)
      ("hacker news" "https://news.ycombinator.com/rss" nil nil nil)))
  '(package-selected-packages
-   '(add-node-modules-path ag aggressive-indent all-the-icons
-                           all-the-icons-dired
-                           all-the-icons-dired-mode awesome-tab
-                           color-theme-sanityinc-tomorrow dired
-                           dired-gitignore
-                           display-fill-column-indicator
-                           docker-compose-mode fish-mode
-                           flycheck-prospector json-mode just-mode
-                           ls-lisp magit magit-popup makefile-executor
-                           move-text nord-theme powershell restclient
-                           rjsx-mode sql-mode typescript-mode
-                           use-package vim-tab-bar x509-mode
-                           yasnippet-snippets))
+   '(ace-window ag aggressive-indent all-the-icons-completion
+                all-the-icons-dired all-the-icons-ibuffer
+                all-the-icons-ivy all-the-icons-nerd-fonts
+                color-theme-sanityinc-tomorrow company counsel
+                csv-mode dashboard dired-gitignore dired-subtree
+                docker dockerfile-mode doom-modeline dracula-theme
+                eldoc-box flycheck json-mode just-mode magit
+                makefile-executor markdown-mode material-theme
+                move-text project-tab-groups python-mode restclient
+                spacemacs-theme terraform-mode vim-tab-bar web-mode
+                x509-mode yaml-mode yasnippet))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(sgml-basic-offset 4)
  '(warning-suppress-types '((comp))))
