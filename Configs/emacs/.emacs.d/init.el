@@ -68,7 +68,7 @@
 
 ;; credit: yorickvP on Github
 ;; temporarily disabling this method, as this is not a wayland build of emacs
-(when (getenv "WSLENV2")
+(when (getenv "WSLENV")
   (message . ("In a WSL environment, setting custom copy and paste using wl-clipboard if installed"))
   (setq wl-copy-process nil)
   (defun wl-copy (text)
@@ -518,18 +518,7 @@
  '(newsticker-url-list
    '(("phoronix" "https://www.phoronix.com/phoronix-rss.php" nil nil nil)
      ("hacker news" "https://news.ycombinator.com/rss" nil nil nil)))
- '(package-selected-packages
-   '(ace-window ag aggressive-indent all-the-icons-completion
-                all-the-icons-dired all-the-icons-ibuffer
-                all-the-icons-ivy all-the-icons-nerd-fonts
-                color-theme-sanityinc-tomorrow company counsel
-                csv-mode dashboard dired-gitignore dired-subtree
-                docker dockerfile-mode doom-modeline dracula-theme
-                eldoc-box flycheck json-mode just-mode magit
-                makefile-executor markdown-mode material-theme
-                move-text project-tab-groups python-mode restclient
-                spacemacs-theme terraform-mode vim-tab-bar web-mode
-                x509-mode yaml-mode yasnippet))
+ '(package-selected-packages nil)
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(sgml-basic-offset 4)
  '(warning-suppress-types '((comp))))
