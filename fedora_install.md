@@ -198,22 +198,11 @@ https://www.google.com/chrome/
 
 
 
-## Pipx
-
-```
-sudo dnf install python3.10 python3.9 pip
-
-pip install --user pipx
-```
-
 ## Random software to install
 
 tmux
 emacs
-stow
-gnome-tweaks
-tlp
 the_silver_searcher
 dotnet-sdk-3.1
 dotnet-sdk-5.0
-powertop
+ripgrep

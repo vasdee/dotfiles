@@ -2,8 +2,6 @@
 # To force this to happen, sudo touch /etc/wsl.conf an empty file
 if [ -n "$WSLENV" ]; then
     echo "We are in WSL environment, set some custom hacks..."
-    # Set the display server from the gateway set by wsl
-    #export DISPLAY=$(awk '/nameserver/ {print $2}' /etc/resolv.conf):0.0
 
     # Set an alias for the Windows User profile area
     export WINPROFILE=/mnt/c/Users/${USER}
@@ -16,7 +14,7 @@ if [ -n "$WSLENV" ]; then
 	sudo rm -r /tmp/.X11-unix && ln -s /mnt/wslg/.X11-unix /tmp/.X11-unix
     }
 
-    wsl_fix_x11_socket
+    #wsl_fix_x11_socket
 
     # For use within az login commands, this allows windows edge browser to open the interactive
     # loging auth screen
@@ -24,5 +22,4 @@ if [ -n "$WSLENV" ]; then
     # Useful for x-server displaying of apps
     #export LIBGL_ALWAYS_INDIRECT=1
     export COLORTERM=truecolor
-    export JUST_IIOT_PATH=${HOME}/.config/just/justfile
 fi
