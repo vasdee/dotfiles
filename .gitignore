@@ -16,5 +16,4 @@ Configs/emacs/.emacs.d/*
 Configs/bash/.bash/custom.bash
 Configs/bash/.bash/.secrets
 
-!Configs/ssh/.ssh/
-Configs/ssh/.ssh/iiot/
+Configs/ssh/.ssh/*

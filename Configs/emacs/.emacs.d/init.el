@@ -122,10 +122,12 @@
 ;; Package configurations
 ;; ---------------------------------------------------------
 
-(use-package just-mode
+(use-package just-ts-mode
+  ;:init (just-ts-mode-install-grammar)
   :ensure t
   :config
   (setq-default indent-tabs-mode nil)
+  (add-to-list 'auto-mode-alist '("\\.just$" . just-ts-mode))
 )
 
 (use-package docker
