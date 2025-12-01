@@ -122,6 +122,11 @@
 ;; Package configurations
 ;; ---------------------------------------------------------
 
+(use-package editorconfig-mode
+  :ensure nil
+  :hook ( prog-mode .  editorconfig-mode)
+)
+
 (use-package just-ts-mode
   ;:init (just-ts-mode-install-grammar)
   :ensure t
@@ -471,7 +476,12 @@
 
   :ensure t
   :config
-    (setq markdown-command  "pandoc --metadata=title=markdown -f markdown -t html5 --mathjax --highlight-style=pygments --standalone")
+  (setq markdown-command  "pandoc --metadata=title=markdown -f markdown -t html5 --mathjax --highlight-style=pygments --standalone")
+  ;; always open the preview window at the right
+  (setq markdown-split-window-direction 'right)
+  :hook ( markdown . editorconfig-mode)
+  :bind (:map markdown-mode-map
+         ("C-c C-e" . markdown-do))
 )
 
 (use-package flyspell-mode
@@ -522,6 +532,7 @@
      ("hacker news" "https://news.ycombinator.com/rss" nil nil nil)))
  '(package-selected-packages nil)
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
+ '(safe-local-variable-values '((just-ts-indent-offset . 4)))
  '(sgml-basic-offset 4)
  '(warning-suppress-types '((comp))))
 (custom-set-faces
