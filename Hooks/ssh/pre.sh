@@ -1,3 +1,3 @@
-#!bin/sh
+#!/bin/sh
 
-mkdir -p ~/.ssh/config.d/
+mkdir -p ~/.ssh/config.d

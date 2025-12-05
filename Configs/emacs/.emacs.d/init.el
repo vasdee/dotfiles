@@ -469,12 +469,12 @@
 (use-package json-mode
   :ensure t
   :config
-    (setq js-indent-level 2)
+  (setq js-indent-level 2)
   :init
-    (add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
-)
-(use-package markdown-mode
+  (add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
+  )
 
+(use-package markdown-mode
   :ensure t
   :config
   (setq markdown-command  "pandoc --metadata=title=markdown -f markdown -t html5 --mathjax --highlight-style=pygments --standalone")

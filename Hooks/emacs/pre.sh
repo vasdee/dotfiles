@@ -1,6 +1,6 @@
 #!/bin/sh
 
-installs="emacs-pgtk"
+installs="emacs-pgtk aspell aspell-en"
 
 if [ -n "$WSLENV" ]; then
     installs="$installs wl-clipboard"
