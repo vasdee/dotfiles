@@ -37,6 +37,7 @@
 )
 
 
+
 ;; Nicer window moving keys
 (when (fboundp 'windmove-default-keybindings)
   (windmove-default-keybindings)
@@ -123,9 +124,16 @@
 ;; Package configurations
 ;; ---------------------------------------------------------
 
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode))
+
+
 (use-package editorconfig-mode
   :ensure nil
-  :hook ( prog-mode .  editorconfig-mode)
+  :hook (( (prog-mode text-mode).  editorconfig-mode)
+         )
 )
 
 (use-package just-ts-mode
@@ -382,13 +390,17 @@
 (use-package eglot
   :ensure t
   :defer t
-  :hook ((python-mode . eglot-ensure))
+  :hook ((python-mode . eglot-ensure)(markdown-mode . eglot-ensure))
   :config
   (add-to-list 'eglot-server-programs
-               `(python-mode . ,(eglot-alternatives '(("basedpyright-langserver" "--stdio")))))
+               '(python-mode . ,(eglot-alternatives '(("basedpyright-langserver" "--stdio")))))
+  (add-to-list 'eglot-server-programs
+               '(markdown-mode . ("marksman")))
   (setq-default eglot-workspace-configuration
                 '((:pyright . (:venvPath ".venv" :pythonPath "."))))
   )
+
+
 
 ;; Show a nice hover box showing documentation via eldoc
 (use-package eldoc-box
@@ -446,7 +458,7 @@
   :ensure nil
   :hook
   (((prog-mode text-mode) . (lambda()
-                   (setq display-fill-column-indicator-column 140)
+                   ;(setq display-fill-column-indicator-column 140)
                    (display-fill-column-indicator-mode))))
 )
 
@@ -477,10 +489,10 @@
 (use-package markdown-mode
   :ensure t
   :config
-  (setq markdown-command  "pandoc --metadata=title=markdown -f markdown -t html5 --mathjax --highlight-style=pygments --standalone")
+  (setq markdown-command  "pandoc --metadata=title=markdown --template=GitHub.html5 --from gfm --to html5 --mathjax --highlight-style=pygments --standalone")
   ;; always open the preview window at the right
   (setq markdown-split-window-direction 'right)
-  :hook ( markdown . editorconfig-mode)
+  :hook (( markdown . editorconfig-mode))
   :bind (:map markdown-mode-map
          ("C-c C-e" . markdown-do))
 )
@@ -531,7 +543,16 @@
  '(newsticker-url-list
    '(("phoronix" "https://www.phoronix.com/phoronix-rss.php" nil nil nil)
      ("hacker news" "https://news.ycombinator.com/rss" nil nil nil)))
- '(package-selected-packages nil)
+ '(package-selected-packages
+   '(ace-window ag aggressive-indent all-the-icons-dired
+                color-theme-sanityinc-tomorrow company counsel
+                csv-mode dashboard dired-gitignore dired-subtree
+                docker dockerfile-mode doom-modeline dracula-theme
+                eldoc-box flycheck json-mode just-ts-mode magit
+                makefile-executor markdown-mode material-theme
+                move-text project-tab-groups python-mode restclient
+                spacemacs-theme terraform-mode vim-tab-bar web-mode
+                x509-mode yaml-mode yasnippet))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(safe-local-variable-values '((just-ts-indent-offset . 4)))
  '(sgml-basic-offset 4)

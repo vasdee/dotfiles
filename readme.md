@@ -1,5 +1,5 @@
 # Dotfiles
-
+ 
 Notes about the various dot files
 
 ## Boot strap your WSL Linux environment
@@ -17,7 +17,6 @@ GIT_SSL_NO_VERIFY=1 git clone https://__token__:${GITLAB_TOKEN}@gitlab.com/bhp-c
 sudo ln -s $HOME/.config/dotfiles/tuckr /usr/local/bin/tuckr
 tuckr -p ~/.config/wsl-corporate-dots set root
 ```
-
 
 ## Updating local tuckr as new version emerge
 

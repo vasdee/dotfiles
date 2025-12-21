@@ -1,5 +1,14 @@
+;;; early-init-.el starts
 
 (setq package-enable-at-startup nil)
+(setq gc-cons-threshold 10000000)
+(setq byte-compile-warnings '(not obsolete))
+(setq warning-suppress-log-types '((comp) (bytecomp)))
+(setq native-comp-async-report-warnings-errors 'silent)
+(setq inhibit-startup-echo-area-message (user-login-name))
+
+(setq frame-resize-pixelwise t)
+
 ;; minimal UI
 (menu-bar-mode -1) ;; disables menubar
 (tool-bar-mode -1) ;; disables toolbar
@@ -9,10 +18,22 @@
 
 (setq inhibit-splash-screen t ;; no thanks
       use-file-dialog nil ;; don't use system file dialog
-      tab-bar-new-button-show nil ;; don't show new tab button
       tab-bar-close-button-show nil ;; don't show tab close button
-      tab-line-close-button-show nil ;; don't show tab close button
       inhibit-startup-message t
       inhibit-startup-echo-area-message t
       )
+
+(setq default-frame-alist '((fullscreen . maximized)
+
+                            ;; You can turn off scroll bars by uncommenting these lines:
+                            ;; (vertical-scroll-bars . nil)
+                            ;; (horizontal-scroll-bars . nil)
+
+                            ;; Setting the face in here prevents flashes of
+                            ;; color as the theme gets activated
+                            (background-color . "#000000")
+                            (foreground-color . "#ffffff")
+                            (ns-appearance . dark)
+                            (ns-transparent-titlebar . t)))
 ;;; early-init.el ends here
+
