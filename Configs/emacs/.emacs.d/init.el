@@ -7,7 +7,7 @@
   :init
   (defalias 'yes-or-no-p 'y-or-n-p) ;; life is too short
   (show-paren-mode t)
-  (setq enable-local-eval t) 
+  (setq enable-local-eval t)
   (setq make-backup-files nil)
   (setq auto-save-default nil)
   ;; keep backup and save files in a dedicated directory
@@ -33,7 +33,7 @@
           (slot . 0)
           (window-parameters . ((no-delete-other-windows . t)))
           (window-width . 80)))
-  
+
 )
 
 
@@ -175,7 +175,7 @@
                          (bookmarks . 5)
                          (projects . 20)))
  (setq dashboard-display-icons-p t)
- (setq dashboard-icon-type 'all-the-icons) ;; use `all-the-icons' package 
+ (setq dashboard-icon-type 'all-the-icons) ;; use `all-the-icons' package
 )
 
 ;; For linting and on the fly syntax checking
@@ -185,7 +185,10 @@
    (global-flycheck-mode)
  :config
    (setq flycheck-check-syntax-automatically '(mode-enabled save mode-enable))
-   (flycheck-add-mode 'javascript-eslint 'web-mode)
+    (flycheck-add-mode 'javascript-eslint 'web-mode)
+   (add-to-list 'flycheck-disabled-checkers '(markdown-markdownlint-cli markdown-markdownlint-cli2 markdown-pymarkdown))
+   (add-to-list 'flycheck-checkers 'markdown-mdl)
+   (setq flycheck-markdown-mdl-executable "rumdl check")
    ; Disable these until figure out what is required for flycheck linting
    ;(flycheck-add-mode 'csharp-omnisharp-codecheck 'csharp-mode)
    ;(add-to-list 'flycheck-checkers 'csharp-omnisharp-codecheck)
@@ -279,7 +282,7 @@
   ;; set the formatting to show the project name in the tab-bar
   (setq tab-bar-format '(tab-bar-format-history tab-bar-format-tabs-groups tab-bar-separator tab-bar-format-add-tab))
   ;; make the default action when switching/opening a project to select a file
-  (setq project-switch-commands 'project-find-file)  
+  (setq project-switch-commands 'project-find-file)
 )
 
 ;; Consolidates project buffers into a tab
@@ -350,9 +353,9 @@
   :config
     (setq ivy-use-virtual-buffers t)
     (setq ivy-count-format "(%d/%d) ")
-  :bind 
+  :bind
     ("C-x b" . ivy-switch-buffer)
-    ("C-x B" . ivy-switch-buffer-other-window)   
+    ("C-x B" . ivy-switch-buffer-other-window)
 )
 
 ;; ensures completion happens in ivy
@@ -395,7 +398,7 @@
   (add-to-list 'eglot-server-programs
                '(python-mode . ,(eglot-alternatives '(("basedpyright-langserver" "--stdio")))))
   (add-to-list 'eglot-server-programs
-               '(markdown-mode . ("marksman")))
+               '(markdown-mode . ("rumdl" "server" "--stdio")))
   (setq-default eglot-workspace-configuration
                 '((:pyright . (:venvPath ".venv" :pythonPath "."))))
   )
@@ -413,7 +416,7 @@
 (use-package company
   :ensure t
   :hook (( prog-mode . company-mode))
-  :config 
+  :config
     ;(setq company-tooltip-align-annotations t)
     ;(setq global-company-mode t)
   :bind (:map company-active-map
@@ -487,14 +490,16 @@
   )
 
 (use-package markdown-mode
-  :ensure t
-  :config
-  (setq markdown-command  "pandoc --metadata=title=markdown --template=GitHub.html5 --from gfm --to html5 --mathjax --highlight-style=pygments --standalone")
-  ;; always open the preview window at the right
-  (setq markdown-split-window-direction 'right)
-  :hook (( markdown . editorconfig-mode))
-  :bind (:map markdown-mode-map
-         ("C-c C-e" . markdown-do))
+    :ensure t
+    :config
+    (setq markdown-command  "pandoc --metadata=title=markdown --template=GitHub.html5 --from gfm --to html5 --mathjax --highlight-style=pygments --standalone")
+    ;; always open the preview window at the right
+    (setq markdown-split-window-direction 'right)
+    :commands (gfm-mode markdown-mode)
+    :mode (("\\.md\\'" . gfm-mode))
+    :hook (( markdown . editorconfig-mode)( markdown . auto-fill-mode))
+    :bind (:map markdown-mode-map
+          ("C-c C-e" . markdown-do))
 )
 
 (use-package flyspell-mode

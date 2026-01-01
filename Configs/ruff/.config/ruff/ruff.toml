@@ -1,0 +1,46 @@
+# Standard ruff linting rules lifted mainly from chats and wiki
+target-version = "py314"
+line-length = 120
+
+[lint]
+select = [
+  # https://docs.astral.sh/ruff/rules/
+    "RUF",  # Ruff specific rules - https://docs.astral.sh/ruff/rules/#ruff-specific-rules-ruf
+    "C",    # mccabe rules - https://pypi.org/project/mccabe/
+    "F",    # pyflakes rules - https://pypi.org/project/pyflakes/
+    "E",    # pycodestyle error rules - https://pypi.org/project/pycodestyle/
+    "W",    # pycodestyle warning rules - https://pypi.org/project/pycodestyle/
+    "N",    # Naming - https://pypi.org/project/pep8-naming/
+    "A",    # builtins - https://pypi.org/project/flake8-builtins/
+    "B",    # flake8-bugbear rules - https://pypi.org/project/flake8-bugbear/
+    "I",    # isort rules - https://pypi.org/project/isort/
+    "LOG",  # logging rules - https://pypi.org/project/flake8-logging/
+    "PT",   # PyTest - https://pypi.org/project/flake8-pytest-style/
+    "INP",  # no-pep420 - https://pypi.org/project/flake8-no-pep420/
+    "ANN",  # annotation rules - https://pypi.org/project/flake8-annotations/
+    "UP",   # pyupgrade - https://pypi.org/project/pyupgrade/
+    "RET",  # returns - https://pypi.org/project/flake8-return/
+    "SIM",  # simplify - https://pypi.org/project/flake8-simplify/
+    "PL",   # PyLint (ALL) - https://pypi.org/project/pylint/
+    "PLC",  # PyLint Conventions - https://pypi.org/project/pylint/
+    "PLE",  # PyLint Error - https://pypi.org/project/pylint/
+    "PLR",  # PyLint Refactor - https://pypi.org/project/pylint/
+    "PLW",  # PyLint Warnings - https://pypi.org/project/pylint/
+    "FURB", # refurb - https://pypi.org/project/refurb/
+    "ASYNC",# async - https://pypi.org/project/flake8-async/
+    "DJ",   # django - https://pypi.org/project/flake8-django/
+    "FAST", # fastapi - https://pypi.org/project/fastapi/
+    "AIR",  # Airflow rules - https://pypi.org/project/apache-airflow/
+]
+# Ignore specific rules globally, for example, a line-too-long rule
+ignore = ["E501"]
+
+[per-file-ignores]
+"tests/*" = ["PLC0415"]  # import-outside-top-level (PLC0415)
+"**/{tests,docs,tools}/*" = ["E402"]
+"__init__.py" = ["F401"]
+
+[flake8-annotations]
+allow-star-arg-any = true
+ignore-fully-untyped = true
+suppress-dummy-args = true

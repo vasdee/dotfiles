@@ -1,0 +1,21 @@
+[global]
+line-length = 120
+disable = ["MD013", "MD041"]
+
+# Exclude files and directories
+exclude = [
+    "node_modules",
+    "build",
+    "dist",
+    "*.tmp.md",
+    "docs/generated/**",
+    ".amazonq/**",
+]
+
+# Include only specific files
+include = [
+    "README.md",
+    "docs/**/*.md",
+    "**/*.markdown",
+    "readme.md",
+]
