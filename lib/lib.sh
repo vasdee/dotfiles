@@ -82,23 +82,10 @@ install_for_os() {
     cd ${TMP_DIR}
     case "$OS_TYPE" in
         Linux)
-            check_and_exec_function linux_install
+            # Run the specific OS installers before the general purpose linux one
+            check_and_exec_function ${OS_ID}_install
 
-                case "$OS_ID" in
-                    debian)
-                        check_and_exec_function debian_install
-                        ;;
-                    ubuntu)
-                        check_and_exec_function ubuntu_install
-                        ;;
-                    fedora)
-                        check_and_exec_function fedora_install
-                        ;;
-                    *)
-                        echo "$OS_ID not supported"
-                        exit 1
-                        ;;
-                esac
+            check_and_exec_function linux_install
             ;;
         Darwin)
             check_and_exec_function macos_install
@@ -120,8 +107,9 @@ rootdo() {
     # If this is not run as an elevated user, then attempt to run the entire script again as sudo
     if [ "$(id -u)" -ne 0 ]; then
         sudo $@
+    else
+        $@
     fi
-    $@
 }
 
 # Some global variables tha will be useful for performing actions based on specific flavours of linux / osx

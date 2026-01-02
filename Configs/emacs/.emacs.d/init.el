@@ -130,8 +130,8 @@
   (which-key-mode))
 
 
-(use-package editorconfig-mode
-  :ensure nil
+(use-package editorconfig
+  :ensure t
   :hook (( (prog-mode text-mode).  editorconfig-mode)
          )
 )
@@ -181,9 +181,8 @@
 ;; For linting and on the fly syntax checking
 (use-package flycheck
  :ensure t
- :init
-   (global-flycheck-mode)
  :config
+   (global-flycheck-mode)
    (setq flycheck-check-syntax-automatically '(mode-enabled save mode-enable))
     (flycheck-add-mode 'javascript-eslint 'web-mode)
    (add-to-list 'flycheck-disabled-checkers '(markdown-markdownlint-cli markdown-markdownlint-cli2 markdown-pymarkdown))
@@ -251,7 +250,7 @@
 
 (use-package material-theme
  :ensure t
- :init
+ :config
  (load-theme 'material t)
 )
 
@@ -269,8 +268,8 @@
 ;; custom code snippets
 (use-package yasnippet
  :ensure t
- :init
-   (yas-global-mode +1)
+ :config
+   (yas-global-mode 1)
 )
 
 ;; use in-built project.el to manage projects
@@ -334,6 +333,9 @@
   )
 )
 
+(use-package all-the-icons
+  :if (display-graphic-p))
+
 (use-package all-the-icons-dired
  :ensure t
  :hook ((dired-mode . all-the-icons-dired-mode))
@@ -348,9 +350,8 @@
 ;; Allows auto completion of commands in the command buffer
 (use-package ivy
   :ensure t
-  :init
-    (ivy-mode 1)
   :config
+    (ivy-mode t)
     (setq ivy-use-virtual-buffers t)
     (setq ivy-count-format "(%d/%d) ")
   :bind
@@ -536,31 +537,17 @@
  '(company-quickhelp-color-foreground "#DCDCCC")
  '(css-indent-offset 4)
  '(custom-safe-themes
-   '("37768a79b479684b0756dec7c0fc7652082910c37d8863c35b702db3f16000f8"
-     "2dff5f0b44a9e6c8644b2159414af72261e38686072e063aa66ee98a2faecf0e"
-     "3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077"
-     "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb"
-     "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df"
-     "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3"
-     "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4"
-     default))
+   '("37768a79b479684b0756dec7c0fc7652082910c37d8863c35b702db3f16000f8" "2dff5f0b44a9e6c8644b2159414af72261e38686072e063aa66ee98a2faecf0e" "3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077" "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))
  '(js-indent-level 4)
  '(newsticker-url-list
    '(("phoronix" "https://www.phoronix.com/phoronix-rss.php" nil nil nil)
      ("hacker news" "https://news.ycombinator.com/rss" nil nil nil)))
  '(package-selected-packages
-   '(ace-window ag aggressive-indent all-the-icons-dired
-                color-theme-sanityinc-tomorrow company counsel
-                csv-mode dashboard dired-gitignore dired-subtree
-                docker dockerfile-mode doom-modeline dracula-theme
-                eldoc-box flycheck json-mode just-ts-mode magit
-                makefile-executor markdown-mode material-theme
-                move-text project-tab-groups python-mode restclient
-                spacemacs-theme terraform-mode vim-tab-bar web-mode
-                x509-mode yaml-mode yasnippet))
+   '(ace-window ag aggressive-indent all-the-icons-dired color-theme-sanityinc-tomorrow company counsel csv-mode dashboard dired-gitignore dired-subtree docker dockerfile-mode doom-modeline dracula-theme eldoc-box flycheck json-mode just-ts-mode magit makefile-executor markdown-mode material-theme move-text project-tab-groups python-mode restclient spacemacs-theme terraform-mode vim-tab-bar web-mode x509-mode yaml-mode yasnippet))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(safe-local-variable-values '((just-ts-indent-offset . 4)))
  '(sgml-basic-offset 4)
+
  '(warning-suppress-types '((comp))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

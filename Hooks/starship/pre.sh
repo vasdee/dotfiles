@@ -15,5 +15,8 @@ ubuntu_install() {
     debian_install
 }
 
+steamos_install() {
+    rootdo pacman -S --noconfirm starship
+}
 
 install_for_os

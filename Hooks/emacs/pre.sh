@@ -1,10 +1,31 @@
 #!/bin/sh
 
-installs="emacs-pgtk aspell aspell-en"
+. ../../lib/lib.sh
 
-if [ -n "$WSLENV" ]; then
-    installs="$installs wl-clipboard"
+fedora_install() {
+   installs="emacs-pgtk aspell aspell-en"
 
-fi
+   if [ -n "$WSLENV" ] ; then
+       installs="$installs wl-clipboard"
 
-sudo dnf install -y $installs
+   fi
+
+   sudo dnf install -y $installs
+}
+
+
+steamos_install() {
+	echo "installing emacs"
+	rootdo pacman -S --noconfirm \
+               emacs \
+               ttf-hack-nerd \
+               ttf-dejavu-nerd \
+               ttf-cascadia-mono-nerd \
+               ttf-jetbrains-mono-nerd \
+               ttf-inconsolata-nerd \
+               ttf-nerd-fonts-symbols-mono \
+               ttf-nerd-fonts-symbols
+}
+
+install_for_os
+
