@@ -95,7 +95,6 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
                                  ;("gnu" . "https://elpa.gnu.org/packages/")))
 
-
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
@@ -103,7 +102,8 @@
  (package-install 'use-package))
 
 (require 'use-package)
-
+;; remove the use-package laziness around the -hook prefix
+(setq use-package-hook-name-suffix nil)
 
 ;; --------------------------------------------------------
 ;; Custom Functions Configurations
@@ -132,7 +132,7 @@
 
 (use-package editorconfig
   :ensure t
-  :hook (( (prog-mode text-mode).  editorconfig-mode)
+  :hook (( (prog-mode-hook text-mode-hook).  editorconfig-mode)
          )
 )
 
@@ -153,6 +153,28 @@
   :config
   (setq dired-listing-switches "-laGh1v --group-directories-first")
 )
+
+(use-package dirvish
+  :ensure t
+  :init
+    (dirvish-override-dired-mode)
+  :config
+  ;; Optional: Add configuration for specific features here.
+  ;; For example, enabling the display of file/folder icons:
+  ;; (add-hook 'dirvish-mode-hook #'dirvish-hide-details-mode) ; optional, hides file details for a cleaner look
+  (dirvish-add-hook 'dirvish-mode-hook #'dirvish-hire-icons-mode)
+
+  ;; Optional: Set 'ls' switches for more informative listings (e.g., human-readable sizes)
+  ;; Ensure these switches are compatible with your operating system's 'ls' or 'dirvish-use-exa' if installed
+  (setq dirvish-listing-switches '("-laGh1v" "--group-directories-first"))
+
+  ;; Optional: Bind 'dirvish-dispatch' to a key for a cheat sheet/menu
+  (define-key dirvish-mode-map (kbd "?") #'dirvish-dispatch)
+
+  ;; Optional: Automatically delete old dired buffers
+  (setq dirvish-buffers-max-size 10)
+    (dirvish-add-hook 'dirvish-mode-hook #'dirvish-garbage-collect-buffers))
+
 
 (use-package dired-subtree
   :ensure t
@@ -194,7 +216,7 @@
 )
 
 (use-package sql
-  :ensure t
+  :defer t
   :init
   (setq lsp-sqls-workspace-config-path nil)
   (setq sql-connection-alist
@@ -296,7 +318,7 @@
   :ensure t
   :commands vim-tab-bar-mode
   :hook
-  (after-init . vim-tab-bar-mode)
+  (after-init-hook . vim-tab-bar-mode)
   :config
   (setq vim-tab-bar-show-groups t))
 
@@ -304,7 +326,7 @@
 (use-package aggressive-indent
  :ensure t
  :hook (
-        (css-mode . aggressive-indent-mode)
+        (css-mode-hook . aggressive-indent-mode)
         ;(emacs-lisp-mode . aggressive-indent-mode)
         ;(js-mode . aggressive-indent-mode)
         ;(lisp-mode . aggressive-indent-mode)
@@ -329,7 +351,7 @@
   :ensure nil
   :hook
   (
-   ((prog-mode text-mode conf-mode) . (lambda () (display-line-numbers-mode t )))
+   ((prog-mode-hook text-mode-hook conf-mode-hook) . (lambda () (display-line-numbers-mode t )))
   )
 )
 
@@ -338,7 +360,7 @@
 
 (use-package all-the-icons-dired
  :ensure t
- :hook ((dired-mode . all-the-icons-dired-mode))
+ :hook ((dired-mode-hook . all-the-icons-dired-mode))
 )
 
 
@@ -383,7 +405,7 @@
 ;; Nice display of the modeline for git, flycheck info
 (use-package doom-modeline
   :ensure t
-  :hook (after-init . doom-modeline-mode)
+  :hook (after-init-hook . doom-modeline-mode)
 )
 
 ;; Simple client for making REST requests
@@ -394,7 +416,7 @@
 (use-package eglot
   :ensure t
   :defer t
-  :hook ((python-mode . eglot-ensure)(markdown-mode . eglot-ensure))
+  :hook ((python-mode-hook . eglot-ensure)(markdown-mode-hook . eglot-ensure))
   :config
   (add-to-list 'eglot-server-programs
                '(python-mode . ,(eglot-alternatives '(("basedpyright-langserver" "--stdio")))))
@@ -409,14 +431,14 @@
 ;; Show a nice hover box showing documentation via eldoc
 (use-package eldoc-box
   :ensure t
-  :hook (eglot-managed-mode . eldoc-box-hover-at-point-mode) ; (lambda() (#'eldoc-box-help-at-point t))
+  :hook (eglot-managed-mode-hook . eldoc-box-hover-at-point-mode) ; (lambda() (#'eldoc-box-help-at-point t))
 )
 
 
 ;; Pop up dialog for autocomplete functions
 (use-package company
   :ensure t
-  :hook (( prog-mode . company-mode))
+  :hook (( prog-mode-hook . company-mode))
   :config
     ;(setq company-tooltip-align-annotations t)
     ;(setq global-company-mode t)
@@ -461,7 +483,7 @@
 (use-package display-fill-column-indicator
   :ensure nil
   :hook
-  (((prog-mode text-mode) . (lambda()
+  (((prog-mode-hook text-mode-hook) . (lambda()
                    ;(setq display-fill-column-indicator-column 140)
                    (display-fill-column-indicator-mode))))
 )
@@ -498,7 +520,7 @@
     (setq markdown-split-window-direction 'right)
     :commands (gfm-mode markdown-mode)
     :mode (("\\.md\\'" . gfm-mode))
-    :hook (( markdown . editorconfig-mode)( markdown . auto-fill-mode))
+    :hook (( markdown-hook . editorconfig-mode)( markdown-hook . auto-fill-mode))
     :bind (:map markdown-mode-map
           ("C-c C-e" . markdown-do))
 )
@@ -507,8 +529,8 @@
   :init
     (setq-default ispell-program-name "aspell")
   :hook
-    (markdown-mode . flyspell-mode)
-    (rst-mode . flyspell-mode)
+    (markdown-mode-hook . flyspell-mode)
+    (rst-mode-hook . flyspell-mode)
 )
 
 (use-package makefile-executor
