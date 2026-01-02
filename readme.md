@@ -11,7 +11,7 @@ Currently Fedora/RHEL, Debian/Ubuntu and SteamOS are supported
 Yolo it onto your system via a single command
 
 ``` bash
-curl -sL https://github.com/vasdee/dotfiles/install.sh | bash
+curl -sL https://raw.githubusercontent.com/vasdee/dotfiles/install.sh | bash
 ```
 
 Or run the guts of the install manually
@@ -24,7 +24,7 @@ CLONE_DIR=$DEFAULT_CODE_DIR/github.com/vasdee/dotfiles
 mkdir -p $CLONE_DIR
 git clone https://github.com/vasdee/dotfiles.git $CLONEDIR
 cd $CLONEDIR
-ln -s $PWD/bin/$(uname -s)/tuckr $HOME/.local/bin/tuckr
+ln -s $PWD/bin/$(uname -s)/$(uname -m)/tuckr $HOME/.local/bin/tuckr
 
 ```
 
@@ -40,7 +40,7 @@ which is an option
 ```
 sudo dnf install cargo
 cargo install tuckr
-mv ~/.cargo/bin/tuckr ~/.config/dotfiles/tuckr
+mv ~/.cargo/bin/tuckr ~/.config/dotfiles/$(uname -s)/$(uname -m)/tuckr
 TUCKR_VERSION=$(tuckr --version)
 git commit -m "updated ${TUCKR_VERSION// /-}"
 ```

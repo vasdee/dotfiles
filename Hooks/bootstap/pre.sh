@@ -22,7 +22,7 @@ steamos_install() {
 
 generic_install() {
 
-    if [ ! -f ${HOME}/.config/dotfiles_bhp/bin/${OS_TYPE}/tuckr ]; then
-        ln -s ${HOME}/.config/dotfiles_bhp/bin/${OS_TYPE}/tuckr ${HOME}/.local/bin/tuckr
+    if [ ! -f ${HOME}/.config/dotfiles_bhp/bin/$(uname -s)/$(uname -m)/tuckr ]; then
+        ln -s ${HOME}/.config/dotfiles_bhp/bin/$(uname -s)/$(uname -m)/tuckr ${HOME}/.local/bin/tuckr
     fi
 }

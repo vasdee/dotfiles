@@ -15,7 +15,7 @@ git clone https://github.com/vasdee/dotfiles.git $CLONEDIR
 cd $CLONEDIR
 
 echo "linking tuckr to ~/.local/bin/tuckr - make sure this is set in your path or run bash or zsh hooks"
-ln -s $PWD/bin/$(uname -s)/tuckr $HOME/.local/bin/tuckr
+ln -s $PWD/bin/$(uname -s)/$(uname -m)/tuckr $HOME/.local/bin/tuckr
 
 echo "linking dot files to common config area - ~/.config/dotfiles"
 ln -s $PWD $HOME/.config/dotfiles
