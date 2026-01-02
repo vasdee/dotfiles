@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: Pytest TDD 
+# key: gwn
+# --
+
+"""
+GIVEN: 
+WHEN:  
+THEN:  
+"""
