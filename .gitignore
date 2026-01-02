@@ -1,0 +1,8 @@
+Configs/ssh/.ssh/*
+
+# Ignore everything by default, then manage by exception
+Configs/emacs/.emacs.d/*
+!Configs/emacs/.emacs.d/init.el
+!Configs/emacs/.emacs.d/snippets/
+!Configs/emacs/.emacs.d/templates/
+!Configs/emacs/.emacs.d/early-init.el
