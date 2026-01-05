@@ -1,8 +1,8 @@
 # Dotfiles
 
-Dotfiles and general purpose installers for various flavours of linux (and macos). 
+Dotfiles and general purpose installers for various flavours of linux (and macos).
 
-Uses [tuckr](https://github.com/RaphGL/Tuckr)  under the hood to provide the symlinking and pre/post/hook running
+Uses [tuckr](https://github.com/RaphGL/Tuckr) under the hood to provide the symlinking and pre/post/hook running
 
 Currently Fedora/RHEL, Debian/Ubuntu and SteamOS are supported
 
@@ -16,7 +16,7 @@ It has cross platform support, so volunteers who want to add OSX support are wel
 * Because you want to consistently install software locally and in pipelines or docker builds...
 * Because you gaslit yourself with the average notes you left yourself last time you did this...
 
-# Install
+## Install
 
 Yolo it onto your system via a single command
 
@@ -36,11 +36,11 @@ cd $CLONEDIR
 ln -s $PWD/bin/$(uname -s)/$(uname -m)/tuckr $HOME/.local/bin/tuckr
 ```
 
-# Some opinionated notes
+## Some opinionated notes
 
 ## ~/.localsettings
 
-There is nothing stopping you from using multiple `tuckr` profiles and running things like `tuckr -p mydots my-emacs-config` 
+There is nothing stopping you from using multiple `tuckr` profiles and running things like `tuckr -p mydots my-emacs-config`
 alongside this dotfiles repo. However, for those small configuration choices where another fullblown dotfile repo isn't required,
 then you can use the `~/.localsettings` to provide whatever variable customisations you require.
 
@@ -48,31 +48,31 @@ Currently it holds the `DEFAULT_CODE_DIR` and `git` usernames and emails for wor
 
 ## Shell directories
 
-Where possible, `config.d` practices are adopted for including separate config files. This is generally a good practice everywhere, 
-as it allows your most "top-most" config file, say `~/.bashrc`, `~/.zshrc` or `~/.ssh/config` to not be manipulated by this library. 
-Often a default is provided by your distro of choice, or you may version control your own dot file. Either way,  this 
-library will avoid touching these files when possible and support the use of `config.d` style includes, which provide 
+Where possible, `config.d` practices are adopted for including separate config files. This is generally a good practice everywhere,
+as it allows your most "top-most" config file, say `~/.bashrc`, `~/.zshrc` or `~/.ssh/config` to not be manipulated by this library.
+Often a default is provided by your distro of choice, or you may version control your own dot file. Either way, this
+library will avoid touching these files when possible and support the use of `config.d` style includes, which provide
 minimal impact to your top-most config files.
 
 > [!TIP]
 > each group that sets a config file in either `~/.bashrc.d/` or `~/.zshrc.d` will use the practice of using the group
-> name of the thing being installed as the config file name. 
+> name of the thing being installed as the config file name.
 > E.g. `tuckr add starship` will add a `~/.bashrc.d/starship.bash` config file via symlink
 
 ## Git'isms and DEFAULT_CODE_DIR
 
-The git config provided prompts for a `DEFAULT_CODE_DIR` location, which is typically a directory where all your repos 
+The git config provided prompts for a `DEFAULT_CODE_DIR` location, which is typically a directory where all your repos
 get cloned to. You do clone all your repos to a single directory right? And not to the desktop and all over the place??
 
 This git config takes it a step further and separates "work" from "private" locations and includes username and email credentials
-based on this structure. 
+based on this structure.
 
-For example, if you take the default `DEFAULT_CODE_DIR=~/code` setting. Then this gitconfig will assume all your 'work' 
-repos sit under `~/code/work` and similarly all your private repos are under `~/code/private`. 
+For example, if you take the default `DEFAULT_CODE_DIR=~/code` setting. Then this gitconfig will assume all your 'work'
+repos sit under `~/code/work` and similarly all your private repos are under `~/code/private`.
 
 To take it another step further, the gitconfig supplied offers some nice function aliases to provide further organisation.
 
-`git clone-private` and `git clone-work` will clone the supplied repository, with the full path, under the respective `~/code/private` 
+`git clone-private` and `git clone-work` will clone the supplied repository, with the full path, under the respective `~/code/private`
 and `~/code/work` directories.
 
 For example, running the following on this repo (which is where the installer will put it by default)
@@ -84,12 +84,11 @@ git clone-private https://github.com/vasdee/dotfiles.git
 
 Will result in the `dotfiles` repo being located at `~/code/private/github.com/vasdee/dotfiles`
 
-Is it a bit java and dotnetty namespace looking? Kinda. Does it make things easier when you are dealing with a lot of 
+Is it a bit java and dotnetty namespace looking? Kinda. Does it make things easier when you are dealing with a lot of
 enterprise level repositories scattered all over the place? Absolutely!
 
 To make it even easier to navigate, if you are using `bash` or `zsh` via this repo, you will get a nice interactive navigator via
- the alias, `gitchooser` 
-
+ the alias, `gitchooser`
 
 > [!NOTE]
 > The git group prompts during the run of tuckr set git for the variables to populate localsettings
@@ -100,9 +99,6 @@ To make it even easier to navigate, if you are using `bash` or `zsh` via this re
 I like using a `~/.netrc` file as my single source of truth for credential management. Others might not, but either
 way I like to keep the contents of that file within a dedicated password manager, rather than keep it within these dots,
 which is an option with `tuckr`
-
-
-# Supported installs
 
 ## Supported installs
 
@@ -145,6 +141,7 @@ which is an option with `tuckr`
 > All can be installed and configured via `tuckr set <name of group>`
 
 ## Notes on Install
+
 Some of the installs might prompt or include some extras that you did not know about. Anything of note
 is detailed below.
 
@@ -218,7 +215,7 @@ to `.bashrc` or `.zshrc`.
 On the off chance you want to work with work and personal accounts on the same machine, provisions have been made to cater for both configs.
 
 This repository assumes that you will use the `git clone-work` or `git clone-private` alias to clone ALL repositories, both personal and work related. This will make
-organising mostly straight forward as _most_ people will use github.com for personal and gitlab.com for work related. 
+organising mostly straight forward as _most_ people will use github.com for personal and gitlab.com for work related.
 
 ### Global gitignore
 
@@ -226,7 +223,6 @@ The git hook also downloads and consolidates common `.gitignore` rules into `$HO
 
 The list comes from <https://github.com/github/gitignore> and the currently consolidated ones can be added to within the
 [Hooks/git/post.sh](Hooks/git/post.sh) hook script
-
 
 > [!NOTE]
 > The global ignore can always be tailored to suit a per-project `.gitignore` by negating a rule
@@ -298,12 +294,11 @@ it might not be as useful.
 
 A potential pattern for using `rumdl` within `pre-commit` checks in a pipeline for instance, is to install the `rumdl` config during the pipeline
 
-
 ### Emacs
 
 Run these after first boot of emacs `M-x all-the-icons-install <RETURN>` and `M-x nerd-icons-install <RETURN>`
 
-# Usage within docker builds
+## Usage within docker builds
 
 ``` dockerfile
 FROM debian:trixie as build
@@ -317,7 +312,7 @@ RUN cp --from build
 
 ```
 
-# Adding new Hooks and Configs
+## Adding new Hooks and Configs
 
 For anything that requires more than just a config file, use the hooks features to provide installs.
 
@@ -330,7 +325,7 @@ If root privileges are required for any installs, rather than specifying `sudo`,
 
 This is very useful particularly when using it within dockerfiles, which typically are built with root
 
-The following is the list of supported hooks that can be used for installing software. The name of the hook is 
+The following is the list of supported hooks that can be used for installing software. The name of the hook is
 based on the `ID` field from `/etc/os-release` on linux, or `sw_vers -productName` on MacOS
 
 `fedora() {}` - fedora specific install, using dnf for example
@@ -364,7 +359,6 @@ uv_install() {
 ## lib.sh functions
 
 There are some handy functions included in [lib/lib.sh](lib/lib.sh) that are worth exploring but included here as well
-
 
 ## Updating local tuckr as new version emerge
 
