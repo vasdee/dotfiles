@@ -6,12 +6,15 @@ Uses [tuckr](https://github.com/RaphGL/Tuckr) under the hood to provide the syml
 
 Currently Fedora/RHEL, Debian/Ubuntu and SteamOS are supported
 
-It has cross platform support, so volunteers who want to add OSX support are welcome to contribute to that side of things.
+It has cross platform support, so volunteers who want to add OSX support are welcome to contribute to that side of
+things.
 
 ## Why would you use this?
 
-* Because you can't remember where that work proxy certificate needs to be before you call that update-ca command you can't remember either...
-* Because you can't remember how to officially install docker within your chosen distro, then change it for container builds...
+* Because you can't remember where that work proxy certificate needs to be before you call that update-ca command you
+  can't remember either...
+* Because you can't remember how to officially install docker within your chosen distro, then change it for container
+  builds...
 * Because you aren't sure if you should install pre-commit manually via your package manager or some other way...
 * Because you want to consistently install software locally and in pipelines or docker builds...
 * Because you gaslit yourself with the average notes you left yourself last time you did this...
@@ -40,19 +43,20 @@ ln -s $PWD/bin/$(uname -s)/$(uname -m)/tuckr $HOME/.local/bin/tuckr
 
 ## ~/.localsettings
 
-There is nothing stopping you from using multiple `tuckr` profiles and running things like `tuckr -p mydots my-emacs-config`
-alongside this dotfiles repo. However, for those small configuration choices where another fullblown dotfile repo isn't required,
-then you can use the `~/.localsettings` to provide whatever variable customisations you require.
+There is nothing stopping you from using multiple `tuckr` profiles and running things like
+`tuckr -p mydots my-emacs-config` alongside this dotfiles repo. However, for those small configuration choices where
+another fullblown dotfile repo isn't required, then you can use the `~/.localsettings` to provide whatever variable
+customisations you require.
 
 Currently it holds the `DEFAULT_CODE_DIR` and `git` usernames and emails for work/private configurations.
 
 ## Shell directories
 
-Where possible, `config.d` practices are adopted for including separate config files. This is generally a good practice everywhere,
-as it allows your most "top-most" config file, say `~/.bashrc`, `~/.zshrc` or `~/.ssh/config` to not be manipulated by this library.
-Often a default is provided by your distro of choice, or you may version control your own dot file. Either way, this
-library will avoid touching these files when possible and support the use of `config.d` style includes, which provide
-minimal impact to your top-most config files.
+Where possible, `config.d` practices are adopted for including separate config files. This is generally a good practice
+everywhere, as it allows your most "top-most" config file, say `~/.bashrc`, `~/.zshrc` or `~/.ssh/config` to not be
+manipulated by this library. Often a default is provided by your distro of choice, or you may version control your own
+dot file. Either way, this library will avoid touching these files when possible and support the use of `config.d` style
+includes, which provide minimal impact to your top-most config files.
 
 > [!TIP]
 > each group that sets a config file in either `~/.bashrc.d/` or `~/.zshrc.d` will use the practice of using the group
@@ -64,16 +68,17 @@ minimal impact to your top-most config files.
 The git config provided prompts for a `DEFAULT_CODE_DIR` location, which is typically a directory where all your repos
 get cloned to. You do clone all your repos to a single directory right? And not to the desktop and all over the place??
 
-This git config takes it a step further and separates "work" from "private" locations and includes username and email credentials
-based on this structure.
+This git config takes it a step further and separates "work" from "private" locations and includes username and email
+credentials based on this structure.
 
 For example, if you take the default `DEFAULT_CODE_DIR=~/code` setting. Then this gitconfig will assume all your 'work'
 repos sit under `~/code/work` and similarly all your private repos are under `~/code/private`.
 
-To take it another step further, the gitconfig supplied offers some nice function aliases to provide further organisation.
+To take it another step further, the gitconfig supplied offers some nice function aliases to provide further
+organisation.
 
-`git clone-private` and `git clone-work` will clone the supplied repository, with the full path, under the respective `~/code/private`
-and `~/code/work` directories.
+`git clone-private` and `git clone-work` will clone the supplied repository, with the full path, under the respective
+`~/code/private` and `~/code/work` directories.
 
 For example, running the following on this repo (which is where the installer will put it by default)
 
@@ -87,8 +92,8 @@ Will result in the `dotfiles` repo being located at `~/code/private/github.com/v
 Is it a bit java and dotnetty namespace looking? Kinda. Does it make things easier when you are dealing with a lot of
 enterprise level repositories scattered all over the place? Absolutely!
 
-To make it even easier to navigate, if you are using `bash` or `zsh` via this repo, you will get a nice interactive navigator via
- the alias, `gitchooser`
+To make it even easier to navigate, if you are using `bash` or `zsh` via this repo, you will get a nice interactive
+navigator via the alias, `gitchooser`
 
 > [!NOTE]
 > The git group prompts during the run of tuckr set git for the variables to populate localsettings
@@ -150,9 +155,9 @@ is detailed below.
 While the most common use case for these dots if or bootstrapping a local dev machine, there is a potential use case for
 using these dot installers within a container build.
 
-For local dev, it is usually perfectly fine to install the latest of whatever software you are installing, and that is why
-it is the default. For those odd times where you require a specific version of a piece of software, then _most_ of the
-installs support installing a specific version via supplying an env var of the form `$<PACKAGE NAME>_VERSION`
+For local dev, it is usually perfectly fine to install the latest of whatever software you are installing, and that is
+why it is the default. For those odd times where you require a specific version of a piece of software, then _most_ of
+the installs support installing a specific version via supplying an env var of the form `$<PACKAGE NAME>_VERSION`
 
 For example, the following will attempt to install `poetry` version 1.8.2, in this case via `uv`
 
@@ -212,10 +217,12 @@ to `.bashrc` or `.zshrc`.
 
 ### Git config
 
-On the off chance you want to work with work and personal accounts on the same machine, provisions have been made to cater for both configs.
+On the off chance you want to work with work and personal accounts on the same machine, provisions have been made to
+cater for both configs.
 
-This repository assumes that you will use the `git clone-work` or `git clone-private` alias to clone ALL repositories, both personal and work related. This will make
-organising mostly straight forward as _most_ people will use github.com for personal and gitlab.com for work related.
+This repository assumes that you will use the `git clone-work` or `git clone-private` alias to clone ALL repositories,
+both personal and work related. This will make organising mostly straight forward as _most_ people will use github.com
+for personal and gitlab.com for work related.
 
 ### Global gitignore
 
@@ -232,15 +239,24 @@ The list comes from <https://github.com/github/gitignore> and the currently cons
 
 Gitlab and Github both use extensions to markdown that are not 100% compatible.
 
-Unless you want to jump back and forth between the online Gitlab markdown editor, you can also get a decent representation via using
-`pandoc`
+Unless you want to jump back and forth between the online Gitlab markdown editor, you can also get a decent
+representation via using `pandoc`
 
 Installing `pandoc` will also install the github html rendering template, which is much better than stock standard.
 
 For a "good enough" local verification of a readme file that will render in Gitlab, you can run the following.
 
 ```shell
-pandoc --metadata=title=markdown --template=GitHub.html5 --from gfm --to html5 --mathjax --highlight-style=pygments --standalone -o preview.html readme.md
+pandoc \
+    --metadata=title=markdown \
+    --template=GitHub.html5 \
+    --from gfm \
+    --to html5 \
+    --mathjax \
+    --highlight-style=pygments \
+    --standalone \
+    -o preview.html 
+    readme.md
 ```
 
 which is also provided as an alias, provided you have installed the bash or zsh group previously:
@@ -292,7 +308,8 @@ Rumdl is a fast markdown linter and LSP server. It is backwards compatible with 
 A global `rumdl.toml` is provided as part of the install. Unlike ruff, it cannot be extended in a per-project basis, so
 it might not be as useful.
 
-A potential pattern for using `rumdl` within `pre-commit` checks in a pipeline for instance, is to install the `rumdl` config during the pipeline
+A potential pattern for using `rumdl` within `pre-commit` checks in a pipeline for instance, is to install the `rumdl`
+config during the pipeline
 
 ### Emacs
 
@@ -318,7 +335,8 @@ For anything that requires more than just a config file, use the hooks features 
 
 `lib/lib.sh` will give you a good starting point for how to structure installs based on the linux distro or osx
 
-Before adding anything extra into the basics group, consider if it is truly required. Otherwise make it optional in its own group
+Before adding anything extra into the basics group, consider if it is truly required. Otherwise make it optional in its
+own group
 
 If root privileges are required for any installs, rather than specifying `sudo`, considering using the provided function
 `rootdo`, which will check if the current user is root, and run the command with or without sudo depending on the user.
@@ -340,7 +358,8 @@ based on the `ID` field from `/etc/os-release` on linux, or `sw_vers -productNam
 
 `linux() {}` - a linux installer, useful for things that might use a pre-compiled linux binary for instance
 
-`generic() {}` - a generic installer hook, when doing curl-sudo-pipe-bash installs or perhaps when using `uv tool` as the install target
+`generic() {}` - a generic installer hook, when doing curl-sudo-pipe-bash installs or perhaps when using `uv tool` as
+the install target
 
 If using `uv tool` to install software, a convenience function is provided that will ensure `uv` is installed.
 
