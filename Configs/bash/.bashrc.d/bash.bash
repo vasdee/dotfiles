@@ -45,6 +45,30 @@ function git-clonepath {
 
 }
 
+# parse your netrc file for a credential from a given machine
+# $1 machine match criteria
+# $2 credential [machine|login|password] default password
+function netrc-credential {
+    match=$1
+    case "$2" in
+        machine)
+            field_num=2
+            ;;
+        login)
+            field_num=4
+            ;;
+        password)
+            field_num=6
+            ;;
+        *)
+            exit 1
+            ;;
+    esac
+    awk -v machine="$match" -v RS="" -v field_num="$field_num" \
+        '/^machine[[:space:]]*(.*)[[:space:]]*login(.*)[[:space:]]*password(.*)$/ $2 ~ machine { print $field_num }' \
+        ~/.netrc
+}
+
 ########################################################################################################################
 # Enable local settings if available.
 # This file can contain whatever env vars you like
