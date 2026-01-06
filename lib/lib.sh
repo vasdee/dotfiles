@@ -48,7 +48,7 @@ uv_install() {
     if [ -n "$PACKAGE_VERSION" ]; then
         PACKAGE="$PACKAGE==$PACKAGE_VERSION"
     fi
-    uv tool install $PACKAGE $*
+    uv tool install --upgrade $PACKAGE $*
 }
 
 # Removes a package via a uv tool install
