@@ -1,5 +1,7 @@
 # Dotfiles
 
+![SHOW ME WHAT YOU DOT!](img/what-you-dot-50.jpg)
+
 Dotfiles and general purpose installers for various flavours of linux (and macos).
 
 Uses [tuckr](https://github.com/RaphGL/Tuckr) under the hood to provide the symlinking and pre/post/hook running
@@ -107,40 +109,45 @@ which is an option with `tuckr`
 
 ## Supported installs
 
-| Software group  | Description                                                                         |
-|:---------------:|:-----------------------------------------------------------------------------------:|
-| azure-cli       | Official Azure CLI                                                                  |
-| awscli          | Official AWS CLI                                                                    |
-| docker          | Docker community edition engine & CLI tooling                                       |
-| docker-cli      | Docker CE CLI tooling only, no engine install                                                                                    |
-| uv              | Python dependency management                                                        |
-| ruff            | extremely fast linter for python                                                    |
-| just            | a command runner, inspired by make but much better                                  |
-| starship        | a terminal prompt prettier, written in rust                                         |
-| ripgrep         | A faster, enhanced version of grep. Often integrated into editors                   |
-| nvm             | manage multiple node versions                                                       |
-| pre-commit      | run checks and validation before committing to git                                  |
-| poetry          | a perfectly fine python project management tool, but deprecated in favour of uv now |
-| trivy           | container image scanning tool                                                       |
-| bash            | some nice, minimal configuration for bash shells                                    |
-| zsh             | some nice, minimal configuration for zsh shells                                     |
-| lazydocker      | tui for managing local docker containers                                            |
-| gitu            | TUI for git interaction, based on magit                                             |
-| editorConfig    | default editor configurations for maintaining consistency between teams             |
-| direnv          | manage environment variables per directory                                          |
-| git             | some nice configuration specifically for work                                       |
-| oras            | CLI tool for interfacing with OCI objects                                           |
-| bump-my-version | CLI for applying semver practices to git repos                                      |
-| cruft           | CookieCutter template manager                                                       |
-| ansible         | Configuration automation tool for                                                   |
-| dive            | TUI tool for inspecting docker images                                               |
-| pandoc          | Markup conversion tool                                                              |
-| watchexec       | monitor file changes and run commands                                               |
-| glab            | gitlab CLI tool for interacting with gitlab apis                                    |
-| pyright         | M$ Python Language server                                                           |
-| basedpyright    | A based version of the pyright lang server with saner defaults                      |
-| rumdl           | A modern Markdown linter and formatter, built for speed with Rust                   |
-|                 |                                                                                     |
+| Software group       | Description                                                                         |
+|:---------------------|:------------------------------------------------------------------------------------|
+| azure-cli            | Official Azure CLI                                                                  |
+| awscli               | Official AWS CLI                                                                    |
+| docker               | Docker community edition engine & CLI tooling                                       |
+| docker-cli           | Docker CE CLI tooling only, no engine install                                       |
+| uv                   | Python dependency management                                                        |
+| ruff                 | extremely fast linter for python                                                    |
+| just                 | a command runner, inspired by make but much better                                  |
+| starship             | a terminal prompt prettier, written in rust                                         |
+| ripgrep              | A faster, enhanced version of grep. Often integrated into editors                   |
+| nvm                  | manage multiple node versions                                                       |
+| pre-commit           | run checks and validation before committing to git                                  |
+| poetry               | a perfectly fine python project management tool, but deprecated in favour of uv now |
+| trivy                | container image scanning tool                                                       |
+| bash                 | some nice, minimal configuration for bash shells                                    |
+| zsh                  | some nice, minimal configuration for zsh shells                                     |
+| lazydocker           | tui for managing local docker containers                                            |
+| gitu                 | TUI for git interaction, based on magit                                             |
+| editorConfig         | default editor configurations for maintaining consistency between teams             |
+| direnv               | manage environment variables per directory                                          |
+| git                  | some nice configuration specifically for work                                       |
+| oras                 | CLI tool for interfacing with OCI objects                                           |
+| bump-my-version      | CLI for applying semver practices to git repos                                      |
+| cruft                | CookieCutter template manager                                                       |
+| ansible              | Configuration automation tool for                                                   |
+| dive                 | TUI tool for inspecting docker images                                               |
+| pandoc               | Markup conversion tool                                                              |
+| watchexec            | monitor file changes and run commands                                               |
+| glab                 | gitlab CLI tool for interacting with gitlab apis                                    |
+| pyright              | M$ Python Language server                                                           |
+| basedpyright         | A based version of the pyright lang server with saner defaults                      |
+| rumdl                | A modern Markdown linter and formatter, built for speed with Rust                   |
+| nodejs               | Javascript runtime (mainly used for managing packages via this tool) see NVM        |
+| ty                   | An extremely fast python type checker and language server from astral               |
+| bash-language-server | LSP server for bash and sh                                                          |
+| just-lsp             | LSP server for Just                                                                 |
+| tmux                 | A terminal multiplexer                                                              |
+|                      |                                                                                     |
 
 > [!TIP]
 > All can be installed and configured via `tuckr set <name of group>`
@@ -363,10 +370,10 @@ the install target
 
 If using `uv tool` to install software, a convenience function is provided that will ensure `uv` is installed.
 
-```text
+```bash
 uv_install() {
-
     has uv
+    ... 
     uv tool install $*
 }
 ```
@@ -374,6 +381,25 @@ uv_install() {
 > [!NOTE]
 > The `uv tool` install also respects package versions, which can be set via `$<PACKAGE NAME>_VERSION`
 > For example, `RUFF_VERSION=1.0.0 tuckr set ruff` will install the equivalent of `uv tool install ruff==1.0.0`
+
+If using `npm` to install software, then a convenience function is provided that will ensure `npm` is installed and 
+packages end up on the standard `~/.local/` prefix
+
+``` bash
+npm_install() {
+    has npm
+    ...
+    npm install --global ...
+}
+```
+
+> [!NOTE]
+> The `npm install --global` install also respects package versions, which can be set via `$<PACKAGE NAME>_VERSION`
+> For example, `BASH_LANGUAGE_SERVER_VERSION=1.0.0 tuckr set bash-language-server` will install the equivalent of 
+> `npm install --global bash-language-server@1.0.0`
+
+For `npm` and `uv` based installs, an equivalent of `npm_uninstall` and `uv_uninstall` exists to be used within removal
+scripts.
 
 ## lib.sh functions
 
