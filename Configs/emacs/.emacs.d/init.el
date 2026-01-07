@@ -413,7 +413,11 @@
   (add-to-list 'eglot-server-programs
                '(python-mode . ,(eglot-alternatives '(("basedpyright-langserver" "--stdio")))))
   (add-to-list 'eglot-server-programs
-               '(markdown-mode . ("rumdl" "server" "--stdio")))
+      '(markdown-mode . ("rumdl" "server" "--stdio")))
+  (add-to-list 'eglot-server-programs
+      '((just-ts-mode just-mode) . ("just-lsp")))
+    (add-to-list 'eglot-server-programs
+        '((bash-ts-mode sh-mode) . ("bash-language-server" "start")))
   (setq-default eglot-workspace-configuration
                 '((:pyright . (:venvPath ".venv" :pythonPath "."))))
   )

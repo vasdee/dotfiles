@@ -56,6 +56,29 @@ uv_uninstall() {
     uv tool uninstall $@
 }
 
+# Install a package via npm.
+# You should ensure that the nodejs hook has been run previously, otherwise packages will be
+# installed to non-shell aware locations
+# $1 name of the package
+npm_install() {
+    has npm
+    PACKAGE=$1
+    shift 1
+    PACKAGE_UPPERCASE=$(echo "$PACKAGE" | tr '[:lower:]' '[:upper:]' | tr '-' '_')
+    PACKAGE_VERSION_VARNAME="${PACKAGE_UPPERCASE}_VERSION"
+    PACKAGE_VERSION=$(eval echo "\$$PACKAGE_VERSION_VARNAME")
+
+    if [ -n "$PACKAGE_VERSION" ]; then
+        PACKAGE="${PACKAGE}@${PACKAGE_VERSION}"
+    fi
+    npm install --global $PACKAGE $*
+}
+
+# Removes a managed package via npm
+npm_uninstall() {
+    npm uninstall --global $@
+}
+
 # Gets the latest github tag from a given repo
 # Note: this function removes any optional v prefix of the tag, which seems to be a github convention
 # $1 repo path
