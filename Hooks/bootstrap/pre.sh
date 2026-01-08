@@ -27,12 +27,14 @@ steamos() {
 generic() {
 
     # link in tuckr and the dots if it hasn't already happened
-    if [ ! -f ${HOME}/.config/dotfiles/bin/$(uname -s)/$(uname -m)/tuckr ]; then
-        ln -s ${HOME}/.config/dotfiles/bin/$(uname -s)/$(uname -m)/tuckr ${HOME}/.local/bin/tuckr
+    # is it safe to assume that this will always be dotfiles? Might need to think about that
+    if [ ! -f $HOME/.config/dotfiles/bin/$(uname -s)/$(uname -m)/tuckr ] ; then
+        ln -s $HOME/.config/dotfiles/bin/$(uname -s)/$(uname -m)/tuckr ${HOME}/.local/bin/tuckr
     fi
 
     # Lets make these directories ahead of time, since they are used by so many other groups
     mkdir -p ~/.local/share/bash-completion/completions/
     mkdir -p ~/.zshrc.d/
     mkdir -p ~/.bashrc.d/
+    mkdir -p ~/.local/share/certificates/
 }

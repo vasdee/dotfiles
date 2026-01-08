@@ -8,7 +8,7 @@ alias l='ls -CF'
 
 # If we have fd, use it for faster git dir finding
 if command -v "fd" >/dev/null 2>&1; then
-    alias gitdirs="fd -t d --prune -H "\.git" -c never ${DEFAULT_CODE_DIR:-$PWD}"
+    alias gitdirs="fd -t d --prune -H "\.git" -c never ${DEFAULT_CODE_DIR:-$PWD} | xargs -n 1 dirname"
 else
     alias gitdirs="find ${DEFAULT_CODE_DIR:-$PWD} -type d -name '.git' -prune -exec dirname {} \;"
 fi
