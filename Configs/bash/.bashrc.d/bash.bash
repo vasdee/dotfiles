@@ -2,10 +2,17 @@
 # Some nice aliases and functions
 ########################################################################################################################
 alias hs="history | grep -i"
-alias ll="ls -lah --group-directories-first"
+alias ll="ls -1ABhlv --group-directories-first"
 alias la='ls -A'
 alias l='ls -CF'
-alias gitdirs="find ${DEFAULT_CODE_DIR:-$PWD} -type d -name '.git' -exec dirname {} \;"
+
+# If we have fd, use it for faster git dir finding
+if command -v "fd" >/dev/null 2>&1; then
+    alias gitdirs="fd -t d --prune -H "\.git" -c never ${DEFAULT_CODE_DIR:-$PWD}"
+else
+    alias gitdirs="find ${DEFAULT_CODE_DIR:-$PWD} -type d -name '.git' -prune -exec dirname {} \;"
+fi
+
 alias gitchooser='cd $(gitdirs | fzf)'
 alias dotenv="[[ -f .env ]] && set -a && source .env && set +a"
 alias histoff="set +o history"

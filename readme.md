@@ -147,6 +147,7 @@ which is an option with `tuckr`
 | bash-language-server | LSP server for bash and sh                                                          |
 | just-lsp             | LSP server for Just                                                                 |
 | tmux                 | A terminal multiplexer                                                              |
+| fd                   | fd is a fast find alternative written in rust                                       |
 |                      |                                                                                     |
 
 > [!TIP]

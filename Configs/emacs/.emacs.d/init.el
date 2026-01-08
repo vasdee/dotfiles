@@ -180,7 +180,7 @@
     (setq dirvish-side-follow-project-switch t)
 
   ;; Optional: Set 'ls' switches for more informative listings (e.g., human-readable sizes)
-  (setq dired-listing-switches "-1aBhlGv --group-directories-first")
+  (setq dired-listing-switches "-1ABhlGv --group-directories-first")
   (setq dirvish-default-layout '(0 0.4 0.6))
   ;; Optional: Bind 'dirvish-dispatch' to a key for a cheat sheet/menu
   (define-key dirvish-mode-map (kbd "?") #'dirvish-dispatch)
