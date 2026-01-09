@@ -148,6 +148,7 @@ which is an option with `tuckr`
 | just-lsp             | LSP server for Just                                                                 |
 | tmux                 | A terminal multiplexer                                                              |
 | fd                   | fd is a fast find alternative written in rust                                       |
+| fzf                  | fast fuzzy finder utility                                                           |
 |                      |                                                                                     |
 
 > [!TIP]

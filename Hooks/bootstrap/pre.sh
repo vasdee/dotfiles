@@ -3,17 +3,17 @@
 . ../../lib/lib.sh
 
 macos() {
-    brew install coreutils
+    brew install coreutils git curl jq
 }
 
 fedora() {
     rootdo dnf install -y https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
     rootdo dnf install -y https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-    rootdo dnf install -y git-core jq fzf
+    rootdo dnf install -y git-core jq curl
 }
 
 debian() {
-    rootdo apt install -y jq fzf
+    rootdo apt install -y jq curl git
 }
 
 steamos() {
@@ -21,7 +21,7 @@ steamos() {
     rootdo pacman-key --init
     rootdo pacman-key --populate archlinux
     rootdo pacman-key --populate holo
-    rootdo pacman -S --noconfirm jq fzf
+    rootdo pacman -S --noconfirm jq git curl
 }
 
 generic() {
