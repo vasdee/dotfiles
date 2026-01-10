@@ -26,19 +26,17 @@ things.
 Yolo it onto your system via a single command
 
 ``` bash
-curl -sL https://raw.githubusercontent.com/vasdee/dotfiles/install.sh | bash
+curl -sL https://raw.githubusercontent.com/vasdee/dotfiles/install.sh | sh
 ```
 
 Or run the guts of the install manually
 
 ```bash
-read -p "Enter your default code base directory. [default: ~/code]" DEFAULT_CODE_DIR
-DEFAULT_CODE_DIR=${DEFAULT_CODE_DIR:-~/code}
-CLONE_DIR=$DEFAULT_CODE_DIR/github.com/vasdee/dotfiles 
+CLONE_DIR=~/.config/dotfiles
 mkdir -p $CLONE_DIR
 git clone https://github.com/vasdee/dotfiles.git $CLONEDIR
 cd $CLONEDIR
-ln -s $PWD/bin/$(uname -s)/$(uname -m)/tuckr $HOME/.local/bin/tuckr
+$PWD/bin/$(uname -s)/$(uname -m)/tuckr set tuckr
 ```
 
 ## Some opinionated notes

@@ -18,16 +18,11 @@ git clone $GIT_OPTIONS $CLONE_URL $LOCAL_CLONE_PATH
 cd $LOCAL_CLONE_PATH
 
 echo "linking tuckr to ~/.local/bin/tuckr - make sure this is set in your path or run bash or zsh hooks"
-if [ ! -f $HOME/.local/bin/tuckr ]; then
-    ln -s $PWD/bin/$(uname -s)/$(uname -m)/tuckr $HOME/.local/bin/tuckr
-else
-    echo "link to tuckr in $HOME/.local/bin/tuckr already exists!"
-fi
-
+$PWD/bin/$(uname -s)/$(uname -m)/tuckr set tuckr
 LOCAL_BIN="$HOME/.local/bin"
 
 # Add the path temporarily
-PATH=$LOCAL_BIN:$PATH
+export PATH=$LOCAL_BIN:$PATH
 
 echo "Finished install!"
 echo "$HOME/.local/bin has been added to PATH for the current session only."
