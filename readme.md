@@ -32,11 +32,12 @@ curl -sL https://raw.githubusercontent.com/vasdee/dotfiles/install.sh | sh
 Or run the guts of the install manually
 
 ```bash
+CLONE_URL=https://github.com/vasdee/dotfiles.git
 CLONE_DIR=~/.config/dotfiles
 mkdir -p $CLONE_DIR
-git clone https://github.com/vasdee/dotfiles.git $CLONEDIR
-cd $CLONEDIR
-$PWD/bin/$(uname -s)/$(uname -m)/tuckr set tuckr
+git clone $CLONE_URL $CLONE_DIR
+cd $CLONE_DIR
+ln -s $PWD/bin/$(uname -s)/$(uname -m)/tuckr ~/.local/bin/tuckr
 ```
 
 ## Some opinionated notes

@@ -148,8 +148,9 @@
 
 (use-package dirvish
   :ensure t
-  :config
+  :init
     (dirvish-override-dired-mode)
+  :config
 
     (defun project-dired ()
         "Override the project-dired command to use dirvish"
