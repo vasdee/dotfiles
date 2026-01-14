@@ -149,6 +149,8 @@ which is an option with `tuckr`
 | fd                   | fd is a fast find alternative written in rust                                       |
 | fzf                  | fast fuzzy finder utility                                                           |
 | shellcheck           | a static analysis tool for shell scripts                                            |
+| delta                | a syntax-highlighting pager for git, diff, and grep output                          |
+| yay                  | AUR helper for Arch-based systems (arch, steamos)                                   |
 |                      |                                                                                     |
 
 > [!TIP]
@@ -384,7 +386,7 @@ uv_install() {
 > The `uv tool` install also respects package versions, which can be set via `$<PACKAGE NAME>_VERSION`
 > For example, `RUFF_VERSION=1.0.0 tuckr set ruff` will install the equivalent of `uv tool install ruff==1.0.0`
 
-If using `npm` to install software, then a convenience function is provided that will ensure `npm` is installed and 
+If using `npm` to install software, then a convenience function is provided that will ensure `npm` is installed and
 packages end up on the standard `~/.local/` prefix
 
 ``` bash
@@ -397,7 +399,7 @@ npm_install() {
 
 > [!NOTE]
 > The `npm install --global` install also respects package versions, which can be set via `$<PACKAGE NAME>_VERSION`
-> For example, `BASH_LANGUAGE_SERVER_VERSION=1.0.0 tuckr set bash-language-server` will install the equivalent of 
+> For example, `BASH_LANGUAGE_SERVER_VERSION=1.0.0 tuckr set bash-language-server` will install the equivalent of
 > `npm install --global bash-language-server@1.0.0`
 
 For `npm` and `uv` based installs, an equivalent of `npm_uninstall` and `uv_uninstall` exists to be used within removal
