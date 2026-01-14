@@ -19,7 +19,7 @@ ubuntu() {
 }
 
 steamos() {
-    rootdo pacman -S --noconfirm git-delta
+    arch
 }
 
 macos() {
