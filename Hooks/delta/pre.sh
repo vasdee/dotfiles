@@ -2,6 +2,10 @@
 
 . ../../lib/lib.sh
 
+arch() {
+    rootdo pacman -S --noconfirm git-delta
+}
+
 fedora() {
     rootdo dnf install -y git-delta
 }
