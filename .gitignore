@@ -6,3 +6,5 @@ Configs/emacs/.emacs.d/*
 !Configs/emacs/.emacs.d/snippets/
 !Configs/emacs/.emacs.d/templates/
 !Configs/emacs/.emacs.d/early-init.el
+
+CLAUDE.md
