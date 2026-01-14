@@ -37,4 +37,5 @@ generic() {
     mkdir -p ~/.zshrc.d/
     mkdir -p ~/.bashrc.d/
     mkdir -p ~/.local/share/certificates/
+    mkdir -p ~/.gitconfig.d/
 }

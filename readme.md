@@ -148,6 +148,7 @@ which is an option with `tuckr`
 | tmux                 | A terminal multiplexer                                                              |
 | fd                   | fd is a fast find alternative written in rust                                       |
 | fzf                  | fast fuzzy finder utility                                                           |
+| shellcheck           | a static analysis tool for shell scripts                                            |
 |                      |                                                                                     |
 
 > [!TIP]

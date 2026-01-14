@@ -70,6 +70,9 @@
 [credential]
 	helper = store
 
+[include]
+        path = ~/.gitconfig.d/*
+
 # Include any personal configurations in known spots.
 # included at the end to allow a personal config to override any of the above defaults
 [include]
