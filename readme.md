@@ -149,6 +149,7 @@ which is an option with `tuckr`
 | fd                   | fd is a fast find alternative written in rust                                       |
 | fzf                  | fast fuzzy finder utility                                                           |
 | shellcheck           | a static analysis tool for shell scripts                                            |
+| delta                | a syntax-highlighting pager for git, diff, and grep output                          |
 |                      |                                                                                     |
 
 > [!TIP]
