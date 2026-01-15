@@ -25,7 +25,7 @@ indent_size = 4  # matching uv pyproject.toml defaults
 
 # Python
 [*.py]
-max_line_length = 120  # Agreed by Python Code@BHP
+max_line_length = 120
 
 [*.cs]
 indent_size = 4  # match https://github.com/dotnet/sdk/blob/main/.editorconfig
