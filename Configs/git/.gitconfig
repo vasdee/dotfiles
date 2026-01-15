@@ -1,31 +1,31 @@
 [http]
-	sslVerify = false
-	postBuffer = 100000000
+  sslVerify = false
+  postBuffer = 100000000
 
 [core]
-	editor = "vi"
-	autocrlf = input
-	#whitespace = cr-at-eol
-	safecrlf = false
-	eol = lf
-	filemode = false
+  editor = "vi"
+  autocrlf = input
+  #whitespace = cr-at-eol
+  safecrlf = false
+  eol = lf
+  filemode = false
         excludesFile = ~/.config/git/ignore
 
 [fetch]
         prune = true
 
 [push]
-	default = current
-	autoSetupRemote = true
+  default = current
+  autoSetupRemote = true
         followTags = true
 
 [alias]
-	s = status
-	semver = tag --list release/* --sort=-version:refname
+  s = status
+  semver = tag --list release/* --sort=-version:refname
         gl = log --simplify-by-decoration --decorate --oneline
-	purge-tag = !git tag --delete $1 && git push --delete origin $1 && :
-	ec = config --global -e
-	hist = log --pretty=format:'%C(yellow)[%ad]%C(reset) %C(green)[%h]%C(reset) | %C(red)%s %C(bold red){{%an}}%C(reset) %C(blue)%d%C(reset)' --graph --date=short --all
+  purge-tag = !git tag --delete $1 && git push --delete origin $1 && :
+  ec = config --global -e
+  hist = log --pretty=format:'%C(yellow)[%ad]%C(reset) %C(green)[%h]%C(reset) | %C(red)%s %C(bold red){{%an}}%C(reset) %C(blue)%d%C(reset)' --graph --date=short --all
         ci = commit
         co = checkout
         ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
@@ -58,17 +58,17 @@
         clone-private = "!git clone-path $1 private"
 
 [pull]
-	rebase = false
+  rebase = false
 
 [color "status"]
         branch = magenta
         untracked = cyan
         unmerged = yellow
 [init]
-	defaultBranch = main
+  defaultBranch = main
 
 [credential]
-	helper = store
+  helper = store
 
 [include]
         path = ~/.gitconfig.d/*
