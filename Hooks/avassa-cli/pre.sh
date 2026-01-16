@@ -9,7 +9,7 @@ arch(){
 }
 
 linux() {
-    if installed supctl; then
+    if has supctl; then
         echo "Updating supctl..."
         supctl update
     else
