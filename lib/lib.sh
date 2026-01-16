@@ -51,6 +51,21 @@ uv_install() {
     uv tool install --upgrade $PACKAGE $*
 }
 
+
+# Install packages via yay (AUR helper) without confirmation
+# $@ packages to install
+yay_install() {
+    has yay
+    yay -S --needed --noconfirm "$@"
+}
+
+# Uninstall packages via yay without confirmation
+# $@ packages to uninstall
+yay_uninstall() {
+    has yay
+    yay -Rns --noconfirm "$@"
+}
+
 # Removes a package via a uv tool install
 uv_uninstall() {
     uv tool uninstall $@
