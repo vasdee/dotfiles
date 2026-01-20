@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: future annotations
-# key: annotations
-# --
-from __future__ import annotations$0

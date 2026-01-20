@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: C# Summary Comment 
-# key: csum
-# --
-
-/// <summary>
-/// 
-/// </summary>
