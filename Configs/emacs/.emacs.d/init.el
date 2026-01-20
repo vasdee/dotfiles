@@ -409,7 +409,13 @@
 (use-package eglot
   :ensure t
   :defer t
-  :hook ((python-mode-hook . eglot-ensure)(markdown-mode-hook . eglot-ensure))
+    :hook (
+              (python-mode-hook . eglot-ensure)
+              (markdown-mode-hook . eglot-ensure)
+              (sh-mode . eglot-ensure)
+              (bash-ts-mode . eglot-ensure)
+              )
+
   :config
   (add-to-list 'eglot-server-programs
                '(python-mode . ,(eglot-alternatives '(("basedpyright-langserver" "--stdio")))))
