@@ -1,10 +1,12 @@
 Configs/ssh/.ssh/*
 
 # Ignore everything by default, then manage by exception
-Configs/emacs/.emacs.d/*
-!Configs/emacs/.emacs.d/init.el
-!Configs/emacs/.emacs.d/snippets/
-!Configs/emacs/.emacs.d/templates/
-!Configs/emacs/.emacs.d/early-init.el
+emacs/config/.emacs.d/*
+!emacs/config/.emacs.d/init.el
+!emacs/config/.emacs.d/snippets/
+!emacs/config/.emacs.d/templates/
+!emacs/config/.emacs.d/early-init.el
+!emacs/config_wsl
+
 
 CLAUDE.md
