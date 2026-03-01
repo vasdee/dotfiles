@@ -9,13 +9,13 @@ fedora() {
 
    fi
 
-   sudo dnf install -y $installs
+   rootdo dnf install -y $installs
 }
 
 
 steamos() {
-	echo "installing emacs"
-	rootdo pacman -S --noconfirm \
+    echo "installing emacs"
+    rootdo pacman -S --noconfirm \
                emacs \
                ttf-hack-nerd \
                ttf-dejavu-nerd \
@@ -24,4 +24,10 @@ steamos() {
                ttf-inconsolata-nerd \
                ttf-nerd-fonts-symbols-mono \
                ttf-nerd-fonts-symbols
+}
+
+linux() {
+
+    # useful tool for multiplexing lsp servers outside of emacs
+    uv_install rassumfrassum
 }

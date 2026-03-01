@@ -17,6 +17,7 @@
         `((".*" ,(concat user-emacs-directory "backups") t)))
   (setq indent-tabs-mode nil)
 
+  ;(setq package-install-upgrade-built-in t)
   ;; No bell notification
   (setq ring-bell-function 'ignore)
   (setq visible-bell 1)
@@ -118,9 +119,81 @@
   (load-file "~/.emacs.d/init.el")
 )
 
+(defun my/marker-file-in-project(marker-file)
+    "Determine if the current project contain a (MARKER-FILE)."
+    (interactive)
+    (message "Looking for %s in " marker-file )
+    (let* ((proj-root (if (project-current)                         ; Check if in a project
+                        (project-root (project-current))
+                          default-directory))                       ; Fallback to default-directory
+              (full-path (expand-file-name marker-file proj-root))) ; Construct full path
+        (file-exists-p full-path)
+    )
+)
+
+(defun my/project-discover-top-level (dir)
+   "Recursively find projects under DIR, but stop descending once a root is found."
+   (let ((queue (list (expand-file-name dir))))
+     (while queue
+       (let ((current (pop queue)))
+         (if-let ((proj (project-current nil current)))
+             ;; If this is a project, remember it and STOP recursing here
+             (project-remember-project proj)
+           ;; If not a project, add its subdirectories to the queue to keep searching
+           (dolist (file (directory-files current t))
+             (when (and (file-directory-p file)
+                        (not (member (file-name-nondirectory file) '("." ".."))))
+               (push file queue))))))))
+
 ;; ---------------------------------------------------------
 ;; Package configurations
 ;; ---------------------------------------------------------
+
+(use-package marginalia
+  ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
+  ;; available in the *Completions* buffer, add it to the
+  ;; `completion-list-mode-map'.
+  :bind (:map minibuffer-local-map
+         ("M-A" . marginalia-cycle))
+
+  ;; The :init section is always executed.
+  :config
+
+  ;; Marginalia must be activated in the :init section of use-package such that
+  ;; the mode gets enabled right away. Note that this forces loading the
+  ;; package.
+  (marginalia-mode))
+
+(use-package embark
+  :ensure t
+  :bind
+  (("C-." . embark-act)
+   ("C-;" . embark-dwim)
+   ("C-h B" . embark-bindings))
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command)
+  :config
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil (window-parameters (mode-line-format . none)))))
+
+(use-package embark-consult
+  :ensure t
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
+
+
+(use-package eat
+    :ensure t
+    :custom
+    (eat-term-name "xterm-256")
+    :config
+    (eat-eshell-mode)
+    (eat-eshell-visual-command-mode)
+    ;; Optional: Set eshell-visual-commands to nil so everything runs in Eshell/Eat
+    (setq eshell-visual-commands nil)
+    ;(setq process-adaptive-read-buffering nil)
+    (setq eat-kill-buffer-on-exit t)
+)
 
 (use-package which-key
   :ensure t
@@ -130,7 +203,7 @@
 
 (use-package editorconfig
   :ensure t
-  :hook (( (prog-mode-hook text-mode-hook).  editorconfig-mode)
+  :hook (( (prog-mode-hook text-mode-hook) . editorconfig-mode)
          )
 )
 
@@ -151,6 +224,21 @@
   :init
     (dirvish-override-dired-mode)
   :config
+    (require 'dirvish-side)
+    (require 'dirvish-ls)
+    (require 'dirvish-subtree)
+    (require 'dirvish-collapse)
+    (require 'dirvish-icons)
+
+    (setq dirvish-attributes
+        (append
+            ;; The order of these attributes is insignificant, they are always
+            ;; displayed in the same position.
+            '(all-the-icons subtree-state collapse)
+            ;; Other attributes are displayed in the order they appear in this list.
+            '(git-msg file-modes file-time file-size)))
+    (setq dirvish-attributes
+        (remove 'vc-state dirvish-attributes))
 
     (defun project-dired ()
         "Override the project-dired command to use dirvish"
@@ -197,20 +285,32 @@
     ;(dirvish-mode-hook #'dirvish-garbage-collect-buffers)
 )
 
-(use-package terraform-mode
+;; enable ansible mode when yaml-mode is activated and an ansible.cfg file is present within the project root
+;; for the minute, lets just enable it manually
+(use-package ansible
   :ensure t
+  :hook
+     (
+     ((yaml-mode-hook) . (lambda ()
+                          (when (my/marker-file-in-project "ansible.cfg") (ansible-mode t)))))
+)
+
+(use-package terraform-mode
+  :defer t
 )
 
 (use-package dashboard
- :ensure t
- :config
- (dashboard-setup-startup-hook)
- (setq dashboard-center-content t)
- (setq dashboard-items '((recents  . 5)
-                         (bookmarks . 5)
-                         (projects . 20)))
- (setq dashboard-display-icons-p t)
- (setq dashboard-icon-type 'all-the-icons) ;; use `all-the-icons' package
+    :ensure t
+    :init
+    (setq dashboard-projects-backend 'project-el)
+    (setq dashboard-icon-type 'nerd-icons)                ; or all-the-icons
+    (setq dashboard-center-content t)
+    (setq dashboard-items '((recents  . 5)
+                            (bookmarks . 5)
+                            (projects . 20)))
+    (setq dashboard-display-icons-p t)
+    :config
+    (dashboard-setup-startup-hook)
 )
 
 ;; For linting and on the fly syntax checking
@@ -260,34 +360,48 @@
  :ensure t
 )
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Themes
+;; T H E M E S
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package spacemacs-theme
-  :ensure t
-  :init
-  ;(load-theme 'spacemacs-dark t)
+    :ensure t
+    :init
+    (load-theme 'spacemacs-dark t)
 )
 
 (use-package color-theme-sanityinc-tomorrow
-  :ensure t
-  ;(load-theme 'sanityinc-tomorrow-night t)
-  ;(load-theme 'sanityinc-tomorrow-bright t)
-  :init
-  ;(load-theme 'sanityinc-tomorrow-eighties t)
+    :ensure t
+    :config
+    (load-theme 'sanityinc-tomorrow-night t)
+    (load-theme 'sanityinc-tomorrow-bright t)
+    (load-theme 'sanityinc-tomorrow-eighties t)
 )
 
 (use-package dracula-theme
- :ensure t
- :init
- ;(load-theme 'dracula t)
+    :ensure t
+    :config
+    (load-theme 'dracula t)
 )
 
 (use-package material-theme
- :ensure t
- :config
- (load-theme 'material t)
+    :ensure t
+    :config
+    (load-theme 'material t)
 )
+
+(use-package doom-themes
+    :ensure t
+    :custom
+    (doom-themes-enable-bold nil)   ; if nil, bold is universally disabled
+    (doom-themes-enable-italic nil) ; if nil, italics is universally disabled
+    :config
+    (load-theme 'doom-one t)
+)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; P A C K A G E S
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 ;; Snippet manager for creating and using
 ;; custom code snippets
@@ -306,14 +420,40 @@
   ;; set the formatting to show the project name in the tab-bar
   (setq tab-bar-format '(tab-bar-format-history tab-bar-format-tabs-groups tab-bar-separator tab-bar-format-add-tab))
   ;; make the default action when switching/opening a project to select a file
-    (setq project-switch-commands 'project-dired)
+    ;;(setq project-switch-commands 'project-dired)
+  (setq project-switch-commands
+        '((project-find-file "Find file" "f")
+          (project-find-dir "Find dir" "d")
+          (project-dired "Dired" "D")
+          (magit-project-status "Magit" "m") ; Requires magit
+          (project-shell "Shell" "s")
+             (project-eshell "Eshell" "e")))
+
+  ;; Recursively remember projects under the DEFAULT_CODE_DIR
+  (my/project-discover-top-level (getenv "DEFAULT_CODE_DIR"))
 )
 
-;; Consolidates project buffers into a tab
-;;;;(use-package project-tab-groups
-;;;;  :ensure t
-;;;;  :config
-;;;;  (project-tab-groups-mode 1))
+;; adds a nice transient menu to the built in project.el
+;;(use-package disproject
+;;  :ensure t
+;;  ;; Replace `project-prefix-map' with `disproject-dispatch'.
+;;  :bind ( :map ctl-x-map
+;;            ("p" . disproject-dispatch))
+;;)
+
+(use-package gptel
+  :ensure t
+  :config
+
+    ;; should be able to do this
+    ;; (gptel-make-gemini "My-Gemini-backend"
+    ;;    :key (gptel-api-key-from-environment))
+    ;; :key can be a function that returns the API key.
+    (gptel-make-gemini "Gemini"
+        :key (getenv "GEMINI_API_KEY"))
+
+  ;(setq gptel-response-mode 'markdown-mode)
+)
 
 (use-package otpp
     :ensure t
@@ -325,24 +465,30 @@
 
 ;; Make the tab-bar look more flat, like what's in neovim
 (use-package vim-tab-bar
-  :ensure t
-  :commands vim-tab-bar-mode
-  :hook
-  (after-init-hook . vim-tab-bar-mode)
-  :config
-  (setq vim-tab-bar-show-groups t))
+    :ensure t
+    :commands vim-tab-bar-mode
+    :hook
+    (after-init-hook . vim-tab-bar-mode)
+    :config
+    (setq vim-tab-bar-show-groups t))
 
 ;; Fix the indenting issues in emacs
-(use-package aggressive-indent
- :ensure t
- :hook (
-        (css-mode-hook . aggressive-indent-mode)
-        ;(emacs-lisp-mode . aggressive-indent-mode)
-        ;(js-mode . aggressive-indent-mode)
-        ;(lisp-mode . aggressive-indent-mode)
-        )
-  :custom (aggressive-indent-comments-too)
-)
+;(use-package aggressive-indent
+;    :ensure t
+    ;:config
+    ;(global-aggressive-indent-mode 1)
+    ;(add-to-list 'aggressive-indent-excluded-modes 'html-mode)
+    ;:hook
+    ;(prog-mode-hook . agressive-indent-mode )
+;    :custom (aggressive-indent-comments-too)
+;)
+
+;;(use-package aggressive-indent
+;;  :ensure t
+;;  :commands aggressive-indent-mode
+;;  :hook
+;;  (lisp-data-mode . aggressive-indent-mode)
+;;  )
 
 (use-package move-text
   :ensure t
@@ -415,28 +561,36 @@
 )
 
 (use-package eglot
-  :ensure t
-  :defer t
+    :ensure t
+    :defer t
     :hook (
-              (python-mode-hook . eglot-ensure)
-              (markdown-mode-hook . eglot-ensure)
-              (sh-mode . eglot-ensure)
-              (bash-ts-mode . eglot-ensure)
-              )
-
+    (python-mode-hook . eglot-ensure)
+    (markdown-mode-hook . eglot-ensure)
+    ((sh-mode-hook bash-ts-mode-hook) . eglot-ensure)
+    (ansible-mode-hook . eglot-ensure)
+    (docker-mode-hook . eglot-ensure)
+    ((yaml-mode-hook) .
+        (lambda () (unless (my/marker-file-in-project "ansible.cfg") (eglot-ensure))))
+    (just-ts-mode-hook . eglot-ensure)
+    )
   :config
-  (add-to-list 'eglot-server-programs
-               '(python-mode . ,(eglot-alternatives '(("basedpyright-langserver" "--stdio")))))
-  (add-to-list 'eglot-server-programs
-      '(markdown-mode . ("rumdl" "server" "--stdio")))
-  (add-to-list 'eglot-server-programs
-      '((just-ts-mode just-mode) . ("just-lsp")))
+    (add-to-list 'eglot-server-programs
+        '(python-mode . ,(eglot-alternatives '(("basedpyright-langserver" "--stdio")))))
+    (add-to-list 'eglot-server-programs
+        '(markdown-mode . ("rumdl" "server" "--stdio")))
+    (add-to-list 'eglot-server-programs
+        '((just-ts-mode just-mode) . ("just-lsp")))
     (add-to-list 'eglot-server-programs
         '((bash-ts-mode sh-mode) . ("bash-language-server" "start")))
-  (setq-default eglot-workspace-configuration
+    (add-to-list 'eglot-server-programs
+         '((ansible-mode) . ("rass" "--" "ansible-language-server" "--stdio" "--" "yaml-language-server" "--stdio")))
+    (add-to-list 'eglot-server-programs
+        '((docker-mode) . ("docker-language-server" "start" "--stdio")))
+    (add-to-list 'eglot-server-programs
+        '((yaml-mode) . ("yaml-language-server" "--stdio")))
+    (setq-default eglot-workspace-configuration
                 '((:pyright . (:venvPath ".venv" :pythonPath "."))))
-  )
-
+)
 
 
 ;; Show a nice hover box showing documentation via eldoc
@@ -506,7 +660,15 @@
   (add-to-list 'flycheck-disabled-checkers '(python-flake8 python-mypy))
   (add-to-list 'flycheck-checkers 'python-ruff)
   (eldoc-mode t)
-)
+    )
+
+(use-package treesit-auto
+    :ensure t
+    :config
+    (setq treesit-auto-langs '(python just bash sh))
+    (add-to-list 'global-treesit-auto-modes '(not yaml-mode))
+    (global-treesit-auto-mode)
+    (setq treesit-auto-install t))
 
 (use-package yaml-mode
   :ensure t
@@ -581,7 +743,12 @@
  '(newsticker-url-list
       '(("phoronix" "https://www.phoronix.com/phoronix-rss.php" nil nil nil)
            ("hacker news" "https://news.ycombinator.com/rss" nil nil nil)))
- '(package-selected-packages nil)
+ '(package-selected-packages
+      '(ace-window ag aggressive-indent all-the-icons-dired ansible color-theme-sanityinc-tomorrow company counsel csv-mode
+           dashboard dired-gitignore dired-subtree dirvish disproject docker dockerfile-mode doom-modeline doom-themes
+           dracula-theme eldoc-box flycheck json-mode just-ts-mode magit makefile-executor markdown-mode material-theme
+           move-text otpp project-tab-groups python-mode restclient spacemacs-theme terraform-mode treesit-auto
+           vim-tab-bar web-mode x509-mode yaml-mode yasnippet))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(safe-local-variable-values '((just-ts-indent-offset . 4)))
  '(sgml-basic-offset 4)

@@ -1,7 +1,7 @@
 ;;; early-init-.el starts
 
 (setq package-enable-at-startup nil)
-(setq gc-cons-threshold 10000000)
+(setq gc-cons-threshold (* 300 1024 1024))
 (setq byte-compile-warnings '(not obsolete))
 (setq warning-suppress-log-types '((comp) (bytecomp)))
 (setq native-comp-async-report-warnings-errors 'silent)
@@ -20,8 +20,10 @@
       use-file-dialog nil ;; don't use system file dialog
       tab-bar-close-button-show nil ;; don't show tab close button
       inhibit-startup-message t
+      inhibit-startup-screen t
+      initial-scratch-message nil
       inhibit-startup-echo-area-message t
-      )
+      frame-inhibit-implied-resize t)
 
 (setq default-frame-alist '((fullscreen . maximized)
 
@@ -36,4 +38,3 @@
                             (ns-appearance . dark)
                             (ns-transparent-titlebar . t)))
 ;;; early-init.el ends here
-
