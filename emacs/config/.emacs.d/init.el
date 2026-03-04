@@ -219,6 +219,15 @@
   :ensure t
   :bind ("C-c d" . docker))
 
+(use-package dired
+  :config
+    (setq dired-listing-switches
+        "-l --almost-all --human-readable --group-directories-first --no-group")
+  ;; this command is useful when you want to close the window of `dirvish-side'
+  ;; automatically when opening a file
+  (put 'dired-find-alternate-file 'disabled nil)
+)
+
 (use-package dirvish
   :ensure t
   :init
@@ -236,7 +245,7 @@
             ;; displayed in the same position.
             '(all-the-icons subtree-state collapse)
             ;; Other attributes are displayed in the order they appear in this list.
-            '(git-msg file-modes file-time file-size)))
+            '(file-modes file-time file-size)))
     (setq dirvish-attributes
         (remove 'vc-state dirvish-attributes))
 
@@ -265,20 +274,22 @@
   ;; Optional: Add configuration for specific features here.
   ;; For example, enabling the display of file/folder icons:
   ;; (add-hook 'dirvish-mode-hook #'dirvish-hide-details-mode) ; optional, hides file details for a cleaner look
-    (setq dirvish-side-follow-mode t)
-    (setq dirvish-side-follow-project-switch t)
+  (setq dirvish-side-follow-mode t)
+  (setq dirvish-side-follow-project-switch t)
 
   ;; Optional: Set 'ls' switches for more informative listings (e.g., human-readable sizes)
-  (setq dired-listing-switches "-1ABhlGv --group-directories-first")
+  ;(setq dired-listing-switches "-1ABhlGv --group-directories-first")
   (setq dirvish-default-layout '(0 0.4 0.6))
-  ;; Optional: Bind 'dirvish-dispatch' to a key for a cheat sheet/menu
-  (define-key dirvish-mode-map (kbd "?") #'dirvish-dispatch)
 
   ;; Optional: Automatically delete old dired buffers
     (setq dirvish-buffers-max-size 10)
   :bind
-    (("C-x d" . dirvish-dwim) )
-    (("C-c f" . dirvish-side) )
+    (("C-c f" . dirvish-side)
+     ("C-x d" . dirvish-dwim)
+     :map dirvish-mode-map
+     ("?"   . dirvish-dispatch)          ; [?] a helpful cheatsheet
+     ("f"   . dirvish-file-info-menu)    ; [f]ile info
+     ("TAB" . dirvish-subtree-toggle))
   :hook
     ((dirvish-mode-hook . 'dirvish-hire-icons-mode)
      (dirvish-mode-hook . dirvish-peek-mode))
@@ -511,8 +522,13 @@
   )
 )
 
+(use-package nerd-icons
+    :ensure t
+)
+
 (use-package all-the-icons
-  :if (display-graphic-p))
+    :if (display-graphic-p)
+)
 
 
 ;; Allows auto completion of commands in the command buffer
