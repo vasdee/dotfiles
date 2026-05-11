@@ -145,6 +145,18 @@
                         (not (member (file-name-nondirectory file) '("." ".."))))
                (push file queue))))))))
 
+(defun my/project-skip-external-buffers (window buffer _bury-or-kill)
+  "Skip BUFFER if we are in a project and BUFFER doesn't belong to it."
+  (let ((current-pr (project-current)))
+    (if current-pr
+        ;; We are in a project: skip any buffer not in this project
+        (not (memq buffer (project-buffers current-pr)))
+      ;; Not in a project: don't skip anything (normal behavior)
+      nil)))
+
+;; Apply the filter
+(setq switch-to-prev-buffer-skip #'my/project-skip-external-buffers)
+
 ;; ---------------------------------------------------------
 ;; Package configurations
 ;; ---------------------------------------------------------

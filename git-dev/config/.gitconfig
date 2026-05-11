@@ -1,0 +1,84 @@
+[http]
+	sslVerify = false
+	postBuffer = 100000000
+
+[core]
+	editor = "vi"
+	autocrlf = input
+	#whitespace = cr-at-eol
+	safecrlf = false
+	eol = lf
+	filemode = false
+	excludesFile = ~/.config/git/ignore
+
+[fetch]
+	prune = true
+
+[push]
+	default = current
+	autoSetupRemote = true
+	followTags = true
+
+[alias]
+	s = status
+	semver = tag --list release/* --sort=-version:refname
+	gl = log --simplify-by-decoration --decorate --oneline
+	purge-tag = !git tag --delete $1 && git push --delete origin $1 && :
+	ec = config --global -e
+	hist = log --pretty=format:'%C(yellow)[%ad]%C(reset) %C(green)[%h]%C(reset) | %C(red)%s %C(bold red){{%an}}%C(reset) %C(blue)%d%C(reset)' --graph --date=short --all
+	ci = commit
+	co = checkout
+	ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
+	ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+	lds = log --pretty=format:"%C(yellow)%h\\ %ad%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --date=short
+	lol = log --graph --decorate --pretty=oneline --abbrev-commit
+	lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+	unstage = reset HEAD --
+	last = log -1 HEAD
+	amend = commit --amend --no-edit
+	# $1 - the repo url
+	# $2 - the optional base private or work extra path
+	clone-path = "! fn() { \
+									 bd=${DEFAULT_CODE_DIR:-${PWD}}/$2 ;\
+									 re='^(https?:\\/\\/.+:.+@|https?:\\/\\/|git@|git\\+ssh@)(.*\\/)([^\\/]*\\.git)$' ;\
+									 if [[ $1 =~ $re ]] \
+									 then \
+											 ep=${BASH_REMATCH[2]} ;\
+											 pathchk $ep ;\
+											 echo "Cloning $1 to $bd/$ep" ;\
+											 mkdir -p $bd/$ep || true ;\
+											 cd $bd/$ep ;\
+											 git clone $1 ;\
+									 else \
+											 echo "Could not pass $1" ;\
+											 exit 1 ;\
+									 fi \
+									 }; fn"
+	clone-work = "!git clone-path $1 work"
+	clone-private = "!git clone-path $1 private"
+
+[pull]
+	rebase = false
+
+[color "status"]
+	branch = magenta
+	untracked = cyan
+	unmerged = yellow
+
+[init]
+	defaultBranch = main
+
+[credential]
+	helper = store
+
+[include]
+	path = ~/.gitconfig.d/*
+
+# Include any personal configurations in known spots.
+# included at the end to allow a personal config to override any of the above defaults
+[include]
+	path = ~/.gitconfig-private
+
+# Is this a sweeping statement that most companies would use gitlab for work?
+[includeIf "gitdir:**/work/"]
+	path = ~/.gitconfig-work
