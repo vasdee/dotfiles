@@ -1,6 +1,8 @@
 [http]
 	sslVerify = false
-	postBuffer = 100000000
+	postBuffer = 524288000
+	lowSpeedLimit = 1000
+	lowSpeedTime = 60
 
 [core]
 	editor = "vi"

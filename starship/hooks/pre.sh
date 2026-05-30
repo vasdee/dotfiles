@@ -21,3 +21,7 @@ ubuntu() {
 steamos() {
     rootdo pacman -S --noconfirm starship
 }
+
+bazzite() {
+    brew install starship
+}

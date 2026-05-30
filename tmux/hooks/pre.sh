@@ -12,3 +12,8 @@ steamos() {
 fedora() {
     rootdo dnf install -y tmux
 }
+
+# Bazzite seems to have tmux already installed
+bazzite() {
+    :
+}

@@ -12,6 +12,12 @@ fedora() {
    rootdo dnf install -y $installs
 }
 
+bazzite() {
+    flathub install org.gnu.emacs
+    brew install --cask font-jetbrains-mono-nerd-font font-hack-nerd-font
+    uv_install rassumfrassum
+   
+}
 
 steamos() {
     echo "installing emacs"
