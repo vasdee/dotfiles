@@ -2,7 +2,7 @@
 
 
 fedora() {
-   installs="emacs-pgtk aspell aspell-en"
+   installs="emacs-pgtk aspell aspell-en jetbrains-mono-fonts-all cascadia-code-nf-fonts cascadia-mono-nf-fonts source-foundry-hack-fonts"
 
    if [ -n "$WSLENV" ] ; then
        installs="$installs wl-clipboard"
@@ -10,6 +10,7 @@ fedora() {
    fi
 
    rootdo dnf install -y $installs
+   uv_install rassumfrassum
 }
 
 bazzite() {
@@ -30,6 +31,8 @@ steamos() {
                ttf-inconsolata-nerd \
                ttf-nerd-fonts-symbols-mono \
                ttf-nerd-fonts-symbols
+
+    uv_install rassumfrassum
 }
 
 linux() {

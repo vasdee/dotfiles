@@ -131,9 +131,10 @@
     )
 )
 
-(defun my/project-discover-top-level (dir)
-   "Recursively find projects under DIR, but stop descending once a root is found."
-   (let ((queue (list (expand-file-name dir))))
+(defun my/project-discover-top-level ()
+    "Recursively find projects under DIR, but stop descending once a root is found."
+    (interactive)
+   (let ((queue (list (expand-file-name (getenv "DEFAULT_CODE_DIR")))))
      (while queue
        (let ((current (pop queue)))
          (if-let ((proj (project-current nil current)))
@@ -453,7 +454,7 @@
              (project-eshell "Eshell" "e")))
 
   ;; Recursively remember projects under the DEFAULT_CODE_DIR
-  (my/project-discover-top-level (getenv "DEFAULT_CODE_DIR"))
+  (my/project-discover-top-level)
 )
 
 ;; adds a nice transient menu to the built in project.el
@@ -777,6 +778,7 @@
    '(("phoronix" "https://www.phoronix.com/phoronix-rss.php" nil nil nil)
      ("hacker news" "https://news.ycombinator.com/rss" nil nil nil)))
  '(package-selected-packages
+
    '(ace-window all-the-icons ansible color-theme-sanityinc-tomorrow
                 company counsel csv-mode dashboard dirvish docker
                 dockerfile-mode doom-modeline doom-themes
@@ -794,7 +796,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(lsp-face-highlight-read ((t (:inherit highlight :underline "dark gray")))))
+ )
 
 
 (put 'upcase-region 'disabled nil)
