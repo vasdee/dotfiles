@@ -1,5 +1,8 @@
 #!/bin/sh
 
+macos() {
+    brew install tmux
+}
 
 arch() {
     yay_install tmux
@@ -15,5 +18,5 @@ fedora() {
 
 # Bazzite seems to have tmux already installed
 bazzite() {
-    :
+    macos
 }

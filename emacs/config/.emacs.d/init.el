@@ -35,6 +35,9 @@
           (window-parameters . ((no-delete-other-windows . t)))
           (window-width . 80)))
 
+
+   ; sometimes emacs will see variables blocks in hcl files as similar to dir-locals
+   (add-to-list 'inhibit-local-variables-regexps "\\.hcl\\'")
 )
 
 ;; Nicer window moving keys
@@ -53,13 +56,16 @@
 (defun font-available-p (font-name)
   (find-font (font-spec :name font-name)))
 
+;; Iosevka, Fira, Jetbrains Mono,
 (cond
+((font-available-p "Iosevka Nerd Font Mono")
+  (set-frame-font "Iosevka Nerd Font Mono-10" nil t))
  ((font-available-p "JetBrains Mono")
   (set-frame-font "JetBrains Mono-10" nil t))
  ((font-available-p "Cascadia Code")
   (set-frame-font "Cascadia Code-12" nil t))
  ((font-available-p "Hack")
-  (set-frame-font "Hack 10" nil t))
+  (set-frame-font "Hack-10" nil t))
  ((font-available-p "DejaVu Sans Mono")
   (set-frame-font "DejaVu Sans Mono-12" nil t))
  ((font-available-p "Inconsolata")
@@ -162,51 +168,43 @@
 ;; Package configurations
 ;; ---------------------------------------------------------
 
-(use-package marginalia
-  ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
-  ;; available in the *Completions* buffer, add it to the
-  ;; `completion-list-mode-map'.
-  :bind (:map minibuffer-local-map
-         ("M-A" . marginalia-cycle))
-
-  ;; The :init section is always executed.
-  :config
-
-  ;; Marginalia must be activated in the :init section of use-package such that
-  ;; the mode gets enabled right away. Note that this forces loading the
-  ;; package.
-  (marginalia-mode))
-
-(use-package embark
-  :ensure t
-  :bind
-  (("C-." . embark-act)
-   ("C-;" . embark-dwim)
-   ("C-h B" . embark-bindings))
-  :init
-  (setq prefix-help-command #'embark-prefix-help-command)
-  :config
-  (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil (window-parameters (mode-line-format . none)))))
-
-(use-package embark-consult
-  :ensure t
-  :hook (embark-collect-mode . consult-preview-at-point-mode))
-
-
-(use-package eat
+(use-package ghostel
     :ensure t
-    :custom
-    (eat-term-name "xterm-256")
+    :bind (("C-x m" . ghostel)
+         :map ghostel-semi-char-mode-map
+         ("C-s"  . consult-line)
+         ("C-k"  . my/ghostel-send-C-k-and-kill)
+         ;; ;; I'm used to go up/down the shell history with M-n/p from eshell
+         ;; ;; Simulate this behavior in ghostel by sending C-p and C-n
+         ("M-p" . (lambda () (interactive) (ghostel-send-key "p" "ctrl")))
+         ("M-n" . (lambda () (interactive) (ghostel-send-key "n" "ctrl")))
+         :map project-prefix-map
+         ("m" . ghostel-project)
+         ("M" . ghostel-project-list-buffers))
     :config
-    (eat-eshell-mode)
-    (eat-eshell-visual-command-mode)
-    ;; Optional: Set eshell-visual-commands to nil so everything runs in Eshell/Eat
-    (setq eshell-visual-commands nil)
-    ;(setq process-adaptive-read-buffering nil)
-    (setq eat-kill-buffer-on-exit t)
-)
+    (defun my/ghostel-send-C-k-and-kill ()
+    "Send `C-k' to ghostel.
+Like normal Emacs `C-k'.  Kill to end of line and put content in kill-ring."
+    (interactive)
+    (kill-ring-save (point) (line-end-position))
+    (ghostel-send-key "k" "ctrl"))
+
+  (add-to-list 'project-switch-commands '(ghostel-project "Ghostel") t)
+  (add-to-list 'project-switch-commands '(ghostel-project-list-buffers "Ghostel buffers") t)
+  (add-to-list 'ghostel-eval-cmds '("magit-status-setup-buffer" magit-status-setup-buffer)))
+
+;;(use-package eat
+;;    :ensure t
+;;    :custom
+;;    (eat-term-name "xterm-256")
+;;    :config
+;;    (eat-eshell-mode)
+;;    (eat-eshell-visual-command-mode)
+;;    ;; Optional: Set eshell-visual-commands to nil so everything runs in Eshell/Eat
+;;    (setq eshell-visual-commands nil)
+;;    ;(setq process-adaptive-read-buffering nil)
+;;    (setq eat-kill-buffer-on-exit t)
+;;)
 
 (use-package which-key
   :ensure t
@@ -224,8 +222,11 @@
   ;:init (just-ts-mode-install-grammar)
   :ensure t
   :config
+  ;; Install the justfile tree-sitter grammar if not already present
+  (unless (treesit-language-available-p 'just)
+    (just-ts-mode-install-grammar)))
   (setq-default indent-tabs-mode nil)
-  (add-to-list 'auto-mode-alist '("\\.just$" . just-ts-mode))
+  (add-to-list 'auto-mode-alist '("\\.just$" . just-ts-mode)
 )
 
 (use-package docker
@@ -341,33 +342,17 @@
 (use-package flycheck
  :ensure t
  :config
-   (global-flycheck-mode)
    (setq flycheck-check-syntax-automatically '(mode-enabled save mode-enable))
     (flycheck-add-mode 'javascript-eslint 'web-mode)
    (add-to-list 'flycheck-disabled-checkers '(markdown-markdownlint-cli markdown-markdownlint-cli2 markdown-pymarkdown))
    (add-to-list 'flycheck-checkers 'markdown-mdl)
    (setq flycheck-markdown-mdl-executable "rumdl check")
-   ; Disable these until figure out what is required for flycheck linting
-   ;(flycheck-add-mode 'csharp-omnisharp-codecheck 'csharp-mode)
-   ;(add-to-list 'flycheck-checkers 'csharp-omnisharp-codecheck)
+   (global-flycheck-mode)
 )
 
 (use-package sql
   :defer t
   :init
-  (setq lsp-sqls-workspace-config-path nil)
-  (setq sql-connection-alist
-      '((sw-db
-         (sql-product 'postgres)
-         (sql-server "127.0.0.1")
-         (sql-user "postgres")
-         (sql-password "admin")
-         (sql-database "postgres")
-         (sql-port 5433))))
-  (setq lsp-sqls-connections
-    '(
-      ((driver . "postgresql") (dataSourceName . "host=127.0.0.1 port=5433 user=postgres password=admin dbname=postgres sslmode=disable")))
-    )
 )
 
 ;; Mode for working with Dockerfile
@@ -457,14 +442,6 @@
   (my/project-discover-top-level)
 )
 
-;; adds a nice transient menu to the built in project.el
-;;(use-package disproject
-;;  :ensure t
-;;  ;; Replace `project-prefix-map' with `disproject-dispatch'.
-;;  :bind ( :map ctl-x-map
-;;            ("p" . disproject-dispatch))
-;;)
-
 (use-package gptel
   :ensure t
   :config
@@ -495,24 +472,6 @@
     (after-init-hook . vim-tab-bar-mode)
     :config
     (setq vim-tab-bar-show-groups t))
-
-;; Fix the indenting issues in emacs
-;(use-package aggressive-indent
-;    :ensure t
-    ;:config
-    ;(global-aggressive-indent-mode 1)
-    ;(add-to-list 'aggressive-indent-excluded-modes 'html-mode)
-    ;:hook
-    ;(prog-mode-hook . agressive-indent-mode )
-;    :custom (aggressive-indent-comments-too)
-;)
-
-;;(use-package aggressive-indent
-;;  :ensure t
-;;  :commands aggressive-indent-mode
-;;  :hook
-;;  (lisp-data-mode . aggressive-indent-mode)
-;;  )
 
 (use-package move-text
   :ensure t
@@ -546,45 +505,124 @@
   :ensure t
     :if (display-graphic-p)
 )
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Navigation
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Marginalia: rich annotations in completion candidates
+(use-package marginalia
+  ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
+  ;; available in the *Completions* buffer, add it to the
+  ;; `completion-list-mode-map'.
+  :bind (:map minibuffer-local-map
+         ("M-A" . marginalia-cycle))
 
-;; Allows auto completion of commands in the command buffer
-(use-package ivy
-    :ensure t
-    :init
-    (ivy-mode t)
+  ;; The :init section is always executed.
   :config
-    (setq ivy-use-virtual-buffers t)
-    (setq ivy-count-format "(%d/%d) ")
-  :bind
-    ("C-x b" . ivy-switch-buffer)
-    ("C-x B" . ivy-switch-buffer-other-window)
-)
 
-;; ensures completion happens in ivy
-(use-package counsel
+  ;; Marginalia must be activated in the :init section of use-package such that
+  ;; the mode gets enabled right away. Note that this forces loading the
+  ;; package.
+  (marginalia-mode))
+
+;; Free form matching in the mini-buffer
+(use-package orderless
   :ensure t
-  :after ivy
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles partial-completion))))
+  (completion-category-defaults nil)
+  (completion-pcm-leading-wildcard t))
+
+;; Embark: context-sensitive actions / right-click menu
+(use-package embark
+  :ensure t
+  :bind
+  (("C-." . embark-act)
+   ("C-;" . embark-dwim)
+   ("C-h B" . embark-bindings))
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command)
   :config
-  (counsel-mode)
-  :bind
-    ;; Set a VSCode style find file in project lookup key
-  ("C-c p f" . counsel-find-file)
-  ("M-x" . counsel-M-x)
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil (window-parameters (mode-line-format . none)))))
+
+(use-package embark-consult
+  :ensure t
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
+
+;; CORFU: Inline Popup Completion UI
+(use-package corfu
+  :ensure t
+  ;; Optional customizations
+  :custom
+  (corfu-cycle t)                ; Allows cycling through candidates
+  (corfu-auto t)                 ; Enable auto-completion popup window
+  (corfu-auto-prefix 2)          ; Minimum numeric characters before popup shows
+  (corfu-auto-delay 0.3)         ; Tiny delay before menu pops up for speed
+  (corfu-quit-at-boundary 'separator) ; Never quit completion at space/separator
+
+  :init
+  (global-corfu-mode 1))
+
+;; Recommended: Enable Corfu in the Minibuffer (e.g., for Vertico search prompts)
+(use-package corfu-popupinfo
+  :ensure nil ; Part of the core Corfu repository package
+  :hook (corfu-mode . corfu-popupinfo-mode)
+  :custom
+  (corfu-popupinfo-delay '(0.2 . 0.1))) ; Quick display of documentation tooltips
+
+
+;; cape: Completion At Point Extensions (Backends)
+(use-package cape
+  :ensure t
+  :init
+  ;; Add useful completion backends globally to the capf list.
+  ;; Order determines priority evaluation during triggers.
+  (add-hook 'completion-at-point-functions #'cape-dabbrev)     ; Words in open buffers
+  (add-hook 'completion-at-point-functions #'cape-file)        ; File path system matching
+  (add-hook 'completion-at-point-functions #'cape-elisp-block) ; Elisp inside org code blocks
+  (add-hook 'completion-at-point-functions #'cape-keyword)     ; Programming language keywords
+
+  :config
+  ;; Optional: Silence capf errors if they cause unwanted noise in specific modes
+    (setq text-mode-ispell-silent t)
 )
 
-;; Better searching control
-(use-package swiper
-  :after ivy
-  :bind
-  ("C-s" . swiper)
-  ("C-r" . swiper)
-)
+(use-package vertico
+  :ensure t
+  :init
+  (vertico-mode 1)
+  :config
+  ;; Optional: Tweak minibuffer behavior
+  (setq vertico-cycle t)) ; Allow cycling from last to first candidate
 
+(use-package consult
+  :ensure t
+  :bind (;; Swiper replacements
+         ("C-s" . consult-line)
+         ("M-s l" . consult-line)
+         ;; Counsel replacements
+         ("C-x b" . consult-buffer)                ; Replacing ivy-switch-buffer
+         ("M-y" . consult-yank-pop)               ; Replacing counsel-yank-pop
+         ("C-x r b" . consult-bookmark)
+         ;; Search replacements
+         ("M-s g" . consult-grep)
+         ("M-s r" . consult-ripgrep)
+         ;; Info/Help enhancements
+         ("C-h i" . consult-info)
+         ;; Errors/Flycheck integration
+         ("M-g g" . consult-goto-line)            ; Enhances native line jumping
+         ("M-g o" . consult-outline)))            ; Replaces counsel-outline
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Nice display of the modeline for git, flycheck info
 (use-package doom-modeline
   :ensure t
+  :custom
+    (doom-modeline-lsp t)
+    (doom-modeline-buffer-file-name-style 'truncate-with-project)
   :hook (after-init-hook . doom-modeline-mode)
 )
 
@@ -622,7 +660,13 @@
     (add-to-list 'eglot-server-programs
         '((yaml-mode) . ("yaml-language-server" "--stdio")))
     (setq-default eglot-workspace-configuration
-                '((:pyright . (:venvPath ".venv" :pythonPath "."))))
+        '((:pyright . (:venvPath ".venv" :pythonPath "."))))
+
+    (setf (alist-get 'yaml-mode eglot-server-programs)
+        (lambda (interactive)
+          (if (my/marker-file-in-project "ansible.cfg")
+              '("rass" "--" "ansible-language-server" "--stdio" "--" "yaml-language-server" "--stdio")
+            '("yaml-language-server" "--stdio"))))
 )
 
 
@@ -631,29 +675,6 @@
   :ensure t
   :hook (eglot-managed-mode-hook . eldoc-box-hover-at-point-mode) ; (lambda() (#'eldoc-box-help-at-point t))
 )
-
-
-;; Pop up dialog for autocomplete functions
-(use-package company
-  :ensure t
-  :hook (( prog-mode-hook . company-mode))
-  :config
-    ;(setq company-tooltip-align-annotations t)
-    ;(setq global-company-mode t)
-  :bind (:map company-active-map
-                ("<return>" . nil)
-                ("RET" . nil)
-                ("C-<return>" . company-complete-selection)
-                ([tab] . company-complete-selection)
-                ("TAB" . company-complete-selection))
-  :custom
-  ('(company-quickhelp-color-background "#4F4F4F")
-   '(company-quickhelp-color-foreground "#DCDCCC"))
-)
-
-;(use-package company-box
-;    :ensure t
-;    :hook (company-mode . company-box-mode)))
 
 (use-package ace-window
   :ensure t
@@ -697,11 +718,18 @@
 
 (use-package treesit-auto
     :ensure t
+    :custom
+    (treesit-auto-install 'prompt)
+
     :config
-    (setq treesit-auto-langs '(python just bash sh))
-    (add-to-list 'global-treesit-auto-modes '(not yaml-mode))
+    ; try just enabling all tree sitter, apart from yaml-mode
+    ;(setq treesit-auto-langs '(python just bash sh dockerfile))
+    ;(add-to-list 'global-treesit-auto-modes '(not yaml-mode))
+
+    (delete 'yaml treesit-auto-langs)
     (global-treesit-auto-mode)
-    (setq treesit-auto-install t))
+    ;(setq treesit-auto-install t)
+)
 
 (use-package yaml-mode
   :ensure t
@@ -765,28 +793,23 @@
  '(company-quickhelp-color-foreground "#DCDCCC")
  '(css-indent-offset 4)
  '(custom-safe-themes
-   '("37768a79b479684b0756dec7c0fc7652082910c37d8863c35b702db3f16000f8"
-     "2dff5f0b44a9e6c8644b2159414af72261e38686072e063aa66ee98a2faecf0e"
-     "3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077"
-     "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb"
-     "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df"
-     "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3"
-     "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4"
-     default))
+      '("37768a79b479684b0756dec7c0fc7652082910c37d8863c35b702db3f16000f8"
+           "2dff5f0b44a9e6c8644b2159414af72261e38686072e063aa66ee98a2faecf0e"
+           "3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077"
+           "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb"
+           "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df"
+           "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3"
+           "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))
+ '(ignored-local-variable-values '((hcl-indent-level . 4)))
  '(js-indent-level 4)
  '(newsticker-url-list
-   '(("phoronix" "https://www.phoronix.com/phoronix-rss.php" nil nil nil)
-     ("hacker news" "https://news.ycombinator.com/rss" nil nil nil)))
+      '(("phoronix" "https://www.phoronix.com/phoronix-rss.php" nil nil nil)
+           ("hacker news" "https://news.ycombinator.com/rss" nil nil nil)))
  '(package-selected-packages
-
-   '(ace-window all-the-icons ansible color-theme-sanityinc-tomorrow
-                company counsel csv-mode dashboard dirvish docker
-                dockerfile-mode doom-modeline doom-themes
-                dracula-theme eat eldoc-box embark-consult flycheck
-                gptel json-mode just-ts-mode magit makefile-executor
-                markdown-mode material-theme move-text otpp
-                python-mode restclient spacemacs-theme treesit-auto
-                vim-tab-bar web-mode x509-mode yaml-mode yasnippet))
+      '(ace-window all-the-icons ansible color-theme-sanityinc-tomorrow company counsel csv-mode dashboard dirvish docker
+           dockerfile-mode doom-modeline doom-themes dracula-theme eat eldoc-box embark-consult flycheck ghostel gptel
+           json-mode just-ts-mode magit makefile-executor markdown-mode material-theme move-text otpp python-mode
+           restclient spacemacs-theme treesit-auto vim-tab-bar web-mode x509-mode yaml-mode yasnippet))
  '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
  '(safe-local-variable-values '((just-ts-indent-offset . 4)))
  '(sgml-basic-offset 4)
