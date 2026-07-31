@@ -106,8 +106,13 @@
 
     ;; sometimes emacs will see variables blocks in hcl files as similar to dir-locals
     (add-to-list 'inhibit-local-variables-regexps "\\.hcl\\'")
+
+    :bind
+    ("C-x C-b" . 'ibuffer)
+
 )
 
+;(global-set-key (kbd "C-x C-b") 'ibuffer)
 
 (provide 'core)
 

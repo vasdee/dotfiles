@@ -143,6 +143,14 @@
    (global-flycheck-mode)
 )
 
+;; Important, this needs to be installed at the OS level
+(use-package flyspell-mode
+    :init
+    (setq-default ispell-program-name "aspell")
+    :hook
+    (text-mode-hook . flyspell-mode)
+)
+
 (use-package ghostel
     :ensure t
     :bind (("C-x m" . ghostel)
@@ -173,6 +181,13 @@ Like normal Emacs `C-k'.  Kill to end of line and put content in kill-ring."
 (use-package magit
   :ensure t
   :bind (("C-x g" . magit-status))
+)
+
+(use-package move-text
+  :ensure t
+  :bind (("M-p" . move-text-up)
+         ("M-n" . move-text-down))
+  :config (move-text-default-bindings)
 )
 
 ;; use in-built project.el to manage projects
