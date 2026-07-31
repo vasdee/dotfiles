@@ -1,4 +1,7 @@
+;;; early-init.el --- Summary
+;;; Commentary:
 ;;; early-init-.el starts
+;;; Code:
 
 (setq package-enable-at-startup nil)
 (setq gc-cons-threshold (* 300 1024 1024))
@@ -23,7 +26,17 @@
       inhibit-startup-screen t
       initial-scratch-message nil
       inhibit-startup-echo-area-message t
-      frame-inhibit-implied-resize t)
+      frame-inhibit-implied-resize t
+      inhibit-compacting-font-caches t)
+
+;; Put temporary or package dependent data into a separate var/ directory
+(defconst my/var-dir (expand-file-name "var/" user-emacs-directory)
+    "The central directory for package working files and data.")
+(make-directory my/var-dir t)
+
+;; customise variables will be in their own file
+(setq custom-file (locate-user-emacs-file "custom.el"))
+
 
 (setq default-frame-alist '((fullscreen . maximized)
 
@@ -37,4 +50,6 @@
                             (foreground-color . "#ffffff")
                             (ns-appearance . dark)
                             (ns-transparent-titlebar . t)))
+
+(provide 'early-init)
 ;;; early-init.el ends here

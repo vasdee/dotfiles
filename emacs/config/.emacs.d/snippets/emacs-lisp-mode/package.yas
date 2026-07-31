@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: package
+# key: package
+# --
+
+;;; ${1:filename}-lang.el --- Summary
+;;
+;;; Commentary:
+;;
+;;; Code:
+
+
+(provide '$1-lang)
+;;; $1-lang.el ends here

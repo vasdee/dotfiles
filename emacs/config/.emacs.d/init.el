@@ -1,44 +1,30 @@
-;; ---------------------------------------------------------
-;; ---------------------------------------------------------
-;; Global Configuration across all modes
+;;; init.el --- Summary
+;;; Commentary:
+;;; init-.el starts
+;;; Code:
+
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
-(use-package emacs
-  :init
-  (defalias 'yes-or-no-p 'y-or-n-p) ;; life is too short
-  (show-paren-mode t)
-  (setq enable-local-eval t)
-  (setq make-backup-files nil)
-  (setq auto-save-default nil)
-  ;; keep backup and save files in a dedicated directory
-  (setq backup-directory-alist
-        `((".*" . ,(concat user-emacs-directory "backups")))
-        auto-save-file-name-transforms
-        `((".*" ,(concat user-emacs-directory "backups") t)))
-  (setq indent-tabs-mode nil)
+;; Following chadmacs conventions, separate config and language specific stuff into directories
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "lang" user-emacs-directory))
 
-  ;(setq package-install-upgrade-built-in t)
-  ;; No bell notification
-  (setq ring-bell-function 'ignore)
-  (setq visible-bell 1)
+(require 'core)
+(require 'ui)
+(require 'tools)
 
-  (set-default 'truncate-lines t) ;; turn off line wrapping
-  (delete-selection-mode t)
-
-  (setq window-sides-slots '(1 0 1 0))
-
-  (add-to-list 'display-buffer-alist
-        `(,(rx (| "*compilation*" "*grep*" "*Embark Export" "*Occur" "*Flycheck" "*Messages" "*Help" "*scratch"))
-          display-buffer-in-side-window
-          (side . right)
-          (slot . 0)
-          (window-parameters . ((no-delete-other-windows . t)))
-          (window-width . 80)))
-
-
-   ; sometimes emacs will see variables blocks in hcl files as similar to dir-locals
-   (add-to-list 'inhibit-local-variables-regexps "\\.hcl\\'")
-)
+;; Custom language package includes
+(require 'ansible-lang)
+(require 'just-lang)
+(require 'rust-lang)
+(require 'python-lang)
+(require 'docker-lang)
+(require 'yaml-lang)
+(require 'json-lang)
+(require 'markdown-lang)
+;(require 'web-lang)
+;(require 'terraform-lang)
+;(require 'sql-lang)
 
 ;; Nicer window moving keys
 (when (fboundp 'windmove-default-keybindings)
@@ -49,9 +35,6 @@
 ;; smooth scrolling
 (setq scroll-step           1
       scroll-conservatively 10000)
-
-(global-eldoc-mode -1)
-(global-hl-line-mode 1)
 
 (defun font-available-p (font-name)
   (find-font (font-spec :name font-name)))
@@ -92,24 +75,6 @@
   (setq interprogram-paste-function 'wl-paste)
 )
 
-;; -------------------------------------------------------
-;; Add package management and bootstrap use package
-;; -------------------------------------------------------
-(require 'package)
-(setq package-enable-at-startup nil)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-                                 ;("gnu" . "https://elpa.gnu.org/packages/")))
-
-(package-initialize)
-
-(unless (package-installed-p 'use-package)
- (package-refresh-contents)
- (package-install 'use-package))
-
-(require 'use-package)
-;; remove the use-package laziness around the -hook prefix
-(setq use-package-hook-name-suffix nil)
-
 ;; --------------------------------------------------------
 ;; Custom Functions Configurations
 ;; ---------------------------------------------------------
@@ -125,249 +90,7 @@
   (load-file "~/.emacs.d/init.el")
 )
 
-(defun my/marker-file-in-project(marker-file)
-    "Determine if the current project contain a (MARKER-FILE)."
-    (interactive)
-    (message "Looking for %s in " marker-file )
-    (let* ((proj-root (if (project-current)                         ; Check if in a project
-                        (project-root (project-current))
-                          default-directory))                       ; Fallback to default-directory
-              (full-path (expand-file-name marker-file proj-root))) ; Construct full path
-        (file-exists-p full-path)
-    )
-)
 
-(defun my/project-discover-top-level ()
-    "Recursively find projects under DIR, but stop descending once a root is found."
-    (interactive)
-   (let ((queue (list (expand-file-name (getenv "DEFAULT_CODE_DIR")))))
-     (while queue
-       (let ((current (pop queue)))
-         (if-let ((proj (project-current nil current)))
-             ;; If this is a project, remember it and STOP recursing here
-             (project-remember-project proj)
-           ;; If not a project, add its subdirectories to the queue to keep searching
-           (dolist (file (directory-files current t))
-             (when (and (file-directory-p file)
-                        (not (member (file-name-nondirectory file) '("." ".."))))
-               (push file queue))))))))
-
-(defun my/project-skip-external-buffers (window buffer _bury-or-kill)
-  "Skip BUFFER if we are in a project and BUFFER doesn't belong to it."
-  (let ((current-pr (project-current)))
-    (if current-pr
-        ;; We are in a project: skip any buffer not in this project
-        (not (memq buffer (project-buffers current-pr)))
-      ;; Not in a project: don't skip anything (normal behavior)
-      nil)))
-
-;; Apply the filter
-(setq switch-to-prev-buffer-skip #'my/project-skip-external-buffers)
-
-;; ---------------------------------------------------------
-;; Package configurations
-;; ---------------------------------------------------------
-
-(use-package ghostel
-    :ensure t
-    :bind (("C-x m" . ghostel)
-         :map ghostel-semi-char-mode-map
-         ("C-s"  . consult-line)
-         ("C-k"  . my/ghostel-send-C-k-and-kill)
-         ;; ;; I'm used to go up/down the shell history with M-n/p from eshell
-         ;; ;; Simulate this behavior in ghostel by sending C-p and C-n
-         ("M-p" . (lambda () (interactive) (ghostel-send-key "p" "ctrl")))
-         ("M-n" . (lambda () (interactive) (ghostel-send-key "n" "ctrl")))
-         :map project-prefix-map
-         ("m" . ghostel-project)
-         ("M" . ghostel-project-list-buffers))
-    :config
-    (defun my/ghostel-send-C-k-and-kill ()
-    "Send `C-k' to ghostel.
-Like normal Emacs `C-k'.  Kill to end of line and put content in kill-ring."
-    (interactive)
-    (kill-ring-save (point) (line-end-position))
-    (ghostel-send-key "k" "ctrl"))
-
-  (add-to-list 'project-switch-commands '(ghostel-project "Ghostel") t)
-  (add-to-list 'project-switch-commands '(ghostel-project-list-buffers "Ghostel buffers") t)
-  (add-to-list 'ghostel-eval-cmds '("magit-status-setup-buffer" magit-status-setup-buffer)))
-
-;;(use-package eat
-;;    :ensure t
-;;    :custom
-;;    (eat-term-name "xterm-256")
-;;    :config
-;;    (eat-eshell-mode)
-;;    (eat-eshell-visual-command-mode)
-;;    ;; Optional: Set eshell-visual-commands to nil so everything runs in Eshell/Eat
-;;    (setq eshell-visual-commands nil)
-;;    ;(setq process-adaptive-read-buffering nil)
-;;    (setq eat-kill-buffer-on-exit t)
-;;)
-
-(use-package which-key
-  :ensure t
-  :config
-  (which-key-mode))
-
-
-(use-package editorconfig
-  :ensure t
-  :hook (( (prog-mode-hook text-mode-hook) . editorconfig-mode)
-         )
-)
-
-(use-package just-ts-mode
-  ;:init (just-ts-mode-install-grammar)
-  :ensure t
-  :config
-  ;; Install the justfile tree-sitter grammar if not already present
-  (unless (treesit-language-available-p 'just)
-    (just-ts-mode-install-grammar)))
-  (setq-default indent-tabs-mode nil)
-  (add-to-list 'auto-mode-alist '("\\.just$" . just-ts-mode)
-)
-
-(use-package docker
-  :ensure t
-  :bind ("C-c d" . docker))
-
-(use-package dired
-  :config
-    (setq dired-listing-switches
-        "-l --almost-all --human-readable --group-directories-first --no-group")
-  ;; this command is useful when you want to close the window of `dirvish-side'
-  ;; automatically when opening a file
-  (put 'dired-find-alternate-file 'disabled nil)
-)
-
-(use-package dirvish
-  :ensure t
-  :init
-    (dirvish-override-dired-mode)
-  :config
-    (require 'dirvish-side)
-    (require 'dirvish-ls)
-    (require 'dirvish-subtree)
-    (require 'dirvish-collapse)
-    (require 'dirvish-icons)
-
-    (setq dirvish-attributes
-        (append
-            ;; The order of these attributes is insignificant, they are always
-            ;; displayed in the same position.
-            '(all-the-icons subtree-state collapse)
-            ;; Other attributes are displayed in the order they appear in this list.
-            '(file-modes file-time file-size)))
-    (setq dirvish-attributes
-        (remove 'vc-state dirvish-attributes))
-
-    (defun project-dired ()
-        "Override the project-dired command to use dirvish"
-        (interactive)
-        (dirvish (project-root (project-current t))))
-    (defun project-find-dir ()
-        "override project.el function for dirvish in a directory inside the current project."
-        (interactive)
-        (let* ((project (project-current t))
-                  (all-files (project-files project))
-                  (completion-ignore-case read-file-name-completion-ignore-case)
-                  ;; FIXME: This misses directories without any files directly
-                  ;; inside.  Consider DIRS-ONLY as an argument for
-                  ;; `project-files-filtered', and see
-                  ;; https://stackoverflow.com/a/50685235/615245 for possible
-                  ;; implementation.
-                  (all-dirs (mapcar #'file-name-directory all-files))
-                  (dir (funcall project-read-file-name-function
-                           "Dired"
-                           ;; Some completion UIs show duplicates.
-                           (delete-dups all-dirs)
-                           nil 'file-name-history)))
-            (dirvish dir)))
-  ;; Optional: Add configuration for specific features here.
-  ;; For example, enabling the display of file/folder icons:
-  ;; (add-hook 'dirvish-mode-hook #'dirvish-hide-details-mode) ; optional, hides file details for a cleaner look
-  (setq dirvish-side-follow-mode t)
-  (setq dirvish-side-follow-project-switch t)
-
-  ;; Optional: Set 'ls' switches for more informative listings (e.g., human-readable sizes)
-  ;(setq dired-listing-switches "-1ABhlGv --group-directories-first")
-  (setq dirvish-default-layout '(0 0.4 0.6))
-
-  ;; Optional: Automatically delete old dired buffers
-    (setq dirvish-buffers-max-size 10)
-  :bind
-    (("C-c f" . dirvish-side)
-     ("C-x d" . dirvish-dwim)
-     :map dirvish-mode-map
-     ("?"   . dirvish-dispatch)          ; [?] a helpful cheatsheet
-     ("f"   . dirvish-file-info-menu)    ; [f]ile info
-     ("TAB" . dirvish-subtree-toggle))
-  :hook
-    ((dirvish-mode-hook . 'dirvish-hire-icons-mode)
-     (dirvish-mode-hook . dirvish-peek-mode))
-    ;(dirvish-mode-hook #'dirvish-garbage-collect-buffers)
-)
-
-;; enable ansible mode when yaml-mode is activated and an ansible.cfg file is present within the project root
-;; for the minute, lets just enable it manually
-(use-package ansible
-  :ensure t
-  :hook
-     (
-     ((yaml-mode-hook) . (lambda ()
-                          (when (my/marker-file-in-project "ansible.cfg") (ansible-mode t)))))
-)
-
-(use-package terraform-mode
-  :defer t
-)
-
-(use-package dashboard
-    :ensure t
-    :init
-    (setq dashboard-projects-backend 'project-el)
-    (setq dashboard-icon-type 'nerd-icons)                ; or all-the-icons
-    (setq dashboard-center-content t)
-    (setq dashboard-items '((recents  . 5)
-                            (bookmarks . 5)
-                            (projects . 20)))
-    (setq dashboard-display-icons-p t)
-    :config
-    (dashboard-setup-startup-hook)
-)
-
-;; For linting and on the fly syntax checking
-(use-package flycheck
- :ensure t
- :config
-   (setq flycheck-check-syntax-automatically '(mode-enabled save mode-enable))
-    (flycheck-add-mode 'javascript-eslint 'web-mode)
-   (add-to-list 'flycheck-disabled-checkers '(markdown-markdownlint-cli markdown-markdownlint-cli2 markdown-pymarkdown))
-   (add-to-list 'flycheck-checkers 'markdown-mdl)
-   (setq flycheck-markdown-mdl-executable "rumdl check")
-   (global-flycheck-mode)
-)
-
-(use-package sql
-  :defer t
-  :init
-)
-
-;; Mode for working with Dockerfile
-(use-package dockerfile-mode
- :ensure t
-)
-
-(use-package csv-mode
-  :ensure t
-)
-
-;; For inspecting certificates and private keys
-(use-package x509-mode
- :ensure t
-)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; T H E M E S
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -411,51 +134,6 @@ Like normal Emacs `C-k'.  Kill to end of line and put content in kill-ring."
 ;; P A C K A G E S
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-;; Snippet manager for creating and using
-;; custom code snippets
-(use-package yasnippet
- :ensure t
- :config
-   (yas-global-mode 1)
-)
-
-;; use in-built project.el to manage projects
-(use-package project
-  :ensure t
-  ;:bind-keymap ("C-c p" . project-prefix-map)
-  :config
-  (setq xref-search-program 'ripgrep)
-  ;; set the formatting to show the project name in the tab-bar
-  (setq tab-bar-format '(tab-bar-format-history tab-bar-format-tabs-groups tab-bar-separator tab-bar-format-add-tab))
-  ;; make the default action when switching/opening a project to select a file
-    ;;(setq project-switch-commands 'project-dired)
-  (setq project-switch-commands
-        '((project-find-file "Find file" "f")
-          (project-find-dir "Find dir" "d")
-          (project-dired "Dired" "D")
-          (magit-project-status "Magit" "m") ; Requires magit
-          (project-shell "Shell" "s")
-             (project-eshell "Eshell" "e")))
-
-  ;; Recursively remember projects under the DEFAULT_CODE_DIR
-  (my/project-discover-top-level)
-)
-
-(use-package gptel
-  :ensure t
-  :config
-
-    ;; should be able to do this
-    ;; (gptel-make-gemini "My-Gemini-backend"
-    ;;    :key (gptel-api-key-from-environment))
-    ;; :key can be a function that returns the API key.
-    (gptel-make-gemini "Gemini"
-        :key (getenv "GEMINI_API_KEY"))
-
-  ;(setq gptel-response-mode 'markdown-mode)
-)
-
 (use-package otpp
     :ensure t
     :after project
@@ -480,11 +158,6 @@ Like normal Emacs `C-k'.  Kill to end of line and put content in kill-ring."
   :config (move-text-default-bindings)
 )
 
-;; Git interface
-(use-package magit
-  :ensure t
-  :bind (("C-x g" . magit-status))
-)
 
 (use-package display-line-numbers
   :ensure nil
@@ -500,11 +173,6 @@ Like normal Emacs `C-k'.  Kill to end of line and put content in kill-ring."
 )
 
 
-; all-the-icons-install-fonts
-(use-package all-the-icons
-  :ensure t
-    :if (display-graphic-p)
-)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Navigation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -631,44 +299,6 @@ Like normal Emacs `C-k'.  Kill to end of line and put content in kill-ring."
   :ensure t
 )
 
-(use-package eglot
-    :ensure t
-    :defer t
-    :hook (
-    (python-mode-hook . eglot-ensure)
-    (markdown-mode-hook . eglot-ensure)
-    ((sh-mode-hook bash-ts-mode-hook) . eglot-ensure)
-    (ansible-mode-hook . eglot-ensure)
-    (docker-mode-hook . eglot-ensure)
-    ((yaml-mode-hook) .
-        (lambda () (unless (my/marker-file-in-project "ansible.cfg") (eglot-ensure))))
-    (just-ts-mode-hook . eglot-ensure)
-    )
-  :config
-    (add-to-list 'eglot-server-programs
-        '(python-mode . ,(eglot-alternatives '(("basedpyright-langserver" "--stdio")))))
-    (add-to-list 'eglot-server-programs
-        '(markdown-mode . ("rumdl" "server" "--stdio")))
-    (add-to-list 'eglot-server-programs
-        '((just-ts-mode just-mode) . ("just-lsp")))
-    (add-to-list 'eglot-server-programs
-        '((bash-ts-mode sh-mode) . ("bash-language-server" "start")))
-    (add-to-list 'eglot-server-programs
-         '((ansible-mode) . ("rass" "--" "ansible-language-server" "--stdio" "--" "yaml-language-server" "--stdio")))
-    (add-to-list 'eglot-server-programs
-        '((docker-mode) . ("docker-language-server" "start" "--stdio")))
-    (add-to-list 'eglot-server-programs
-        '((yaml-mode) . ("yaml-language-server" "--stdio")))
-    (setq-default eglot-workspace-configuration
-        '((:pyright . (:venvPath ".venv" :pythonPath "."))))
-
-    (setf (alist-get 'yaml-mode eglot-server-programs)
-        (lambda (interactive)
-          (if (my/marker-file-in-project "ansible.cfg")
-              '("rass" "--" "ansible-language-server" "--stdio" "--" "yaml-language-server" "--stdio")
-            '("yaml-language-server" "--stdio"))))
-)
-
 
 ;; Show a nice hover box showing documentation via eldoc
 (use-package eldoc-box
@@ -682,81 +312,12 @@ Like normal Emacs `C-k'.  Kill to end of line and put content in kill-ring."
 )
 
 
-;; Built in package for supporting JS/HTML etc.
-;; This is configured to use type script which works well with react
-(use-package web-mode
-  :ensure t
-  :init
-    (add-to-list 'auto-mode-alist '("\\.ts$" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.tsx$" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.html"   . web-mode))
-  :config
-    (setq web-mode-enable-auto-quoting nil)
-    (setq web-mode-markup-indent-offset 2)
-    (setq web-mode-code-indent-offset 2)
-    (setq web-mode-attr-indent-offset 2)
-    (setq web-mode-attr-value-indent-offset 2)
-)
-
-
 (use-package display-fill-column-indicator
   :ensure nil
   :hook
   (((prog-mode-hook text-mode-hook) . (lambda()
                    ;(setq display-fill-column-indicator-column 140)
                    (display-fill-column-indicator-mode))))
-)
-
-(use-package python-mode
-  :ensure t
-  :config
-  (py-underscore-word-syntax-p-off)
-  (add-to-list 'flycheck-disabled-checkers '(python-flake8 python-mypy))
-  (add-to-list 'flycheck-checkers 'python-ruff)
-  (eldoc-mode t)
-    )
-
-(use-package treesit-auto
-    :ensure t
-    :custom
-    (treesit-auto-install 'prompt)
-
-    :config
-    ; try just enabling all tree sitter, apart from yaml-mode
-    ;(setq treesit-auto-langs '(python just bash sh dockerfile))
-    ;(add-to-list 'global-treesit-auto-modes '(not yaml-mode))
-
-    (delete 'yaml treesit-auto-langs)
-    (global-treesit-auto-mode)
-    ;(setq treesit-auto-install t)
-)
-
-(use-package yaml-mode
-  :ensure t
-  :init
-    (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-    (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
-)
-
-(use-package json-mode
-  :ensure t
-  :config
-  (setq js-indent-level 2)
-  :init
-  (add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
-  )
-
-(use-package markdown-mode
-    :ensure t
-    :config
-    (setq markdown-command  "pandoc --metadata=title=markdown --template=GitHub.html5 --from gfm --to html5 --mathjax --highlight-style=pygments --standalone")
-    ;; always open the preview window at the right
-    (setq markdown-split-window-direction 'right)
-    :commands (gfm-mode markdown-mode)
-    :mode (("\\.md\\'" . gfm-mode))
-    :hook (( markdown-hook . editorconfig-mode)( markdown-hook . auto-fill-mode))
-    :bind (:map markdown-mode-map
-          ("C-c C-e" . markdown-do))
 )
 
 (use-package flyspell-mode
@@ -767,60 +328,12 @@ Like normal Emacs `C-k'.  Kill to end of line and put content in kill-ring."
     (rst-mode-hook . flyspell-mode)
 )
 
-(use-package makefile-executor
-  :ensure t
-  :config
-  (add-hook 'makefile-mode-hook 'makefile-executor-mode)
-)
-
 (use-package rst
-  :ensure t
+  :defer t
   :init
     (add-to-list 'auto-mode-alist '("\\.rst$" . rst-mode))
     (add-to-list 'auto-mode-alist '("\\.rest$" . rst-mode))
 )
 
-
-;; -------------------------------------
-;; init.el ends here
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(company-quickhelp-color-background "#4F4F4F")
- '(company-quickhelp-color-foreground "#DCDCCC")
- '(css-indent-offset 4)
- '(custom-safe-themes
-      '("37768a79b479684b0756dec7c0fc7652082910c37d8863c35b702db3f16000f8"
-           "2dff5f0b44a9e6c8644b2159414af72261e38686072e063aa66ee98a2faecf0e"
-           "3f44e2d33b9deb2da947523e2169031d3707eec0426e78c7b8a646ef773a2077"
-           "aaffceb9b0f539b6ad6becb8e96a04f2140c8faa1de8039a343a4f1e009174fb"
-           "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df"
-           "a4df5d4a4c343b2712a8ed16bc1488807cd71b25e3108e648d4a26b02bc990b3"
-           "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" default))
- '(ignored-local-variable-values '((hcl-indent-level . 4)))
- '(js-indent-level 4)
- '(newsticker-url-list
-      '(("phoronix" "https://www.phoronix.com/phoronix-rss.php" nil nil nil)
-           ("hacker news" "https://news.ycombinator.com/rss" nil nil nil)))
- '(package-selected-packages
-      '(ace-window all-the-icons ansible color-theme-sanityinc-tomorrow company counsel csv-mode dashboard dirvish docker
-           dockerfile-mode doom-modeline doom-themes dracula-theme eat eldoc-box embark-consult flycheck ghostel gptel
-           json-mode just-ts-mode magit makefile-executor markdown-mode material-theme move-text otpp python-mode
-           restclient spacemacs-theme treesit-auto vim-tab-bar web-mode x509-mode yaml-mode yasnippet))
- '(pdf-view-midnight-colors '("#DCDCCC" . "#383838"))
- '(safe-local-variable-values '((just-ts-indent-offset . 4)))
- '(sgml-basic-offset 4)
- '(warning-suppress-types '((comp))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
-
-(put 'upcase-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
+(provide 'init)
+;;; init.el ends here

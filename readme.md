@@ -32,8 +32,6 @@ The Major components of this setup are:
 
 OS level components like rassafrassum for eglot and the font and icon packs are handled by caifs hooks.
 
-
-
 ## Git-dev Target
 
 The git target will ensure the `git` binary is installed, it is handy for unattended installations that require git,

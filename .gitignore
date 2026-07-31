@@ -2,6 +2,8 @@ Configs/ssh/.ssh/*
 
 # Ignore everything by default, then manage by exception
 emacs/config/.emacs.d/*
+!emacs/config/.emacs.d/lisp/
+!emacs/config/.emacs.d/lang/
 !emacs/config/.emacs.d/init.el
 !emacs/config/.emacs.d/snippets/
 !emacs/config/.emacs.d/templates/

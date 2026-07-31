@@ -17,6 +17,7 @@ alias gitchooser='cd $(gitdirs | fzf)'
 alias dotenv="[[ -f .env ]] && set -a && source .env && set +a"
 alias histoff="set +o history"
 alias histon="set -o history"
+alias curl-gitlab="GITLAB_TOKEN=\"$(netrc get gitlab.com --field password)\" curl --header \"PRIVATE-TOKEN: \$GITLAB_TOKEN\""
 
 # create a file and the leading directories
 function touchpath { mkdir -p "$(dirname "$1")" && touch "$1" ; }
