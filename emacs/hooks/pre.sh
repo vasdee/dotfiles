@@ -2,7 +2,13 @@
 
 
 fedora() {
-   installs="emacs-pgtk aspell aspell-en jetbrains-mono-fonts-all cascadia-code-nf-fonts cascadia-mono-nf-fonts source-foundry-hack-fonts"
+    installs="emacs-pgtk \
+              aspell aspell-en \
+              jetbrains-mono-fonts-all \
+              cascadia-code-nf-fonts \
+              cascadia-mono-nf-fonts \
+              source-foundry-hack-fonts \
+              google-noto-emoji-color-fonts"
 
    if [ -n "$WSLENV" ] ; then
        installs="$installs wl-clipboard"
@@ -43,19 +49,19 @@ linux() {
     uv_install rassumfrassum
 
     # install fonts
-    mkdir -p "${CAIFS_INSTALL_DIR}/share/font"
+    mkdir -p "${CAIFS_INSTALL_DIR}/share/fonts"
 
-    LATEST_VERSION=$(gitlab_latest_release "ryanoasis/nerd-fonts")
+    DL_LINK="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/"
 
-    DL_LINK="https://github.com/ryanoasis/nerd-fonts/releases/download/v${LATEST_VERSION}"
-
-    FONT_ARCHIVES="Iosevka FiraCode FiraMono Inconsolata"
+    FONT_ARCHIVES="JetBrainsMono Iosevka FiraCode FiraMono Inconsolata"
 
     for archive in $FONT_ARCHIVES; do
         curl -LO "${DL_LINK}/${archive}.tar.xz"
 
-        tar -xvf "${archive}" -C "${CAIFS_INSTALL_DIR}/share/font"
+        tar -xvf "${archive}.tar.xz" -C "${CAIFS_INSTALL_DIR}/share/fonts"
     done
+
+    caifs_install
 
     echo "updating font cache...."
     fc-cache -fv

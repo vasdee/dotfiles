@@ -14,23 +14,31 @@
 (setq scroll-step           1
       scroll-conservatively 10000)
 
-(defun font-available-p (font-name)
-  (find-font (font-spec :name font-name)))
+;;(defun font-available-p (font-name)
+;;  (find-font (font-spec :name font-name)))
+;;
+;;;; Iosevka, Fira, Jetbrains Mono,
+;;(cond
+;;((font-available-p "Iosevka Nerd Font Mono")
+;;  (set-frame-font "Iosevka Nerd Font Mono-10" nil t))
+;; ((font-available-p "JetBrains Mono")
+;;  (set-frame-font "JetBrains Mono-10" nil t))
+;; ((font-available-p "Cascadia Code")
+;;  (set-frame-font "Cascadia Code-12" nil t))
+;; ((font-available-p "Hack")
+;;  (set-frame-font "Hack-10" nil t))
+;; ((font-available-p "DejaVu Sans Mono")
+;;  (set-frame-font "DejaVu Sans Mono-12" nil t))
+;; ((font-available-p "Inconsolata")
+;;  (set-frame-font "Inconsolata-12" nil t)))
 
-;; Iosevka, Fira, Jetbrains Mono,
-(cond
-((font-available-p "Iosevka Nerd Font Mono")
-  (set-frame-font "Iosevka Nerd Font Mono-10" nil t))
- ((font-available-p "JetBrains Mono")
-  (set-frame-font "JetBrains Mono-10" nil t))
- ((font-available-p "Cascadia Code")
-  (set-frame-font "Cascadia Code-12" nil t))
- ((font-available-p "Hack")
-  (set-frame-font "Hack-10" nil t))
- ((font-available-p "DejaVu Sans Mono")
-  (set-frame-font "DejaVu Sans Mono-12" nil t))
- ((font-available-p "Inconsolata")
-  (set-frame-font "Inconsolata-12" nil t)))
+
+;; Set the default font.
+;; For a list do fc-list
+(set-face-attribute 'default nil
+                    :family "Iosevka Nerd Font Mono"
+                    :height 100
+                    :weight 'normal)
 
 
 ;; credit: yorickvP on Github

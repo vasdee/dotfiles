@@ -3,12 +3,12 @@
 # key: package
 # --
 
-;;; ${1:filename}-lang.el --- Summary
+;;; ${1:filename}.el --- Summary
 ;;
 ;;; Commentary:
 ;;
 ;;; Code:
 
 
-(provide '$1-lang)
-;;; $1-lang.el ends here
+(provide '$1)
+;;; $1.el ends here
