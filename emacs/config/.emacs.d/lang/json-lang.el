@@ -1,17 +1,16 @@
 ;;; json-lang.el --- Summary
 ;;
 ;;; Commentary:
-;;
+;;    eglot by default uses vscode-json-languageserver, which should be installed manually using
+;;    npm -g vscode-json-languageserver or caifs add vscode-json-languageserver
 ;;; Code:
 
-(use-package json-mode
-  :ensure t
-  :config
-  (setq js-indent-level 2)
-  :init
-  (add-to-list 'auto-mode-alist '("\\.json$" . json-mode))
-  )
-
+(use-package json-ts-mode
+    :ensure nil
+    :mode (("\\.json\\'"   . json-ts-mode)
+         ("\\.jsonc\\'"  . json-ts-mode))
+    :custom
+    (js-ts-mode-indent-offset 2))
 
 (provide 'json-lang)
 ;;; json-lang.el ends here

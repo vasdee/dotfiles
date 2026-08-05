@@ -22,7 +22,8 @@
 (require 'yaml-lang)
 (require 'json-lang)
 (require 'markdown-lang)
-;(require 'web-lang)
+(require 'rst-lang)
+(require 'web-lang)
 ;(require 'terraform-lang)
 ;(require 'sql-lang)
 

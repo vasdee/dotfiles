@@ -32,6 +32,10 @@ The Major components of this setup are:
 
 OS level components like rassafrassum for eglot and the font and icon packs are handled by caifs hooks.
 
+Good tip for debugging issues with emacs:
+
+`emacs --batch -l ~/.emacs.d/init.el -f kill-emacs 2>&1`
+
 ## Git-dev Target
 
 The git target will ensure the `git` binary is installed, it is handy for unattended installations that require git,

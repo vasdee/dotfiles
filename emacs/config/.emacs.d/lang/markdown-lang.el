@@ -13,6 +13,12 @@
     (with-eval-after-load 'eglot
         (add-to-list 'eglot-server-programs
             '(markdown-mode . ("rumdl" "server" "--stdio"))))
+    (with-eval-after-load 'flycheck
+        (add-to-list 'flycheck-disabled-checkers '(markdown-markdownlint-cli markdown-markdownlint-cli2 markdown-pymarkdown))
+        (add-to-list 'flycheck-checkers 'markdown-mdl)
+        (setq flycheck-markdown-mdl-executable "rumdl check")
+    )
+
     :commands (gfm-mode markdown-mode)
     :mode (("\\.md\\'" . gfm-mode))
     :hook

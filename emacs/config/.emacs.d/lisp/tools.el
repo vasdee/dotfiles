@@ -41,16 +41,6 @@
     (dashboard-setup-startup-hook)
 )
 
-;;(use-package dired
-;;  :config
-;;    (setq dired-listing-switches
-;;        "-l --almost-all --human-readable --group-directories-first --no-group")
-;;  ;; this command is useful when you want to close the window of `dirvish-side'
-;;  ;; automatically when opening a file
-;;  (put 'dired-find-alternate-file 'disabled nil)
-;;)
-
-
 (use-package dirvish
   :ensure t
   :init
@@ -133,14 +123,14 @@
 
 ;; For linting and on the fly syntax checking
 (use-package flycheck
- :ensure t
- :config
-   (setq flycheck-check-syntax-automatically '(mode-enabled save mode-enable))
-    (flycheck-add-mode 'javascript-eslint 'web-mode)
-   (add-to-list 'flycheck-disabled-checkers '(markdown-markdownlint-cli markdown-markdownlint-cli2 markdown-pymarkdown))
-   (add-to-list 'flycheck-checkers 'markdown-mdl)
-   (setq flycheck-markdown-mdl-executable "rumdl check")
-   (global-flycheck-mode)
+    :ensure t
+    :hook ((after-init-hook . global-flycheck-mode)
+         ;; Show diagnostics inline, next to the code (Error Lens style)
+         (after-init-hook . global-flycheck-annotate-mode))
+    :config
+    (setq flycheck-check-syntax-automatically '(mode-enabled save mode-enable))
+    ;; Flycheck 38 Native Feature: Seamlessly pulls all Eglot data into Flycheck
+    (global-flycheck-eglot-mode 1)
 )
 
 ;; Important, this needs to be installed at the OS level
@@ -189,15 +179,14 @@
             (set-fontset-font t '(#xf400 . #xf8ff) (font-spec :family nerd-font))))
 
     :hook
-    (after-init-hook . #'my/fix-ghostel-emoji-rendering))
+    (after-init-hook . #'my/fix-ghostel-emoji-rendering)
+)
 
 
 ;; Git interface
 (use-package magit
     :ensure t
-    :custom
-    (magit-git-executable "/usr/bin/git")
-    :bind (("C-x g" . magit-status))
+     :bind (("C-x g" . magit-status))
 )
 
 (use-package move-text
@@ -272,14 +261,6 @@
 ;; Simple client for making REST requests
 (use-package restclient
   :defer t
-)
-
-;; restructured text mode
-(use-package rst
-  :defer t
-  :init
-    (add-to-list 'auto-mode-alist '("\\.rst$" . rst-mode))
-    (add-to-list 'auto-mode-alist '("\\.rest$" . rst-mode))
 )
 
 ;; auto-enable treesitter modes, apart from yaml, which is not as good quite yet

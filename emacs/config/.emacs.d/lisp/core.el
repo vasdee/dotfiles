@@ -18,6 +18,12 @@
 (setq use-package-hook-name-suffix nil)
 
 
+;; Ensure var directory is defined (also in early-init.el)
+(unless (boundp 'my/var-dir)
+  (defconst my/var-dir (expand-file-name "var/" user-emacs-directory)
+    "The central directory for package working files and data.")
+  (make-directory my/var-dir t))
+
 (use-package emacs
     :init
     ;; Initial buffer behaviour
@@ -32,7 +38,7 @@
     ;; No GUI dialogs
     (setq use-file-dialog nil)
     (setq use-dialog-box nil)
-    (setq pop-up-windows nil)
+    (setq pop-up-windows t)
 
     ;; file handling and backups
     (setq enable-local-eval t)
@@ -103,12 +109,15 @@
     (set-keyboard-coding-system 'utf-8)
     (set-language-environment   'utf-8)
 
-
     ;; sometimes emacs will see variables blocks in hcl files as similar to dir-locals
     (add-to-list 'inhibit-local-variables-regexps "\\.hcl\\'")
 
     :bind
     ("C-x C-b" . 'ibuffer)
+
+    :config
+    (put 'upcase-region 'disabled nil)
+    (put 'downcase-region 'disabled nil)
 
 )
 

@@ -18,7 +18,9 @@
     (setq web-mode-code-indent-offset 2)
     (setq web-mode-attr-indent-offset 2)
     (setq web-mode-attr-value-indent-offset 2)
-)
+    (with-eval-after-load 'flycheck
+        (flycheck-add-mode 'javascript-eslint 'web-mode))
+    )
 
-(provide 'web-langl)
+(provide 'web-lang)
 ;;; web-lang.el ends here
