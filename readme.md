@@ -1,6 +1,6 @@
 # muh dotfiles (using caifs)
 
-dotfiles using (caifs)<https://github.com/caifs-org/caifs>
+Dotfiles using (caifs)<https://github.com/caifs-org/caifs>
 
 Featuring:
 
@@ -12,29 +12,6 @@ Featuring:
 * tmux 
 
 Everything else is standard in the caifs common repo https://github.com/caifs-org/caifs-common 
-
-## Emacs
-
-See [init.el](emacs/config/emacs.d/init.el) and [early-init.el](emacs/config/emacs.d/early-init.el) for the details. 
-Lots of this config was lifted from other repos over the years, if I can remember them I will reference them.
-
-The Major components of this setup are:
-
-* eglot - Language Server Protocol (LSP) integrations
-* project.el - git project management 
-* dirvish - replaces dired and also adds a sidebar file tree which is occasionally useful
-* vim-tab-bar and one-tab-per-project (otpp) for grouping projects per tabgroup
-* magit - of course...
-* ivy, swiper, counsel - eventually will explore the new hotness for these
-* doom-modeline - it just looks awesome
-* tree sitter - for most things, barring YAML mode which seems to be very broken
-* theme - spacemacs dark
-
-OS level components like rassafrassum for eglot and the font and icon packs are handled by caifs hooks.
-
-Good tip for debugging issues with emacs:
-
-`emacs --batch -l ~/.emacs.d/init.el -f kill-emacs 2>&1`
 
 ## Git-dev Target
 
@@ -126,4 +103,3 @@ navigator via the alias, `gitchooser`
 
 > [!NOTE]
 > The git target will generate two empty ~/.gitconfig-work and ~/.gitconfig-private files to populate after install
-

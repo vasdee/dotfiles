@@ -19,6 +19,21 @@
   :ensure t
 )
 
+(defconst my/dashboard-banner
+    "
+              ---===  A N D  T H E  ===---
+
+██╗  ██╗███████╗       ███╗   ███╗ █████╗  ██████╗███████╗
+██║  ██║██╔════╝       ████╗ ████║██╔══██╗██╔════╝██╔════╝
+███████║█████╗  █████╗ ██╔████╔██║███████║██║     ███████╗
+██╔══██║██╔══╝  ╚════╝ ██║╚██╔╝██║██╔══██║██║     ╚════██║
+██║  ██║███████╗       ██║ ╚═╝ ██║██║  ██║╚██████╗███████║
+╚═╝  ╚═╝╚══════╝       ╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝╚══════╝
+
+   ---=== M A S T E R S  O F  T H E  E D I T O R ===---
+  "
+)
+
 ;; Dashboard startup screen
 (use-package dashboard
     :ensure t
@@ -29,29 +44,32 @@
           dashboard-center-content            t
           dashboard-display-icons-p           t
           dashboard-set-heading-icons         t
-         dashboard-set-file-icons             t)
+          dashboard-set-file-icons            t
+          dashboard-startup-banner            'ascii
+          dashboard-banner-ascii              my/dashboard-banner
+          dashboard-banner-logo-title "")
     (setq dashboard-items '((recents  . 5)
                             (bookmarks . 5)
                             (projects . 20)))
     (setq dashboard-item-shortcuts '((recents   . "r")
                                      (projects  . "p")
-                                     (bookmarks . "m")))
+                                        (bookmarks . "m")))
     :config
     (require 'nerd-icons)
     (dashboard-setup-startup-hook)
 )
 
 (use-package dirvish
-  :ensure t
-  :init
+    :ensure t
+    :init
     (dirvish-override-dired-mode)
-  :custom
+    :custom
     (dirvish-attributes
         '(nerd-icons file-time file-size collapse subtree-state))
             ;; The order of these attributes is insignificant, they are always
             ;; displayed in the same position.
     (dired-listing-switches
-        "-l --almost-all --human-readable --group-directories-first --no-group")
+        "-lv --almost-all --human-readable --group-directories-first --no-group")
     :config
     (defun project-dired ()
         "Override the project-dired command to use dirvish"
@@ -156,27 +174,27 @@
          ("M" . ghostel-project-list-buffers))
     :config
     (defun my/ghostel-send-C-k-and-kill ()
-    "Send `C-k' to ghostel. Like normal Emacs `C-k'.  Kill to end of line and put content in kill-ring."
-    (interactive)
-    (kill-ring-save (point) (line-end-position))
-    (ghostel-send-key "k" "ctrl"))
-
-    (add-to-list 'project-switch-commands '(ghostel-project "Ghostel") t)
-    (add-to-list 'project-switch-commands '(ghostel-project-list-buffers "Ghostel buffers") t)
-    (add-to-list 'ghostel-eval-cmds '("magit-status-setup-buffer" magit-status-setup-buffer))
+        "Send `C-k' to ghostel. Like normal Emacs `C-k'.  Kill to end of line and put content in kill-ring."
+        (interactive)
+        (kill-ring-save (point) (line-end-position))
+        (ghostel-send-key "k" "ctrl"))
 
     (defun my/fix-ghostel-emoji-rendering ()
         "Ensure Emacs maps package symbols and pictographs correctly inside ghostel."
         (let ((emoji-font "Noto Color Emoji")   ; Use "Noto Color Emoji" if you are running Linux
                  (nerd-font  "Iosevka Nerd Font Mono")) ; Fallback for regular developer font symbols
 
-            ;; 1. Map the specific block containing the 📦 package symbol (0x1F4E6)
+            ;; 1. Map the specific block containing the package symbol (0x1F4E6)
             (set-fontset-font t '(#x1f300 . #x1f5ff) (font-spec :family emoji-font))
 
             ;; 2. Double-check that your regular Nerd Font blocks are also bound
             (set-fontset-font t '(#xe000 . #xf2ff) (font-spec :family nerd-font))
             (set-fontset-font t '(#xf300 . #xf3ff) (font-spec :family nerd-font))
             (set-fontset-font t '(#xf400 . #xf8ff) (font-spec :family nerd-font))))
+
+    (add-to-list 'project-switch-commands '(ghostel-project "Ghostel") t)
+    (add-to-list 'project-switch-commands '(ghostel-project-list-buffers "Ghostel buffers") t)
+    (add-to-list 'ghostel-eval-cmds '("magit-status-setup-buffer" magit-status-setup-buffer))
 
     :hook
     (after-init-hook . #'my/fix-ghostel-emoji-rendering)
@@ -231,7 +249,8 @@
                    (push file queue))))))))
 
     (defun my/project-skip-external-buffers (window buffer _bury-or-kill)
-      "Skip BUFFER if we are in a project and BUFFER doesn't belong to it."
+        "Skip BUFFER if we are in a project and BUFFER doesn't belong to it.
+         To be used as a value for `switch-to-prev-buffer-skip`."
       (let ((current-pr (project-current)))
         (if current-pr
             ;; We are in a project: skip any buffer not in this project

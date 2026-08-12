@@ -103,10 +103,21 @@
 )
 
 
+(use-package eldoc
+    :ensure nil ; built in
+    :config
+    (global-eldoc-mode -1)
+    ;; never let eldoc expand the echo area or push text lines up
+    (setq eldoc-echo-area-use-multiline-p nil)
+    ;; Completely mute Eldoc's window/buffer display functions
+    (setq eldoc-display-functions nil)
+ )
+
+
 ;; Show a nice hover box showing documentation via eldoc
 (use-package eldoc-box
-  :ensure t
-  :hook (eglot-managed-mode-hook . eldoc-box-hover-at-point-mode) ; (lambda() (#'eldoc-box-help-at-point t))
+    :ensure t
+    :hook (eglot-managed-mode-hook . eldoc-box-hover-at-point-mode) ; (lambda() (#'eldoc-box-help-at-point t))
 )
 
 
@@ -115,14 +126,41 @@
     :ensure t
 )
 
-
+;; Display one tab per project, and a default tab called *dashboard*
 (use-package otpp
     :ensure t
     :after project
     :init
+    ;; open files in a new project, or switch to an open project if the tab already exists
+    (setq otpp-find-file-integration t)
+    (setq otpp-default-tab-name "*dashboard*")
+    :config
     (otpp-mode 1)
-    (otpp-override-mode 1))
+    (otpp-override-mode 1)
+)
 
+;; Shows a separate tab bar, underneath otpp which shows only project related buffers
+(use-package tab-line
+    :ensure nil
+    :after otpp
+    :config
+    ;; only enable if we are in a project??
+    (global-tab-line-mode 1)
+    (setq tab-line-tab-name-function #'tab-line-tab-name-truncated-buffer     ; Enable truncation logic
+        tab-line-tab-name-truncated-max 12                                    ; Set max character length
+        tab-line-tab-name-ellipsis "…"                                        ; Character to append when cut off
+        tab-line-new-button-show nil)                                         ; don't show the new + button a tab
+    :bind
+    ("C->" . 'tab-line-switch-to-next-tab)
+    ("C-<" . 'tab-line-switch-to-prev-tab)
+)
+
+;; enable nerd icons within tab line mode tabs
+(use-package tab-line-nerd-icons
+    :ensure t
+    :config
+    (tab-line-nerd-icons-global-mode 1)
+)
 
 ;; Make the tab-bar look more flat, like what's in neovim
 (use-package vim-tab-bar

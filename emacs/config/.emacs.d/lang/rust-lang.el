@@ -6,7 +6,6 @@
 
 (use-package rust-mode
     :ensure t
-    :defer t
     :init
     (setq rust-format-on-save t)
     (setq rust-mode-treesitter-derive t)

@@ -28,7 +28,7 @@
     :init
     ;; Initial buffer behaviour
     (setq initial-buffer-choice nil)
-    (setq frame-title-format nil)
+    (setq-default frame-title-format "---=== H E - M A C S ===---")
 
     ;; y/n instead of yes/no
     (setq use-short-answers t)
@@ -111,6 +111,9 @@
 
     ;; sometimes emacs will see variables blocks in hcl files as similar to dir-locals
     (add-to-list 'inhibit-local-variables-regexps "\\.hcl\\'")
+
+    ;; disable eldoc mode
+    (global-eldoc-mode -1)
 
     :bind
     ("C-x C-b" . 'ibuffer)
