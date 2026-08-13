@@ -7,7 +7,7 @@
 (use-package markdown-mode
     :ensure t
     :config
-    (setq markdown-command  "pandoc --metadata=title=markdown --template=GitHub.html5 --from gfm --to html5 --mathjax --highlight-style=pygments --standalone")
+    (setq markdown-command  "docker run --rm -i pandoc/core:latest pandoc --metadata=title=markdown --template=GitHub.html5 --from gfm --to html5 --mathjax --highlight-style=pygments --standalone")
     ;; always open the preview window at the right
     (setq markdown-split-window-direction 'right)
     (with-eval-after-load 'eglot
@@ -18,7 +18,6 @@
         (add-to-list 'flycheck-checkers 'markdown-mdl)
         (setq flycheck-markdown-mdl-executable "rumdl check")
     )
-
     :commands (gfm-mode markdown-mode)
     :mode (("\\.md\\'" . gfm-mode))
     :hook

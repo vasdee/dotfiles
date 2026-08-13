@@ -1,5 +1,8 @@
 # Emacs
 
+<!-- rumdl-disable MD033 MD064 -->
+<pre>
+
               ---===  A N D  T H E  ===---
 
 ██╗  ██╗███████╗       ███╗   ███╗ █████╗  ██████╗███████╗
@@ -11,9 +14,11 @@
 
    ---=== M A S T E R S  O F  T H E  E D I T O R ===---
 
+</pre>
+<!-- rumdl-enable MD033 MD064 -->
+
 See [init.el](emacs/config/emacs.d/init.el) and [early-init.el](emacs/config/emacs.d/early-init.el) for the details.
 Lots of this config was lifted from other repos over the years, if I can remember them I will reference them.
-
 
 ## Features
 
@@ -29,9 +34,11 @@ The Major components of this setup are:
 * doom-modeline - it just looks awesome
 * tree sitter - for most things, barring YAML mode which seems to be very broken
 * theme - doom-one
-* flycheck - using the new v38 branch to allow eglot and LSP integration
-* emacs-dashboard - 
+* flycheck - using the new v38 branch to allow eglot and LSP integration.
+  * RUMDL replaced instead of standard markdown
+* emacs-dashboard - customised for he-macs
 * rassafrassum - for multiplexing LSP servers into eglot
+* tab-line-mode - for buffer management, visual good looks underneath OTPP
 
 OS level components like rassafrassum for eglot and the font and icon packs are handled by caifs hooks.
 
@@ -39,10 +46,9 @@ OS level components like rassafrassum for eglot and the font and icon packs are 
 
 `emacs --batch -l ~/.emacs.d/init.el -f kill-emacs 2>&1`
 
-## References 
+## References
 
 [Chadmacs](https://github.com/Borderliner/Chadmacs) - much inspiration for nice organisation of `init.el`
-
 
 ## TODO
 
