@@ -93,6 +93,7 @@
   ;; Optional: Tweak minibuffer behavior
   (setq vertico-cycle t)) ; Allow cycling from last to first candidate
 
+;; Search and navigation commands base on the built in emacs completion functions
 (use-package consult
   :ensure t
   :bind (;; Swiper replacements

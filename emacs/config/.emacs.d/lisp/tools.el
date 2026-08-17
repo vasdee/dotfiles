@@ -222,15 +222,16 @@
     (setq xref-search-program 'ripgrep)
     ;; set the formatting to show the project name in the tab-bar
     (setq tab-bar-format '(tab-bar-format-history tab-bar-format-tabs-groups tab-bar-separator tab-bar-format-add-tab))
-    ;; make the default action when switching/opening a project to select a file
-    ;;(setq project-switch-commands 'project-dired)
-    (setq project-switch-commands
-        '((project-find-file "Find file" "f")
-          (project-find-dir "Find dir" "d")
-          (project-dired "Dired" "D")
-          (magit-project-status "Magit" "m") ; Requires magit
-          (project-shell "Shell" "s")
-          (project-eshell "Eshell" "e")))
+    ;; make the default action when switching/opening a dired/dirvish buffer at the project root
+    (setq project-switch-commands 'project-dired)
+
+    ;;(setq project-switch-commands
+    ;;    '((project-find-file "Find file" "f")
+    ;;      (project-find-dir "Find dir" "d")
+    ;;      (project-dired "Dired" "D")
+    ;;      (magit-project-status "Magit" "m") ; Requires magit
+    ;;      (project-shell "Shell" "s")
+    ;;      (project-eshell "Eshell" "e")))
 
 
     (defun my/project-discover-top-level ()
@@ -271,7 +272,7 @@
     )
 
     ;; Apply the filter
-    (setq switch-to-prev-buffer-skip #'my/project-skip-external-buffers)
+    ;(setq switch-to-prev-buffer-skip #'my/project-skip-external-buffers)
 
     ;; Recursively remember projects under the DEFAULT_CODE_DIR
     (my/project-discover-top-level)
