@@ -147,38 +147,25 @@
     :after otpp
     :config
 
-    (defun my/tab-line-visible-buffer-p (buffer)
-        "Return non-nil if BUFFER should get a tab.
-Skips dead buffers and internal buffers (names starting with a space),
-mirroring what `tab-line' does for its own buffer lists."
-        (and (buffer-live-p buffer)
-            (let ((name (buffer-name buffer)))
-                (and name
-                    (> (length name) 0)
-                    (not (eq (aref name 0) ?\s))))))
-
-    (defun my/tab-line-tabs-project-buffers ()
-        "Return the buffers of the current project, for `tab-line-tabs-function'.
-Each element must be a buffer object: `tab-line' expects either buffers
-or tab alists, so returning (BUFFER . NAME) conses breaks rendering and
-produces an empty tab-line.  Naming is left to
-`tab-line-tab-name-function'.  Outside a project, fall back to
-`tab-line-tabs-window-buffers' so tabs never disappear entirely."
-        (if-let* ((project (project-current))
-                     (buffers (seq-filter #'my/tab-line-visible-buffer-p
-                                  (project-buffers project))))
-            ;; Stable, alphabetical order; `project-buffers' order follows
-            ;; recency and would make tabs jump around on every switch.
-            (sort buffers (lambda (a b)
-                              (string< (buffer-name a) (buffer-name b))))
+    (defun my/tab-line-project-buffers ()
+        "Return project buffers that are also in the default tab-line buffers."
+        (if-let* ((pr (project-current))
+                  (project-bufs (project-buffers pr))
+                  (default-bufs (tab-line-tabs-window-buffers)))
+            ;; Only show buffers that are in both the project and default list
+            (seq-intersection project-bufs default-bufs)
+            ;; Fallback to the default tab-line function
             (tab-line-tabs-window-buffers)))
+
 
     ;; Configure before enabling, so the first redisplay already uses these.
     (setq tab-line-tab-name-function #'tab-line-tab-name-truncated-buffer     ; Enable truncation logic
         tab-line-tab-name-truncated-max 12                                    ; Set max character length
         tab-line-tab-name-ellipsis "…"                                        ; Character to append when cut off
         tab-line-new-button-show nil                                          ; don't show the new + button a tab
-        tab-line-tabs-function #'my/tab-line-tabs-project-buffers)
+        ;; this should filter out non project buffers, but it doesn't quite work
+       tab-line-tabs-function #'my/tab-line-project-buffers
+        )
 
     (global-tab-line-mode 1)
 

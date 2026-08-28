@@ -223,15 +223,15 @@
     ;; set the formatting to show the project name in the tab-bar
     (setq tab-bar-format '(tab-bar-format-history tab-bar-format-tabs-groups tab-bar-separator tab-bar-format-add-tab))
     ;; make the default action when switching/opening a dired/dirvish buffer at the project root
-    (setq project-switch-commands 'project-dired)
+    ;;(setq project-switch-commands 'project-dired)
 
-    ;;(setq project-switch-commands
-    ;;    '((project-find-file "Find file" "f")
-    ;;      (project-find-dir "Find dir" "d")
-    ;;      (project-dired "Dired" "D")
-    ;;      (magit-project-status "Magit" "m") ; Requires magit
-    ;;      (project-shell "Shell" "s")
-    ;;      (project-eshell "Eshell" "e")))
+    (setq project-switch-commands
+        '((project-find-file "Find file" "f")
+          (project-find-dir "Find dir" "d")
+          (project-dired "Dired" "D")
+          (magit-project-status "Magit" "m") ; Requires magit
+          (project-shell "Shell" "s")
+          (project-eshell "Eshell" "e")))
 
 
     (defun my/project-discover-top-level ()
@@ -294,7 +294,8 @@
     ;(setq treesit-auto-langs '(python just bash sh dockerfile))
     ;(add-to-list 'global-treesit-auto-modes '(not yaml-mode))
 
-    (delete 'yaml treesit-auto-langs)
+    (treesit-auto-add-to-auto-mode-alist 'all)
+    ;;(delete 'yaml treesit-auto-langs)
     (global-treesit-auto-mode)
     ;(setq treesit-auto-install t)
 )
