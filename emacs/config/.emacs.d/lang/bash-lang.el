@@ -5,7 +5,7 @@
 ;;; Code:
 
 (use-package bash-ts-mode
-  :ensure t
+  :ensure nil
   :mode (("\\.sh$" . bash-ts-mode)
          ("\\.bash$" . bash-ts-mode))
   :hook ((bash-ts-mode-hook . eglot-ensure)
