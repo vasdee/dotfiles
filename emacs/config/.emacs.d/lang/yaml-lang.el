@@ -1,4 +1,4 @@
-;;; yaml-lang.el --- Summary
+;;; yaml-lang.el --- Summary  -*- lexical-binding: t; -*-
 ;;
 ;;; Commentary:
 ;;

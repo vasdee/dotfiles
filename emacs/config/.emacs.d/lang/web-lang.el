@@ -1,4 +1,4 @@
-;;; web-lang.el --- Summary
+;;; web-lang.el --- Summary  -*- lexical-binding: t; -*-
 ;;
 ;;; Commentary:
 ;;

@@ -1,4 +1,4 @@
-;;; rst-lang.el --- Summary
+;;; rst-lang.el --- Summary  -*- lexical-binding: t; -*-
 ;;
 ;;; Commentary:
 ;;

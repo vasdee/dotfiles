@@ -1,4 +1,4 @@
-;;; bash-lang.el --- Summary
+;;; bash-lang.el --- Summary ;; -*- lexical-binding: t; -*-
 ;;
 ;;; Commentary:
 ;;

@@ -1,4 +1,4 @@
-;;; Core.el --- Summary
+;;; Core.el --- Summary  -*- lexical-binding: t; -*-
 ;;
 ;;; Commentary:
 ;;

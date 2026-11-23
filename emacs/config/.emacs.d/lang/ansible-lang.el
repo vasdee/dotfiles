@@ -1,4 +1,4 @@
-;;; ansible-lang.el --- Summary
+;;; ansible-lang.el --- Summary ;; -*- lexical-binding: t; -*-
 ;;
 ;;; Commentary:
 ;;

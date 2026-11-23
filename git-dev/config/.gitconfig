@@ -41,21 +41,21 @@
 	# $1 - the repo url
 	# $2 - the optional base private or work extra path
 	clone-path = "! fn() { \
-									 bd=${DEFAULT_CODE_DIR:-${PWD}}/$2 ;\
-									 re='^(https?:\\/\\/.+:.+@|https?:\\/\\/|git@|git\\+ssh@)(.*\\/)([^\\/]*\\.git)$' ;\
-									 if [[ $1 =~ $re ]] \
-									 then \
-											 ep=${BASH_REMATCH[2]} ;\
-											 pathchk $ep ;\
-											 echo "Cloning $1 to $bd/$ep" ;\
-											 mkdir -p $bd/$ep || true ;\
-											 cd $bd/$ep ;\
-											 git clone $1 ;\
-									 else \
-											 echo "Could not pass $1" ;\
-											 exit 1 ;\
-									 fi \
-									 }; fn"
+                              bd=${DEFAULT_CODE_DIR:-${PWD}}/$2 ;\
+                              re='^(https?:\\/\\/.+:.+@|https?:\\/\\/|git@|git\\+ssh@)(.*\\/)([^\\/]*\\.git)$' ;\
+                              if [[ $1 =~ $re ]] \
+                              then \
+                                              ep=${BASH_REMATCH[2]} ;\
+                                              pathchk $ep ;\
+                                              echo "Cloning $1 to $bd/$ep" ;\
+                                              mkdir -p $bd/$ep || true ;\
+                                              cd $bd/$ep ;\
+                                              git clone $1 ;\
+                              else \
+                                              echo "Could not pass $1" ;\
+                                              exit 1 ;\
+                              fi \
+                              }; fn"
 	clone-work = "!git clone-path $1 work"
 	clone-private = "!git clone-path $1 private"
 

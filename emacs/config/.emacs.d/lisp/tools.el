@@ -1,5 +1,4 @@
-;; -*- lexical-binding: t; -*-
-;;; tools.el --- Summary
+;;; tools.el --- Summary -*- lexical-binding: t; -*-
 ;;
 ;;; Commentary:
 ;;
@@ -12,6 +11,8 @@
               ("C-c a k" . agent-shell-kiro-start-agent) ; Launch specific engine
               ("C-c a b" . agent-shell-switch-buffer)       ; Jump between active shells
               ("C-c a f" . agent-shell-ui-toggle-all-fragments))   ; Collapse/expand
+    :config
+    (setq agent-shell-inhibit-system-sleep nil)
 )
 
 

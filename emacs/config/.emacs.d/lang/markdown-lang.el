@@ -1,4 +1,4 @@
-;;; markdown-lang.el --- Summary
+;;; markdown-lang.el --- Summary  -*- lexical-binding: t; -*-
 ;;
 ;;; Commentary:
 ;;

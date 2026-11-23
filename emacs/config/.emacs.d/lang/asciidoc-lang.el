@@ -1,4 +1,4 @@
-;;; asciidoc-lang.el --- Summary
+;;; asciidoc-lang.el --- Summary ;; -*- lexical-binding: t; -*-
 ;;
 ;;; Commentary:
 ;;    Ensure the following has been run on a fresh install `asciidoc-install-grammars`
