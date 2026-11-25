@@ -1,4 +1,4 @@
-;;; navigation.el --- Summary
+;;; navigation.el --- Summary  -*- lexical-binding: t; -*-
 ;;
 ;;; Commentary:
 ;;

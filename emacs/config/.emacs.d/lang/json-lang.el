@@ -1,4 +1,4 @@
-;;; json-lang.el --- Summary
+;;; json-lang.el --- Summary  -*- lexical-binding: t; -*-
 ;;
 ;;; Commentary:
 ;;    eglot by default uses vscode-json-languageserver, which should be installed manually using

@@ -1,4 +1,4 @@
-;;; themes.el --- Summary
+;;; themes.el --- Summary  -*- lexical-binding: t; -*-
 ;;
 ;;; Commentary:
 ;;

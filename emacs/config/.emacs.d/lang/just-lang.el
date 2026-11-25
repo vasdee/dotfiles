@@ -1,4 +1,4 @@
-;;; just-lang.el --- Summary
+;;; just-lang.el --- Summary  -*- lexical-binding: t; -*-
 ;;
 ;;; Commentary:
 ;;

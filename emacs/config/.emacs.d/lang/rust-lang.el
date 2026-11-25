@@ -1,4 +1,4 @@
-;;; rust-lang.el --- Summary
+;;; rust-lang.el --- Summary  -*- lexical-binding: t; -*-
 ;;
 ;;; Commentary:
 ;;

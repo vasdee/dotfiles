@@ -1,4 +1,4 @@
-;;; docker-lang.el --- Summary
+;;; docker-lang.el --- Summary  -*- lexical-binding: t; -*-
 ;;
 ;;; Commentary:
 ;;    eglot by default uses docker-language-server as the default lsp binary.

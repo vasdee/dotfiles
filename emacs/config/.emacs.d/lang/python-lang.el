@@ -1,4 +1,4 @@
-;;; python-lang.el --- Summary
+;;; python-lang.el --- Summary  -*- lexical-binding: t; -*-
 ;;
 ;;; Commentary:
 ;;
