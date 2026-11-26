@@ -281,6 +281,16 @@
   :defer t
 )
 
+;; package for inspecting ssh related configuration.
+;; uses a custom configuration to look under ~/.ssh/config.d/
+(use-package ssh-config-mode
+  :ensure t
+  :mode (("/\\.ssh/config\\'"     . ssh-config-mode)
+         ("/\\.ssh/config\\.d/"   . ssh-config-mode)
+         ("/sshd?_config\\'"      . ssh-config-mode)
+         ("/known_hosts\\'"       . ssh-config-mode)
+         ("/authorized_keys2?\\'" . ssh-config-mode)))
+
 ;; auto-enable treesitter modes, apart from yaml, which is not as good quite yet
 (use-package treesit-auto
     :ensure t
